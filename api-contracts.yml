@@ -2,9 +2,6 @@ openapi: 3.0.3
 info:
   title: Skill tree API contracts
   version: 1.0.11
-externalDocs:
-  description: Find out more about Skill tree
-  url: https://docs.google.com/document/d/114ihS42_5M8kN7oM5aQ3XgHN_nxOdr17gG3C3JdeOos/edit?usp=sharing
 
 tags:
   - name: skills
