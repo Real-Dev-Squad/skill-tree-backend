@@ -314,14 +314,20 @@ components:
           type: string
           example: John doe
         
-    ApiResponse:
+    ApiResponseFailure:
       type: object
       properties:
         code:
           type: integer
           format: int32
-        type:
-          type: string
         message:
-          type: string
-     
+          type: string  
+    ApiResponseSuccess:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: string  
+        
