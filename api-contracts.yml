@@ -8,28 +8,30 @@ tags:
     description: Everything about user skills
   - name: endorsements
     description: Everything about endorsements made
-  - name: user
-    description: Operations about user
+ 
 paths:
   /skills:
     get:
       tags:
         - skills
-      summary: Get skills for all users
-      description: Get skills for all users
-      operationId: getSkills
+      summary: Get all the skills
+      description: It can be used in auto complete of search feature.
+      operationId: getAllSkills
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SkillsArray'
+                type: array
+                items:
+                  $ref: '#/components/schemas/skills'
 
         '404':
           description: Skills not found
-
-
+     
+        '503':  
+          description: Service Unavailable
   /skills/{userId}:
     get:
       tags:
@@ -41,20 +43,56 @@ paths:
           schema:
             type: string
 
-      summary: Get skills for a user
-      description: Get skills for a user
+      summary: Get all the skills of the user
+      description: Get all the skills of the user
       operationId: getSkillForUser
       responses:
         '200':
           description: Successful operation
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/skills'
+                
+        '404':
+          description: No skills associated with the user.
+        '400':
+          description: Incorrect userId passed.
+        '503':  
+          description: Service Unavailable
+          
+      
+  /skills/{skillName}:
+    get:
+      tags: 
+        - skills
+      parameters:
+        - in: path
+          name: skillName
+          required: true
+          schema: 
+            type: string
+            
+      summary: Get all the users for the given skill
+      description: Get all the users for the given skill
+      operationId: getUsersForSkill
+      responses:
+        '200': 
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: object
-                $ref: '#/components/schemas/Skills'
-
-
-
+                type: object 
+                $ref: '#/components/schemas/skillUsersResponse'
+        '404':
+          description: No user found for the skill searched
+        '400':
+          description: Incorrect skillName passed.
+        '503':
+          description: Service Unavailable
+          
   /endorsements:
     get:
       tags:
@@ -83,10 +121,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Endorsement'
+                  $ref: '#/components/schemas/endorsementResponse'
 
         '400':
           description: Invalid status value
+    
     post:
       tags:
         - endorsements
@@ -98,11 +137,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Endorsement'
+              $ref: '#/components/schemas/endorsementRequest'
 
       responses:
         '204':
           description: Created endorsement sucessfully
+        '503':
+          description: Endorsement creation failed
 
 
   /endorsements/{endorsementId}:
@@ -116,9 +157,15 @@ paths:
           in: path
           description: EndorsementId which has to be modified
           required: true
-
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/endorsementUpdate'
       summary: Update endorsement status given endorsementId
-      description: Update endorsement status given endorsement id
+      description: Update endorsement status given endorsement id, **this can be only used by Super User for now**
       operationId: updateEndorsementStatusGivenId
 
       responses:
@@ -127,11 +174,40 @@ paths:
 
         '400':
           description: Invalid endorsement Id value
-
-
+        '503':
+          description: Service Unavailable
+    get:
+      tags:
+        - endorsements
+      parameters:
+        - name: endorsementId
+          schema: 
+            type: string
+          in: path
+          description: EndorsementId whose details are to be fetched
+          required: true
+      description: Fetch details for a particular endorsement
+      summary: Fetch details for a particular endorsement
+      operationId: getEndorsementById
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/endorsementResponse'
+                
+        '404': 
+          description: Endorsement not found
+        '400':
+          description: Invalid endorsementId passed
+        '503':
+          description: Service Unavailable
+          
 components:
   schemas:
-    Skills:
+    skills:
       type: object
       properties:
         id:
@@ -145,47 +221,99 @@ components:
           example: atomic / derived
         description:
           type: string
-
-    EndorsementObj:
+    
+    endorsementUpdate:
       type: object
       properties:
-        behaviour:
+        status:
           type: string
-          default: POSITIVE
+          enum: 
+            - PENDING
+            - APPROVED
+            - REJECTED
+          default: APPROVED
+    endorsementResponse:
+      type: object
+      properties:
+        endorseeId:
+          type: string
+          example: user-1
+        skillName:  
+          type: string
+          example: Java
+        status: 
+          type: string
           enum:
+            - PENDING
+            - APPROVED
+            - REJECTED
+          default: APPROVED
+        endorsementType:
+          type: string
+          enum: 
             - POSITIVE
             - NEGATIVE
+          default: POSITIVE
+        endorsersList:
+          type: array
+          items:  
+            $ref: '#/components/schemas/endorserObject'
+    endorserObject:
+      type: object
+      properties:
+        endorserId:
+          type: string
+          example: user-2
         description:
           type: string
           minimum: 1
           maximum: 256
-
-    Endorsement:
+        userType:
+          type: string
+          enum:
+            - NORMAL_USER
+            - SUPER_USER
+            - MAVEN
+    endorsementRequest:
       required:
-        - skillId
-        - endorsedUserId
-        - endorsementsList
-
+        - skillName
+        - endorserUserId
+        - endorseeUserId
+        - description
+        - behaviour
+    
       type: object
       properties:
-        skillId:
+        skillName:
           type: string
           example: Java
-        endorsedUserId:
+        endorserUserId:
           type: string
           example: user-1
-
-        endorsementsList:
-          type: array
-          items:
-            $ref: '#/components/schemas/EndorsementObj'
-
-    SkillsArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/Skills'
-
-
+        endorseeUserId:
+          type: string
+          example: user-2
+        behaviour:
+          type: string
+          default: POSITIVE
+          enum: 
+            - POSITIVE
+            - NEGATIVE
+      
+        description:
+          type: string
+          minimum: 1
+          maximum: 256
+      
+    skillUsersResponse:
+      properties:
+        skillName:  
+          type: string
+          example: Java
+        userName: 
+          type: string
+          example: John doe
+        
     ApiResponse:
       type: object
       properties:
@@ -196,13 +324,4 @@ components:
           type: string
         message:
           type: string
-      xml:
-        name: '##default'
-  requestBodies:
-    Pet:
-      description: Endorsement request object
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Endorsement'
-
+     
