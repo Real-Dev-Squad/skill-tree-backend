@@ -1,12 +1,13 @@
-package com.RDS.skilltree;
+package com.RDS.skilltree.model;
 
-import lombok.Data;
-import org.springframework.data.annotation.Id;
 
-@Data
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public final class Skill { // TODO: to be updated according to the database
     @Id
-    private int id;
+    private Long id;
     private String name;
     private String type;
 }
