@@ -115,7 +115,7 @@ paths:
             application/json:
               schema:
                 type: object 
-                $ref: '#/components/schemas/skillUsersResponse'
+                $ref: '#/components/schemas/ApiResponseForSkillName'
         '404':
           description: No user found for the skill searched
           content:
@@ -414,6 +414,7 @@ components:
           maximum: 256
 
     skillUsersResponse:
+      type: object
       properties:
         skillName:  
           type: string
@@ -421,7 +422,7 @@ components:
         userName: 
           type: string
           example: John doe
-
+          
     ApiResponseFailureAllSkills:
       type: object
       properties:
@@ -491,7 +492,7 @@ components:
           format: int32
         data:
           type: string  
-          
+
     ApiResponseSuccessEndorsementCreation:
       type: object
       properties:
@@ -502,6 +503,11 @@ components:
         message:
           type: string  
           example: Created endorsement sucessfully
+          
+    ApiResponseForSkillName:
+      type: array
+      items:  
+        $ref: '#/components/schemas/skillUsersResponse'
     ApiResponseSuccessEndorsementUpdation:
       type: object
       properties:
