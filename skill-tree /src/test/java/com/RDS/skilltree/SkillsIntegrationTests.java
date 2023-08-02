@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -18,6 +19,7 @@ public class SkillsIntegrationTests {
 
     @Test
     @Disabled
+    @DisplayName("Return all skills")
     public void testAPIReturnsAllSkills() {
 
         Response response = given()
@@ -50,6 +52,7 @@ public class SkillsIntegrationTests {
 
     @Test
     @Disabled
+    @DisplayName("Return all skills given userId")
     public void testAPIReturnsSkillsGivenUser() {
         Response response = given()
                 .get("/skills/u1");
@@ -67,7 +70,8 @@ public class SkillsIntegrationTests {
 
     @Test
     @Disabled
-    public void testAPIReturns400OnIncorrectUserId() {
+    @DisplayName("Return 400 on incorrect userId")
+    public void testAPIReturns400_OnIncorrectUserId() {
         Response response = given()
                 .get("/skills/{userId}"); //TODO: change this URL
 
@@ -80,7 +84,8 @@ public class SkillsIntegrationTests {
 
     @Test
     @Disabled
-    public void testAPIReturns404OnNoSkillsFound() {
+    @DisplayName("Return 404 on, no skills found on given userId")
+    public void testAPIReturns404_OnNoSkillsFound() {
         Response response = given()
                 .get("/skills/{userId}"); //TODO: change this URL
 
@@ -93,7 +98,8 @@ public class SkillsIntegrationTests {
 
     @Test
     @Disabled
-    public void testAPIReturnsSkillGivenSkillName() {
+    @DisplayName("Return users having skill given skill name")
+    public void testAPIReturns200_OnSkillGivenSkillName() {
         Response response = given()
                 .get("/skills/{skillName}"); //TODO: change the URL
 
@@ -118,7 +124,8 @@ public class SkillsIntegrationTests {
 
     @Test
     @Disabled
-    public void testAPIReturns400OnIncorrectSkillName() {
+    @DisplayName("Return 400 on invalid skill name passed")
+    public void testAPIReturns400_OnIncorrectSkillName() {
         Response response = given()
                 .get("/skills/{skillName}"); //TODO: change the URL
 
