@@ -1,0 +1,520 @@
+openapi: 3.0.3
+info:
+  title: Skill tree API contracts
+  version: 1.0.11
+
+tags:
+  - name: skills
+    description: Everything about user skills
+  - name: endorsements
+    description: Everything about endorsements made
+
+paths:
+  /skills:
+    get:
+      tags:
+        - skills
+      summary: Get all the skills
+      description: It can be used in auto complete of search feature.
+      operationId: getAllSkills
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/skills'
+
+        '404':
+          description: Skills not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureAllSkills'
+
+
+        '503':  
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
+
+  /skills/{userId}:
+    get:
+      tags:
+        - skills
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+
+      summary: Get all the skills of the user
+      description: Get all the skills of the user
+      operationId: getSkillForUser
+      responses:
+        '200':
+          description: Successful operation
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/skills'
+
+        '404':
+          description: No skills associated with the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureNoSkillsForUser'
+
+        '400':
+          description: Incorrect userId passed.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+
+        '503':  
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
+
+
+
+  /skills/{skillName}:
+    get:
+      tags: 
+        - skills
+      parameters:
+        - in: path
+          name: skillName
+          required: true
+          schema: 
+            type: string
+
+      summary: Get all the users for the given skill
+      description: Get all the users for the given skill
+      operationId: getUsersForSkill
+      responses:
+        '200': 
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object 
+                $ref: '#/components/schemas/ApiResponseForSkillName'
+        '404':
+          description: No user found for the skill searched
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureNoUsersForSkillName'
+
+        '400':
+          description: Incorrect skillName passed.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
+
+
+  /endorsements:
+    get:
+      tags:
+        - endorsements
+      summary: Fetch all endorsements / filter for a status
+      description: Fetch all endorsements / fetch for a given status
+      operationId: getEndorsements
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: PENDING_APPROVAL
+            enum:
+              - PENDING_APPROVAL
+              - APPROVED
+              - REJECTED
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/endorsementResponse'
+
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'  
+
+    post:
+      tags:
+        - endorsements
+      summary: Create an endorsement for a skill
+      description: Create an endorsement for a skill
+      operationId: createEndorsement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/endorsementRequest'
+
+      responses:
+        '204':
+          description: Created endorsement sucessfully
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseSuccessEndorsementCreation'
+
+        '503':
+          description: Endorsement creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
+
+
+
+  /endorsements/{endorsementId}:
+    patch:
+      tags:
+        - endorsements
+      parameters:
+        - name: endorsementId
+          schema:
+            type: string
+          in: path
+          description: EndorsementId which has to be modified
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/endorsementUpdate'
+      summary: Update endorsement status given endorsementId
+      description: Update endorsement status given endorsement id, **this can be only used by Super User for now**
+      operationId: updateEndorsementStatusGivenId
+
+      responses:
+        '204':
+          description: update operation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseSuccessEndorsementUpdation'
+
+
+        '400':
+          description: Invalid endorsement Id value
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
+
+    get:
+      tags:
+        - endorsements
+      parameters:
+        - name: endorsementId
+          schema: 
+            type: string
+          in: path
+          description: EndorsementId whose details are to be fetched
+          required: true
+      description: Fetch details for a particular endorsement
+      summary: Fetch details for a particular endorsement
+      operationId: getEndorsementById
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/endorsementResponse'
+
+        '404': 
+          description: Endorsement not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureNoEndorsementFound'
+
+        '400':
+          description: Invalid endorsementId passed
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
+
+
+components:
+  schemas:
+    skills:
+      type: object
+      properties:
+        id:
+          type: string
+          example: skill-1
+        name:
+          type: string
+          example: Java
+        type:
+          type: string
+          example: atomic / derived
+        description:
+          type: string
+
+    endorsementUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: 
+            - PENDING
+            - APPROVED
+            - REJECTED
+          default: APPROVED
+    endorsementResponse:
+      type: object
+      properties:
+        endorseeId:
+          type: string
+          example: user-1
+        skillName:  
+          type: string
+          example: Java
+        status: 
+          type: string
+          enum:
+            - PENDING
+            - APPROVED
+            - REJECTED
+          default: APPROVED
+        endorsementType:
+          type: string
+          enum: 
+            - POSITIVE
+            - NEGATIVE
+          default: POSITIVE
+        endorsersList:
+          type: array
+          items:  
+            $ref: '#/components/schemas/endorserObject'
+    endorserObject:
+      type: object
+      properties:
+        endorserId:
+          type: string
+          example: user-2
+        description:
+          type: string
+          minimum: 1
+          maximum: 256
+        userType:
+          type: string
+          enum:
+            - NORMAL_USER
+            - SUPER_USER
+            - MAVEN
+    endorsementRequest:
+      required:
+        - skillName
+        - endorserUserId
+        - endorseeUserId
+        - description
+        - behaviour
+
+      type: object
+      properties:
+        skillName:
+          type: string
+          example: Java
+        endorserUserId:
+          type: string
+          example: user-1
+        endorseeUserId:
+          type: string
+          example: user-2
+        behaviour:
+          type: string
+          default: POSITIVE
+          enum: 
+            - POSITIVE
+            - NEGATIVE
+
+        description:
+          type: string
+          minimum: 1
+          maximum: 256
+
+    skillUsersResponse:
+      type: object
+      properties:
+        skillName:  
+          type: string
+          example: Java
+        userName: 
+          type: string
+          example: John doe
+          
+    ApiResponseFailureAllSkills:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 404
+        message:
+          type: string  
+          example: Skills not found
+    ApiResponseFailureNoSkillsForUser:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 404
+        message:
+          type: string  
+          example: No skills associated with the user.
+    ApiResponseFailureNoUsersForSkillName:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 404
+        message:
+          type: string  
+          example: No user found for the skill searched
+    ApiResponseFailureNoEndorsementFound:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 404
+        message:
+          type: string  
+          example: Endorsement not found
+
+    ApiResponseFailureServiceUnavailable:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 503
+        message:
+          type: string  
+          example: Service unavailable
+    ApiResponseFailureInvalidParameter:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 400
+        message:
+          type: string  
+          example: Invalid paramter passed
+    ApiResponseSuccess:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        data:
+          type: string  
+
+    ApiResponseSuccessEndorsementCreation:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 204
+        message:
+          type: string  
+          example: Created endorsement sucessfully
+          
+    ApiResponseForSkillName:
+      type: array
+      items:  
+        $ref: '#/components/schemas/skillUsersResponse'
+    ApiResponseSuccessEndorsementUpdation:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 204
+        message:
+          type: string  
+          example: Updated endorsement sucessfully
