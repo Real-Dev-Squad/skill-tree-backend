@@ -53,7 +53,7 @@ public class EndorsementsIntegrationTests {
                 .statusCode(200)
                 .contentType("application/json")
                 .body("data", hasSize(1))
-                .body("data[0].endorseeId",equalTo("user-1")) //TODO update this
+                .body("data[0].endorseeId",equalTo("user-1"))
                 .body("data[0].skillName",equalTo("Java"))
                 .body("data[0].status", anyOf(equalTo("APPROVED"), equalTo("REJECTED"), equalTo("PENDING")))
                 .body("data[0].endorsementType",anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
@@ -77,7 +77,7 @@ public class EndorsementsIntegrationTests {
                 .statusCode(200)
                 .contentType("application/json")
                 .body("data", hasSize(1))
-                .body("data[0].endorseeId",equalTo("user-1")) //TODO update this
+                .body("data[0].endorseeId",equalTo("user-1"))
                 .body("data[0].skillName",equalTo("Java"))
                 .body("data[0].status", anyOf(equalTo("APPROVED"), equalTo("REJECTED"), equalTo("PENDING")))
                 .body("data[0].endorsementType",anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))

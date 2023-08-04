@@ -73,7 +73,7 @@ public class SkillsIntegrationTests {
     @DisplayName("Return 400 on incorrect userId")
     public void testAPIReturns400_OnIncorrectUserId() {
         Response response = given()
-                .get("/skills/{userId}"); //TODO: change this URL
+                .get("/skills/{userId}");
 
         response.then()
                 .statusCode(400)
@@ -87,7 +87,7 @@ public class SkillsIntegrationTests {
     @DisplayName("Return 404 on, no skills found on given userId")
     public void testAPIReturns404_OnNoSkillsFound() {
         Response response = given()
-                .get("/skills/{userId}"); //TODO: change this URL
+                .get("/skills/{userId}");
 
         response.then()
                 .statusCode(404)
@@ -101,7 +101,7 @@ public class SkillsIntegrationTests {
     @DisplayName("Return users having skill given skill name")
     public void testAPIReturns200_OnSkillGivenSkillName() {
         Response response = given()
-                .get("/skills/{skillName}"); //TODO: change the URL
+                .get("/skills/{skillName}");
 
         /*
 
@@ -127,7 +127,7 @@ public class SkillsIntegrationTests {
     @DisplayName("Return 400 on invalid skill name passed")
     public void testAPIReturns400_OnIncorrectSkillName() {
         Response response = given()
-                .get("/skills/{skillName}"); //TODO: change the URL
+                .get("/skills/{skillName}");
 
         response.then()
                 .statusCode(400)
