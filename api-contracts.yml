@@ -200,13 +200,13 @@ paths:
               $ref: '#/components/schemas/endorsementRequest'
 
       responses:
-        '204':
+        '200':
           description: Created endorsement sucessfully
           content:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/ApiResponseSuccessEndorsementCreation'
+                $ref: '#/components/schemas/endorsementResponse'
 
         '503':
           description: Endorsement creation failed
@@ -241,13 +241,13 @@ paths:
       operationId: updateEndorsementStatusGivenId
 
       responses:
-        '204':
+        '200':
           description: update operation successful
           content:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/ApiResponseSuccessEndorsementUpdation'
+                $ref: '#/components/schemas/endorsementResponse'
 
 
         '400':
@@ -484,37 +484,8 @@ components:
         message:
           type: string  
           example: Invalid paramter passed
-    ApiResponseSuccess:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        data:
-          type: string  
 
-    ApiResponseSuccessEndorsementCreation:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-          example: 204
-        message:
-          type: string  
-          example: Created endorsement sucessfully
-          
     ApiResponseForSkillName:
       type: array
       items:  
         $ref: '#/components/schemas/skillUsersResponse'
-    ApiResponseSuccessEndorsementUpdation:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-          example: 204
-        message:
-          type: string  
-          example: Updated endorsement sucessfully
