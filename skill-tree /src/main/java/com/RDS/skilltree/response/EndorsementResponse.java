@@ -1,7 +1,7 @@
 package com.RDS.skilltree.response;
 
-import com.RDS.skilltree.enums.EndorsementType;
 import com.RDS.skilltree.enums.Status;
+import com.RDS.skilltree.enums.Type;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,6 +19,6 @@ public class EndorsementResponse {
     private String endorseeId;
     private String skillName;
     private Status status;
-    private EndorsementType endorsementType;
+    private Type endorsementType;
     private List<EndorserList> endorsersList;
 }

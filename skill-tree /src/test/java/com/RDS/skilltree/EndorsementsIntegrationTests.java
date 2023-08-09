@@ -1,6 +1,6 @@
 package com.RDS.skilltree;
 
-import com.RDS.skilltree.enums.Behaviour;
+import com.RDS.skilltree.enums.Type;
 import com.RDS.skilltree.request.EndorsementCreationRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -113,7 +113,7 @@ public class EndorsementsIntegrationTests {
                 .endorseeUserId("u-2")
                 .skillName("Java")
                 .description("This is endorsed for the skill showcased in Skill tree")
-                .endorsementBehaviour(Behaviour.POSITIVE)
+                .endorsementType(Type.POSITIVE)
                 .build());
 
         Response response = given()

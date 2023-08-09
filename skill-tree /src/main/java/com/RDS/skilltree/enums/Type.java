@@ -1,6 +1,6 @@
 package com.RDS.skilltree.enums;
 
-public enum Behaviour {
+public enum Type {
     POSITIVE,
     NEGATIVE
 }

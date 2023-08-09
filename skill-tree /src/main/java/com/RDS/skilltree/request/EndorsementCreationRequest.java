@@ -1,6 +1,6 @@
 package com.RDS.skilltree.request;
 
-import com.RDS.skilltree.enums.Behaviour;
+import com.RDS.skilltree.enums.Type;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,6 +10,6 @@ public class EndorsementCreationRequest {
     private String skillName;
     private String endorserUserId;
     private String endorseeUserId;
-    private Behaviour endorsementBehaviour;
+    private Type endorsementType;
     private String description;
 }
