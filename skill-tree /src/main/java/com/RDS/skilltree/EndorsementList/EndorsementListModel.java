@@ -36,7 +36,6 @@ public class EndorsementListModel {
     private boolean isDeleted;
 
     @Column(name = "type", nullable = false)
-//    @Enumerated(EnumType.STRING)
     private EndorsementType type;
 
     @Column(name = "created_at", nullable = false)
