@@ -4,9 +4,8 @@ import com.RDS.skilltree.User.UserModel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 import java.util.Set;
@@ -14,8 +13,7 @@ import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "Skill")
 public class SkillModel {
     @Id

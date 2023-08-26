@@ -4,9 +4,8 @@ import com.RDS.skilltree.Skill.SkillModel;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.net.URL;
 import java.util.Set;
@@ -14,8 +13,7 @@ import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @JsonSerialize
 @Table(name = "Users")
 public class UserModel {
@@ -27,7 +25,7 @@ public class UserModel {
     @Column(name = "rds_user_id")
     private String rdsUserId;
 
-    @Column(name = "first_name" , nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "last_name")

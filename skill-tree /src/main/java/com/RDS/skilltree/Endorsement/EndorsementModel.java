@@ -3,17 +3,15 @@ package com.RDS.skilltree.Endorsement;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "endorsements")
 public class EndorsementModel {
     @Id
@@ -36,7 +34,7 @@ public class EndorsementModel {
     @GeneratedValue
     private Instant createdAt;
 
-    public EndorsementModel( UserModel user, SkillModel skill) {
+    public EndorsementModel(UserModel user, SkillModel skill) {
         this.status = EndorsementStatus.PENDING;
         this.user = user;
         this.skill = skill;

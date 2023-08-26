@@ -3,17 +3,15 @@ package com.RDS.skilltree.EndorsementList;
 import com.RDS.skilltree.Endorsement.EndorsementModel;
 import com.RDS.skilltree.User.UserModel;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Table(name = "endorsement_list")
 public class EndorsementListModel {
     @Id
@@ -41,7 +39,8 @@ public class EndorsementListModel {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    public EndorsementListModel(EndorsementModel endorsement, UserModel endorser, String description, EndorsementType type) {
+    public EndorsementListModel(EndorsementModel endorsement, UserModel endorser, String description,
+            EndorsementType type) {
         this.endorsement = endorsement;
         this.endorser = endorser;
         this.description = description;
