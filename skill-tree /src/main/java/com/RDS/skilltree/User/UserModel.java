@@ -24,6 +24,9 @@ public class UserModel {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
+    @Column(name = "rds_user_id")
+    private String rdsUserId;
+
     @Column(name = "first_name" , nullable = false)
     private String firstName;
 
@@ -44,11 +47,12 @@ public class UserModel {
     @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<SkillModel> skills;
 
-    public UserModel(String firstName, String lastName, URL imageUrl, UserType type, UserRole role) {
+    public UserModel(String rdsUserId, String firstName, String lastName, URL imageUrl, UserType type, UserRole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.imageUrl = imageUrl;
         this.type = type;
         this.role = role;
+        this.rdsUserId = rdsUserId;
     }
 }
