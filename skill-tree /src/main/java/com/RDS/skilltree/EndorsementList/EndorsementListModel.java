@@ -31,19 +31,32 @@ public class EndorsementListModel {
     private String description;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    private boolean deleted;
 
     @Column(name = "type", nullable = false)
     private EndorsementType type;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private Instant createdAt;
 
+    @JoinColumn(name = "created_by")
+    @ManyToOne
+    private UserModel createdBy;
+
+    @Column(name="updated_at")
+    private Instant updatedAt;
+
+    @JoinColumn(name="updated_by")
+    @ManyToOne
+    private UserModel updatedBy;
+
     public EndorsementListModel(EndorsementModel endorsement, UserModel endorser, String description,
-            EndorsementType type) {
+            EndorsementType type, UserModel createdBy) {
         this.endorsement = endorsement;
         this.endorser = endorser;
         this.description = description;
         this.type = type;
+        this.deleted = false;
+        this.createdBy = createdBy;
     }
 }

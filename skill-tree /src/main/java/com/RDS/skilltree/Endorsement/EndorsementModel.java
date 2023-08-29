@@ -30,9 +30,20 @@ public class EndorsementModel {
     @Column(name = "endorsement_status")
     private EndorsementStatus status;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     @GeneratedValue
     private Instant createdAt;
+
+    @JoinColumn(name = "created_by")
+    @ManyToOne
+    private UserModel createdBy;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @JoinColumn(name = "updated_by")
+    @ManyToOne
+    private UserModel updatedBy;
 
     public EndorsementModel(UserModel user, SkillModel skill) {
         this.status = EndorsementStatus.PENDING;

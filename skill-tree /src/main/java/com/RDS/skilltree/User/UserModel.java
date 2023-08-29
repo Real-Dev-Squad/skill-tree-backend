@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.net.URL;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,6 +41,16 @@ public class UserModel {
     @Column(name = "user_role", nullable = false)
     private UserRole role;
 
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name="updated_at")
+    private Instant updatedAt;
+
+    @JoinColumn(name="updated_by")
+    @ManyToOne
+    private UserModel updatedBy;
+
     @JsonManagedReference
     @ManyToMany(targetEntity = SkillModel.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
@@ -52,5 +63,6 @@ public class UserModel {
         this.type = type;
         this.role = role;
         this.rdsUserId = rdsUserId;
+        this.createdAt = Instant.now();
     }
 }

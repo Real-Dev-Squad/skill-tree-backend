@@ -27,21 +27,32 @@ public class SkillModel {
     @Column(name = "skill_type", nullable = false)
     private SkillType type;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     @GeneratedValue
     private Instant createdAt;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
 
+    @JoinColumn(name = "created_by")
+    @ManyToOne
+    private UserModel createdBy;
+
+    @Column(name="updated_at")
+    private Instant updatedAt;
+
+    @JoinColumn(name="updated_by")
+    @ManyToOne
+    private UserModel updatedBy;
+
     @JsonBackReference
     @JsonIgnore
     @ManyToMany(mappedBy = "skills", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserModel> users;
 
-    public SkillModel(String name, SkillType type, boolean deleted) {
+    public SkillModel(String name, SkillType type) {
         this.name = name;
         this.type = type;
-        this.deleted = deleted;
+        this.deleted = false;
     }
 }
