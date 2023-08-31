@@ -1,6 +1,7 @@
 package com.RDS.skilltree.User;
 
 import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Data
 @JsonSerialize
 @Table(name = "Users")
-public class UserModel {
+public class UserModel extends TrackedProperties {
     @Id
     @GeneratedValue
     @Column(name = "id", columnDefinition = "BINARY(16)")
@@ -41,16 +42,6 @@ public class UserModel {
     @Column(name = "user_role", nullable = false)
     private UserRole role;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Column(name="updated_at")
-    private Instant updatedAt;
-
-    @JoinColumn(name="updated_by")
-    @ManyToOne
-    private UserModel updatedBy;
-
     @JsonManagedReference
     @ManyToMany(targetEntity = SkillModel.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
@@ -63,6 +54,5 @@ public class UserModel {
         this.type = type;
         this.role = role;
         this.rdsUserId = rdsUserId;
-        this.createdAt = Instant.now();
     }
 }

@@ -2,18 +2,21 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor
 @Data
 @Table(name = "endorsements")
-public class EndorsementModel {
+public class EndorsementModel extends TrackedProperties {
     @Id
     @GeneratedValue
     @Column(name = "id", columnDefinition = "BINARY(16)")
@@ -29,21 +32,6 @@ public class EndorsementModel {
 
     @Column(name = "endorsement_status")
     private EndorsementStatus status;
-
-    @Column(name = "created_at")
-    @GeneratedValue
-    private Instant createdAt;
-
-    @JoinColumn(name = "created_by")
-    @ManyToOne
-    private UserModel createdBy;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @JoinColumn(name = "updated_by")
-    @ManyToOne
-    private UserModel updatedBy;
 
     public EndorsementModel(UserModel user, SkillModel skill) {
         this.status = EndorsementStatus.PENDING;
