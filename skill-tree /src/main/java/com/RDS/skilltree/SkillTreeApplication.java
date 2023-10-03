@@ -9,5 +9,4 @@ public class SkillTreeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SkillTreeApplication.class, args);
 	}
-
 }
