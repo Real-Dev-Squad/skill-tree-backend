@@ -1,8 +1,6 @@
 # skill-tree-backend
 
 ## Steps for running the service in local
-_A detailed README is written by @shubham sidgar, this is written temporarily for people to get their backend running, more details in this ticket #25_
-
 
 ### Tools required
 - [Maven](https://mvnrepository.com/)
