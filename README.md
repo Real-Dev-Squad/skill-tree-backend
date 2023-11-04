@@ -22,3 +22,9 @@ This [link](https://find10archived.medium.com/how-to-connect-a-mysql-docker-cont
 - Post calling the `localhost:3000/auth/github/login`, backend will generate the JWT token
 - We can validate if the token is correct using the site https://jwt.io/, enter the public and private key stored in the website backend
 - Post this use the public key in Skill tree repo to decrpyt the JWT token passed for the auth.
+
+## steps for creating the database
+- `create database skilltreedatabase;`
+- `show databases;`
+- `create user 'skilltreeuser' identified by 'skilltree'`; // Here the username = skill tree and password = skilltree
+- `grant all on skilltreedatabase.* to skilltree;` 
