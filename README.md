@@ -23,6 +23,9 @@ This [link](https://find10archived.medium.com/how-to-connect-a-mysql-docker-cont
 - We can validate if the token is correct using the site https://jwt.io/, enter the public and private key stored in the website backend
 - Post this use the public key in Skill tree repo to decrpyt the JWT token passed for the auth.
 
+- To generate the private key `openssl genpkey -algorithm RSA -out private_key.txt`
+- To generate public key `openssl rsa -in private_key.txt -pubout -out public_key.txt`
+
 ## steps for creating the database
 - `create database skilltreedatabase;`
 - `show databases;`
