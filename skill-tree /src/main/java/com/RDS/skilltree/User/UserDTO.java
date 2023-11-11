@@ -10,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class UserDTO {
 
     private UUID id;
@@ -29,13 +30,14 @@ public class UserDTO {
     private Set<SkillModel> skills;
 
     public static UserDTO toDTO(UserModel user) {
-        return new UserDTO(user.getId(),
-                user.getRdsUserId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getImageUrl(),
-                user.getType(),
-                user.getRole(),
-                user.getSkills());
+        return UserDTO.builder()
+                .rdsUserId(user.getRdsUserId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .imageUrl(user.getImageUrl())
+                .type(user.getType())
+                .role(user.getRole())
+                .skills(user.getSkills())
+                .build();
     }
 }

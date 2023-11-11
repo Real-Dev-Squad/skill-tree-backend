@@ -49,7 +49,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     userModel = userRepository.findByRdsUserId(rdsUserId).get();
                 } else {
                     CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
-                    CompletableFuture.allOf(userResponse).join();
+                    CompletableFuture.anyOf(userResponse).join();
                     Response rdsUserResponse = userResponse.get();
                     UserDRO userDro = new UserDRO(rdsUserId, rdsUserResponse.getUser().getFirst_name(),
                             rdsUserResponse.getUser().getLast_name(),

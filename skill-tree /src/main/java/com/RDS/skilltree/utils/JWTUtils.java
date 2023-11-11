@@ -2,6 +2,7 @@ package com.RDS.skilltree.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
@@ -14,12 +15,16 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Slf4j
 public class JWTUtils {
 
     @Value("${jwt.rds.public.key}")
     private String publicRDSKeyString;
+    private static ConcurrentHashMap<String, RSAPublicKey> publicKeyCache = new ConcurrentHashMap<>();
 
     /**
      * Converts the given private key string to an RSAPrivateKey object.
@@ -67,10 +72,12 @@ public class JWTUtils {
         return temp;
     }
 
-    public boolean validateToken(String token) throws Exception {
+    public boolean validateToken(String token) throws Exception { //TODO check for the case where token is expired
         try {
             Jwts.parser().setSigningKey(convertToRSAPublicKey(publicRDSKeyString)).parseClaimsJws(token);
             return true;
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
         } catch (Exception e) {
             throw new AuthenticationCredentialsNotFoundException("Invalid JWT");
         }
