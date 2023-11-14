@@ -15,8 +15,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
@@ -24,7 +22,16 @@ public class JWTUtils {
 
     @Value("${jwt.rds.public.key}")
     private String publicRDSKeyString;
-    private static ConcurrentHashMap<String, RSAPublicKey> publicKeyCache = new ConcurrentHashMap<>();
+    private static KeyFactory keyFactory = null;
+
+    static {
+        try {
+            keyFactory = KeyFactory.getInstance("RSA");
+        } catch (NoSuchAlgorithmException e) {
+            // Handle the exception
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Converts the given private key string to an RSAPrivateKey object.
@@ -41,9 +48,8 @@ public class JWTUtils {
 
             byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyString);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException e) {
+        } catch (InvalidKeySpecException | IllegalArgumentException e) {
             throw new Exception("Error converting private key: " + e.getMessage(), e);
         }
     }
@@ -62,7 +68,6 @@ public class JWTUtils {
 
         byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyString);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return (RSAPublicKey) keyFactory.generatePublic(keySpec);
     }
 
