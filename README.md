@@ -27,7 +27,7 @@ This [link](https://find10archived.medium.com/how-to-connect-a-mysql-docker-cont
 - To generate public key `openssl rsa -in private_key.txt -pubout -out public_key.txt`
 
 ## steps for creating the database
-- `create database skilltreedatabase;`
+- `create database skilltree;`
 - `show databases;`
 - `create user 'skilltreeuser' identified by 'skilltree'`; // Here the username = skill tree and password = skilltree
 - `grant all on skilltreedatabase.* to skilltree;` 
