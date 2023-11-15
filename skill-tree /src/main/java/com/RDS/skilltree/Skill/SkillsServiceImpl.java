@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Skill;
 
+import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +42,11 @@ public class SkillsServiceImpl implements SkillsService{
     public String createSkill(SkillDRO skillDRO){
         SkillModel newSkill = SkillDRO.toModel(skillDRO);
         newSkill.setCreatedAt(Instant.now());
-        newSkill.setCreatedBy(userRepository.findById(skillDRO.getCreatedBy()).get());
+        newSkill.setUpdatedAt(Instant.now());
+        UserModel user = userRepository.findById(skillDRO.getCreatedBy()).get();
+        newSkill.setUpdatedBy(user);
+        newSkill.setCreatedBy(user);
         skillRepository.save(newSkill);
-        System.out.println("Saved the skill in the db");
         return "Success";
     }
 }

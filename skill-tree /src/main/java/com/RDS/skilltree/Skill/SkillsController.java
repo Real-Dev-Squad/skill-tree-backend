@@ -15,13 +15,12 @@ public class SkillsController {
         this.skillsService = skillsService;
     }
 
-    @PostMapping("")
+    @PostMapping("/")
     public String createSkill(@RequestBody(required = true)  SkillDRO skillDRO){
-        log.info("Im called");
         return skillsService.createSkill(skillDRO);
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public List<SkillDTO> getAllSkills(){
         return skillsService.getAllSkills();
     }
@@ -32,7 +31,6 @@ public class SkillsController {
     }
     @GetMapping("/{id}")
     public SkillDTO getSkillById(@PathVariable(value = "id", required = true) UUID id){
-        log.info("The id is {}", id);
         return skillsService.getSkillById(id);
     }
 
