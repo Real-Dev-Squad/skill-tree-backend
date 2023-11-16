@@ -50,14 +50,14 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 1. `create database skilltree;`
 2. `show databases;`
 3. `create user 'skilltreeuser' identified by 'skilltree';` (Username: skilltree, Password: skilltree)
-4. `grant all on skilltreedatabase.* to skilltree;`
+4. `grant all on skilltree.* to skilltree;`
 
 ## Additional Configuration Steps
 
 1. Download the EnvFile plugin from the marketplace.
 2. Create a new Env file with the provided content and fill in the RDS public key value.
    ```env
-   DB_NAME=skillTreeBackend
+   DB_NAME=${DB_NAME}
    MYSQL_USERNAME=testuser
    MYSQL_PASSWORD=testpassword
    DB_DDL_POLICY=update
