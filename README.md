@@ -49,8 +49,8 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 
 1. `create database skilltree;`
 2. `show databases;`
-3. `create user 'skilltreeuser' identified by 'skilltree';` (Username: skilltree, Password: skilltree)
-4. `grant all on skilltree.* to skilltree;`
+3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
+4. `grant all on skilltree.* to testuser;`
 
 ## Additional Configuration Steps
 
@@ -71,5 +71,9 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 6. In the class , check "Enable Env file" and "Substitute env var" checkboxes.
 7. Click "Apply" and "OK".
 8. Click "Build and Run".
+
+## Known Issues Faced by Other Developers
+1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)
+2. Local MySQL Conflict: Make sure there is no local Mysql running on the local machine
 
 ---
