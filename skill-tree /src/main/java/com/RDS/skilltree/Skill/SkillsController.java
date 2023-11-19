@@ -1,9 +1,11 @@
 package com.RDS.skilltree.Skill;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,8 +23,11 @@ public class SkillsController {
     }
 
     @GetMapping("/")
-    public List<SkillDTO> getAllSkills(){
-        return skillsService.getAllSkills();
+    public Page<SkillDTO> getAllSkills(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return skillsService.getAllSkills(pageable);
     }
 
     @GetMapping("/name/{name}")

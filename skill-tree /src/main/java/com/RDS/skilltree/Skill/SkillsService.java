@@ -1,11 +1,13 @@
 package com.RDS.skilltree.Skill;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 public interface SkillsService {
     SkillDTO getSkillById(UUID id);
     SkillDTO getSkillByName(String skillName);
-    List<SkillDTO> getAllSkills();
+    Page<SkillDTO> getAllSkills(Pageable pageable);
     String createSkill(SkillDRO skillDRO);
 }

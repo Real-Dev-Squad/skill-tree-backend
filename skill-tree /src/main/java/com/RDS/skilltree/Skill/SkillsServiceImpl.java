@@ -2,6 +2,9 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -33,9 +36,9 @@ public class SkillsServiceImpl implements SkillsService{
     }
 
     @Override
-    public List<SkillDTO> getAllSkills(){
-        List<SkillModel> skillModels = skillRepository.findAll();
-        return skillModels.stream().map(SkillDTO::toDto).collect(Collectors.toList());
+    public Page<SkillDTO> getAllSkills(Pageable pageable){
+        Page<SkillModel> skillModels = skillRepository.findAll(pageable);
+        return skillModels.map(SkillDTO::toDto);
     }
 
     @Override
