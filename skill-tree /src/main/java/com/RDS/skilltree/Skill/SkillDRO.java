@@ -20,9 +20,10 @@ public class SkillDRO {
 
 
     public static SkillModel toModel(SkillDRO skillDRO) {
-        SkillModel skillModel = new SkillModel();
-        skillModel.setName(skillDRO.getName());
-        skillModel.setType(skillDRO.getType());
-        return skillModel;
+        return SkillModel.builder()
+                .name(skillDRO.getName())
+                .type(skillDRO.getType())
+                .deleted(false)
+                .build();
     }
 }

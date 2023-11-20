@@ -13,6 +13,8 @@ import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Table(name = "Skill")
@@ -36,9 +38,4 @@ public class SkillModel extends TrackedProperties {
     @ManyToMany(mappedBy = "skills", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserModel> users;
 
-    public SkillModel(String name, SkillType type) {
-        this.name = name;
-        this.type = type;
-        this.deleted = false;
-    }
 }

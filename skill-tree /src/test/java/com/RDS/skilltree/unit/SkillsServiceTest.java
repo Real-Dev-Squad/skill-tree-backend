@@ -35,9 +35,7 @@ public class SkillsServiceTest {
     @Test
     public void testGetSkillById() {
         UUID skillId = UUID.randomUUID();
-        SkillModel skillModel = new SkillModel();
-        skillModel.setId(skillId);
-
+        SkillModel skillModel = SkillModel.builder().id(skillId).build();
 
         when(skillRepository.findById(skillId)).thenReturn(Optional.of(skillModel));
 
@@ -49,8 +47,8 @@ public class SkillsServiceTest {
     @Test
     public void testGetSkillsByName() {
         String skillName = "Java";
-        SkillModel skillModel = new SkillModel();
-        skillModel.setName(skillName);
+        SkillModel skillModel = SkillModel.builder()
+                .name("Java").build();
 
         when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skillModel));
 
@@ -60,11 +58,11 @@ public class SkillsServiceTest {
 
     @Test
     public void testGetAllSkills(){
-        SkillModel skillJava = new SkillModel();
-        skillJava.setName("Java");
+        SkillModel skillJava = SkillModel.builder()
+                .name("Java").build();
 
-        SkillModel skillGo = new SkillModel();
-        skillGo.setName("Go");
+        SkillModel skillGo = SkillModel.builder()
+                .name("Go").build();
 
         List<SkillModel> skillModelList = Arrays.asList(
                 skillJava, skillGo
