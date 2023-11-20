@@ -103,37 +103,6 @@ public class EndorsementsIntegrationTests {
 
     @Test
     @Disabled
-    @DisplayName("Return 200 on endorsement creation")
-    public void testAPIReturns200_OnEndorsementCreation() throws JsonProcessingException {
-
-//        String requestBody = objectMapper.writeValueAsString(EndorsementCreationRequest.builder()
-//                .endorserUserId("u-1")
-//                .endorseeUserId("u-2")
-//                .skillName("Java")
-//                .description("This is endorsed for the skill showcased in Skill tree")
-//                .endorsementType(Type.POSITIVE)
-//                .build());
-
-//        Response response = given()
-//                .contentType("application/json")
-//                .body(requestBody)
-//                .post("/endorsements");
-//        response.then()
-//                .statusCode(200)
-//                .contentType("application/json")
-//                .body("code", equalTo(200))
-//                .body("data.endorseeId", equalTo("user-1"))
-//                .body("data.skillName", equalTo("Java"))
-//                .body("data.status", anyOf(equalTo("APPROVED"), equalTo("PENDING"), equalTo("REJECTED")))
-//                .body("data.endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
-//                .body("data.endorsersList", hasSize(1))
-//                .body("data.endorsersList[0].endorserId", equalTo("user-2"))
-//                .body("data.endorsersList[0].description", isA(String.class))
-//                .body("data.endorsersList[0].userType", anyOf(equalTo("SUPER_USER"), equalTo("MAVEN"), equalTo("USER")));
-    }
-
-    @Test
-    @Disabled
     @DisplayName("Return 400 on invalid endorsementId passed")
     public void testAPIReturns400_OnInvalidParameterPassed() {
         String endorsementId = "randomId";

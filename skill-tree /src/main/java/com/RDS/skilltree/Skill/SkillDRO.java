@@ -19,11 +19,10 @@ public class SkillDRO {
     private UUID createdBy;
 
 
-    static SkillModel toModel(SkillDRO skillDRO) {
-        return SkillModel.builder()
-                .name(skillDRO.getName())
-                .type(skillDRO.getType())
-                .deleted(false)
-                .build();
+    public static SkillModel toModel(SkillDRO skillDRO) {
+        SkillModel skillModel = new SkillModel();
+        skillModel.setName(skillDRO.getName());
+        skillModel.setType(skillDRO.getType());
+        return skillModel;
     }
 }

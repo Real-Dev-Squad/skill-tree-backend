@@ -35,9 +35,8 @@ public class SkillsServiceTest {
     @Test
     public void testGetSkillById() {
         UUID skillId = UUID.randomUUID();
-        SkillModel skillModel = SkillModel.builder()
-                .id(skillId)
-                .build();
+        SkillModel skillModel = new SkillModel();
+        skillModel.setId(skillId);
 
 
         when(skillRepository.findById(skillId)).thenReturn(Optional.of(skillModel));
@@ -50,9 +49,8 @@ public class SkillsServiceTest {
     @Test
     public void testGetSkillsByName() {
         String skillName = "Java";
-        SkillModel skillModel = SkillModel.builder()
-                .name(skillName)
-                .build();
+        SkillModel skillModel = new SkillModel();
+        skillModel.setName(skillName);
 
         when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skillModel));
 
@@ -60,21 +58,16 @@ public class SkillsServiceTest {
         assertEquals(result.getName(), skillName);
     }
 
-//    @Test
-//    public void testCreateSkill(){
-//
-//    }
-
     @Test
     public void testGetAllSkills(){
+        SkillModel skillJava = new SkillModel();
+        skillJava.setName("Java");
+
+        SkillModel skillGo = new SkillModel();
+        skillGo.setName("Go");
+
         List<SkillModel> skillModelList = Arrays.asList(
-                SkillModel.builder().name("Java")
-                        .type(SkillType.ATOMIC)
-                        .build(),
-                SkillModel.builder()
-                        .name("Go")
-                        .type(SkillType.ATOMIC)
-                        .build()
+                skillJava, skillGo
         );
 
         when(skillRepository.findAll((Pageable) any(Pageable.class)))

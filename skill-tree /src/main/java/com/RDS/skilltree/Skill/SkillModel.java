@@ -14,8 +14,6 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Data
 @Table(name = "Skill")
 public class SkillModel extends TrackedProperties {

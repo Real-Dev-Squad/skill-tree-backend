@@ -18,7 +18,7 @@ public class SkillsController {
     }
 
     @PostMapping("/")
-    public String createSkill(@RequestBody(required = true)  SkillDRO skillDRO){
+    public String createSkill(@RequestBody(required = true) SkillDRO skillDRO){
         return skillsService.createSkill(skillDRO);
     }
 
