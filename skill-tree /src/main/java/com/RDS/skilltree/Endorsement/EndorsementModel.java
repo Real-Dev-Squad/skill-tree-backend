@@ -31,6 +31,7 @@ public class EndorsementModel extends TrackedProperties {
     private SkillModel skill;
 
     @Column(name = "endorsement_status")
+    @Enumerated(value = EnumType.STRING)
     private EndorsementStatus status;
 
     public EndorsementModel(UserModel user, SkillModel skill) {
