@@ -37,9 +37,11 @@ public class UserModel extends TrackedProperties {
     private URL imageUrl;
 
     @Column(name = "user_type", nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private UserType type;
 
     @Column(name = "user_role", nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
     @JsonManagedReference
