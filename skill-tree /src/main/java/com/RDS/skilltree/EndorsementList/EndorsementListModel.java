@@ -37,6 +37,7 @@ public class EndorsementListModel extends TrackedProperties {
     private boolean deleted;
 
     @Column(name = "type", nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private EndorsementType type;
 
     public EndorsementListModel(EndorsementModel endorsement, UserModel endorser, String description,
