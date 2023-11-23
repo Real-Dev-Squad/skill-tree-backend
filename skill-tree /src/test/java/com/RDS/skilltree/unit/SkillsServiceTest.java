@@ -53,7 +53,7 @@ public class SkillsServiceTest {
         when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skillModel));
 
         SkillDTO result = skillService.getSkillByName("Java");
-        assertEquals(result.getName(), skillName);
+        assertEquals("The skill name doesn't match the expected skill name", result.getName(), skillName);
     }
 
     @Test
