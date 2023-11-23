@@ -4,15 +4,15 @@ import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Table(name = "endorsements")
