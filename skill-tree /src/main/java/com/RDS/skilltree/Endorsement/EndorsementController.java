@@ -1,0 +1,43 @@
+package com.RDS.skilltree.Endorsement;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/v1/endorsements")
+
+public class EndorsementController {
+    private final EndorsementService endorsementService;
+
+    public EndorsementController(EndorsementService endorsementService) {
+        this.endorsementService = endorsementService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEndorsementById(@PathVariable(value = "id", required = true) String id){
+        try {
+            UUID uuid = UUID.fromString(id);
+            String message = "Data found successfully";
+            Map<String, Object> responseData = endorsementService.getEndorsementAsMap(uuid);
+            ApiResponse response = new ApiResponse(responseData, HttpStatus.OK.value(),HttpStatus.OK.toString(),message);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            String message = "Invalid UUID: " + id;
+            ApiResponse response = new ApiResponse(null, HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.toString(),message);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (IllegalStateException e) {
+            String message = e.getMessage();
+            ApiResponse response = new ApiResponse(null, HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND.toString(),message);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+}
+
