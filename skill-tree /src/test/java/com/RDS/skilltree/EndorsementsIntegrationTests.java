@@ -1,5 +1,7 @@
 package com.RDS.skilltree;
 
+import com.RDS.skilltree.Endorsement.EndorsementDRO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -9,12 +11,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class EndorsementsIntegrationTests {
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
+    ;
 
     @Before
     public void setup() {
@@ -98,6 +103,35 @@ public class EndorsementsIntegrationTests {
                 .statusCode(400)
                 .body("code", equalTo(400))
                 .body("message", equalTo("Invalid status passed"));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return 200 on endorsement creation")
+    public void testAPIReturns200_OnEndorsementCreation() throws JsonProcessingException {
+
+        String requestBody = objectMapper.writeValueAsString(EndorsementDRO.builder().userId(UUID.randomUUID()).skillId(UUID.randomUUID()).build());
+//                .skillName("Java")
+//                .description("This is endorsed for the skill showcased in Skill tree")
+//                .endorsementType(Type.POSITIVE)
+//                .build());
+
+        Response response = given()
+                .contentType("application/json")
+                .body(requestBody)
+                .post("/endorsements");
+        response.then()
+                .statusCode(200)
+                .contentType("application/json");
+//                .body("code", equalTo(200))
+//                .body("data.endorseeId", equalTo("user-1"))
+//                .body("data.skillName", equalTo("Java"))
+//                .body("data.status",anyOf(equalTo("APPROVED"),equalTo("PENDING"),equalTo("REJECTED")))
+//                .body("data.endorsementType",anyOf(equalTo("POSITIVE"),equalTo("NEGATIVE")))
+//                .body("data.endorsersList",hasSize(1))
+//                .body("data.endorsersList[0].endorserId",equalTo("user-2"))
+//                .body("data.endorsersList[0].description",isA(String.class))
+//                .body("data.endorsersList[0].userType",anyOf(equalTo("SUPER_USER"),equalTo("MAVEN"),equalTo("USER")));
     }
 
     @Test
