@@ -34,7 +34,7 @@ public class EndorsementService {
             endorsementRepository.save(endorsementModel);
             return endorsementModel;
         } else {
-            throw new NoEntityException("User with id:" + userId + "not found");
+            throw new NoEntityException("User with id:" + userId + " not found");
         }
     }
 }
