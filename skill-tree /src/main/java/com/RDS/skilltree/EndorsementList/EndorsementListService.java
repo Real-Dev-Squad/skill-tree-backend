@@ -43,8 +43,8 @@ public class EndorsementListService {
 
         } else {
             if (endorserOptional.isEmpty())
-                throw new NoEntityException("User with id:" + endorserId + "not found");
-            throw new NoEntityException("endorsement with id:" + endorsementId + "not found");
+                throw new NoEntityException("User with id:" + endorserId + " not found");
+            throw new NoEntityException("Endorsement with id:" + endorsementId + " not found");
         }
 
     }

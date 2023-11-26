@@ -7,7 +7,6 @@ import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,13 +21,6 @@ public class EndorsementService {
         this.userRepository = userRepository;
         this.skillRepository = skillRepository;
     }
-
-    public List<EndorsementDTO> getAllEndorsements() {
-        List<EndorsementModel> endorsementList = endorsementRepository.findAll();
-        if (!endorsementList.isEmpty()) return endorsementList.stream().map(EndorsementDTO::toDTO).toList();
-        return null;
-    }
-
 
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
         UUID userId = endorsementDRO.getUserId();
