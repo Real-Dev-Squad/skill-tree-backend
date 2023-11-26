@@ -34,7 +34,9 @@ public class EndorsementService {
             endorsementRepository.save(endorsementModel);
             return endorsementModel;
         } else {
-            throw new NoEntityException("User with id:" + userId + " not found");
+            if (userOptional.isEmpty())
+                throw new NoEntityException("User with id:" + userId + " not found");
+            throw new NoEntityException("Skill with id:" + skillId + " not found");
         }
     }
 }
