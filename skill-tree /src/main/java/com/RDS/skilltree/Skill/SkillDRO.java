@@ -1,16 +1,12 @@
 package com.RDS.skilltree.Skill;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SkillDRO {

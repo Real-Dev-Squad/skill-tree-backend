@@ -2,17 +2,13 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.util.Set;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SkillDTO {

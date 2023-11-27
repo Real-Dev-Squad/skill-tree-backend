@@ -1,6 +1,9 @@
 package com.RDS.skilltree.unit;
 
-import com.RDS.skilltree.Skill.*;
+import com.RDS.skilltree.Skill.SkillDTO;
+import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.SkillRepository;
+import com.RDS.skilltree.Skill.SkillsServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -9,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
@@ -71,8 +75,11 @@ public class SkillsServiceTest {
         when(skillRepository.findAll((Pageable) any(Pageable.class)))
                 .thenReturn(new PageImpl<>(skillModelList));
 
-        Page<SkillDTO> resultPage = skillService.getAllSkills(Pageable.unpaged());
+        Pageable pageable = PageRequest.of(2, 1);
+        Page<SkillDTO> resultPage = skillService.getAllSkills(pageable);
         assertEquals(skillModelList.size(), resultPage.getTotalElements());
         assertEquals(skillModelList.size(), resultPage.getContent().size());
+        assertEquals("The returned skill on page 0, doesn't match the actual skill", resultPage.getContent().get(0).getName(), "Java");
+        assertEquals("The returned skill on page 0, doesn't match the actual skill", resultPage.getContent().get(1).getName(), "Go");
     }
 }
