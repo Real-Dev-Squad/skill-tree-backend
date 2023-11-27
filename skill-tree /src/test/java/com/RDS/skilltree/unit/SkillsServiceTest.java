@@ -77,8 +77,8 @@ public class SkillsServiceTest {
 
         Pageable pageable = PageRequest.of(2, 1);
         Page<SkillDTO> resultPage = skillService.getAllSkills(pageable);
-        assertEquals(skillModelList.size(), resultPage.getTotalElements());
-        assertEquals(skillModelList.size(), resultPage.getContent().size());
+        assertEquals("The number of elements returned is not equal to the expected size",skillModelList.size(), resultPage.getTotalElements());
+        assertEquals("The content returned is not equal to the expected content", skillModelList.size(), resultPage.getContent().size());
         assertEquals("The returned skill on page 0, doesn't match the actual skill", resultPage.getContent().get(0).getName(), "Java");
         assertEquals("The returned skill on page 0, doesn't match the actual skill", resultPage.getContent().get(1).getName(), "Go");
     }

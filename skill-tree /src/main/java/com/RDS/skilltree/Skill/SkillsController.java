@@ -30,7 +30,7 @@ public class SkillsController {
     @GetMapping("/")
     public Page<SkillDTO> getAllSkills(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "size", defaultValue = "100") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return skillsService.getAllSkills(pageable);
     }
