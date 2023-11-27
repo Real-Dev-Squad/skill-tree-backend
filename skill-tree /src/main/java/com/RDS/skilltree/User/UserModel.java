@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.net.URL;
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,24 +35,19 @@ public class UserModel extends TrackedProperties {
     @Column(name = "image_url", nullable = false)
     private URL imageUrl;
 
-    @Column(name = "user_type", nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private UserType type;
-
     @Column(name = "user_role", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     @JsonManagedReference
     @ManyToMany(targetEntity = SkillModel.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<SkillModel> skills;
 
-    public UserModel(String rdsUserId, String firstName, String lastName, URL imageUrl, UserType type, UserRole role) {
+    public UserModel(String rdsUserId, String firstName, String lastName, URL imageUrl, UserRole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.imageUrl = imageUrl;
-        this.type = type;
         this.role = role;
         this.rdsUserId = rdsUserId;
     }
