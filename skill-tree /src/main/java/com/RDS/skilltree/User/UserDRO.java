@@ -1,16 +1,14 @@
 package com.RDS.skilltree.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.usertype.UserType;
 
 import java.net.URL;
 import java.time.Instant;
 
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Builder
 public class UserDRO {
     private String rdsUserId;
 
@@ -20,19 +18,16 @@ public class UserDRO {
 
     private URL imageUrl;
 
-    private UserType type;
-
     private UserRole role;
 
     public static UserModel toModel(UserDRO user) {
-        return new UserModel(
-                user.getRdsUserId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getImageUrl(),
-                user.getType(),
-                user.getRole()
-        );
+        return UserModel.builder()
+                .rdsUserId(user.getRdsUserId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .imageUrl(user.getImageUrl())
+                .role(user.getRole())
+                .build();
     }
 
     public static UserModel compareAndUpdateModel(UserModel user, UserDRO userDRO) {
@@ -47,9 +42,6 @@ public class UserDRO {
         }
         if (userDRO.getImageUrl() != null) {
             user.setImageUrl(user.getImageUrl());
-        }
-        if (userDRO.getType() != null) {
-            user.setType(user.getType());
         }
         if (userDRO.getRole() != null) {
             user.setRole(user.getRole());

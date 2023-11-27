@@ -51,12 +51,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
                     CompletableFuture.anyOf(userResponse).join();
                     Response rdsUserResponse = userResponse.get();
-                    UserDRO userDro = new UserDRO(rdsUserId, rdsUserResponse.getUser().getFirst_name(),
-                            rdsUserResponse.getUser().getLast_name(),
-                            new URL(rdsUserResponse.getUser().getPicture().getUrl()),
-                            UserType.MEMBER, UserRole.USER);
-                    userModel = UserDRO.toModel(userDro);
-                    userService.createUser(userDro);
+                    UserDRO userDRO = UserDRO.builder()
+                            .rdsUserId(rdsUserId)
+                            .firstName(rdsUserResponse.getUser().getFirst_name())
+                            .lastName(rdsUserResponse.getUser().getLast_name())
+                            .imageUrl(new URL(rdsUserResponse.getUser().getPicture().getUrl()))
+                            .role(UserRole.USER)
+                            .build();
+                    userModel = UserDRO.toModel(userDRO);
+                    userService.createUser(userDRO);
                 }
 
                 UserAuthenticationToken authentication = new UserAuthenticationToken(userModel);

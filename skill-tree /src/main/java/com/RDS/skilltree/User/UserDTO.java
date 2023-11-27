@@ -2,14 +2,13 @@ package com.RDS.skilltree.User;
 
 import com.RDS.skilltree.Skill.SkillModel;
 import lombok.*;
+import org.hibernate.usertype.UserType;
 
 import java.net.URL;
 import java.util.Set;
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
 @Builder
 public class UserDTO {
 
@@ -35,7 +34,6 @@ public class UserDTO {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .imageUrl(user.getImageUrl())
-                .type(user.getType())
                 .role(user.getRole())
                 .skills(user.getSkills())
                 .build();

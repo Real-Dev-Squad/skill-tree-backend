@@ -484,7 +484,7 @@ components:
         message:
           type: string  
           example: Invalid paramter passed
-          
+
     ApiResponseForSkillName:
       type: array
       items:  
