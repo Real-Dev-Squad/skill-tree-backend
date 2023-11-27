@@ -1,11 +1,16 @@
 package com.RDS.skilltree.Skill;
 
+import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -31,12 +36,20 @@ public class SkillsController {
     }
 
     @GetMapping("/name/{name}")
-    public SkillDTO getSkillByName(@PathVariable(value = "name", required = true) String name){
-        return skillsService.getSkillByName(name);
+    public ResponseEntity<SkillDTO> getSkillByName(@PathVariable(value = "name", required = true) String name){
+        SkillDTO skillDTO = skillsService.getSkillByName(name);
+        if (ObjectUtils.isEmpty(skillDTO)){
+            throw new NoEntityException("No skill found for given name: "+ name);
+        }
+        return ResponseEntity.ok(skillDTO);
     }
     @GetMapping("/{id}")
-    public SkillDTO getSkillById(@PathVariable(value = "id", required = true) UUID id){
-        return skillsService.getSkillById(id);
+    public ResponseEntity<SkillDTO> getSkillById(@PathVariable(value = "id", required = true) UUID id){
+        SkillDTO skillDTO = skillsService.getSkillById(id);
+        if (ObjectUtils.isEmpty(skillDTO)){
+            throw new NoEntityException("No skill found for the given Id"+ id);
+        }
+        return ResponseEntity.ok(skillDTO);
     }
 
 }
