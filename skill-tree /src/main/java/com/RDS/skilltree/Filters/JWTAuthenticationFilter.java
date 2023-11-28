@@ -27,12 +27,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private FetchAPI fetchAPI;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     private UserRepository userRepository;
 
+    public JWTAuthenticationFilter(UserService userService){
+        this.userService = userService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
