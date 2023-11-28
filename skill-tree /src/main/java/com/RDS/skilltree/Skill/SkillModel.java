@@ -21,7 +21,7 @@ public class SkillModel extends TrackedProperties {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     @Column(name = "skill_type", nullable = false)
