@@ -36,18 +36,20 @@ public class SkillsController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<SkillDTO> getSkillByName(@PathVariable(value = "name", required = true) String name){
+    public ResponseEntity getSkillByName(@PathVariable(value = "name", required = true) String name){
         SkillDTO skillDTO = skillsService.getSkillByName(name);
         if (ObjectUtils.isEmpty(skillDTO)){
-            throw new NoEntityException("No skill found for given name: "+ name);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Skill not found with the given name");
         }
         return ResponseEntity.ok(skillDTO);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<SkillDTO> getSkillById(@PathVariable(value = "id", required = true) UUID id){
+    public ResponseEntity getSkillById(@PathVariable(value = "id", required = true) UUID id){
         SkillDTO skillDTO = skillsService.getSkillById(id);
         if (ObjectUtils.isEmpty(skillDTO)){
-            throw new NoEntityException("No skill found for the given Id"+ id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Skill not found with given Id");
         }
         return ResponseEntity.ok(skillDTO);
     }
