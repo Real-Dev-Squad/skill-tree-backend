@@ -46,7 +46,7 @@ public class SkillsServiceImpl implements SkillsService{
     }
 
     @Override
-    public String createSkill(SkillDRO skillDRO){
+    public SkillDTO createSkill(SkillDRO skillDRO){
         SkillModel newSkill = SkillDRO.toModel(skillDRO);
         newSkill.setCreatedAt(Instant.now());
         newSkill.setUpdatedAt(Instant.now());
@@ -59,6 +59,6 @@ public class SkillsServiceImpl implements SkillsService{
             log.error("Error saving the skills object with name : {}, with exception :{}", skillDRO.getName(), ex.getMessage(), ex);
             throw ex;
         }
-        return "Success";
+        return SkillDTO.toDto(newSkill);
     }
 }

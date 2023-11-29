@@ -9,5 +9,5 @@ public interface SkillsService {
     SkillDTO getSkillById(UUID id);
     SkillDTO getSkillByName(String skillName);
     Page<SkillDTO> getAllSkills(Pageable pageable);
-    String createSkill(SkillDRO skillDRO);
+    SkillDTO createSkill(SkillDRO skillDRO);
 }
