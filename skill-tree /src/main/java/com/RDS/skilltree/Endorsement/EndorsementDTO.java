@@ -1,17 +1,12 @@
 package com.RDS.skilltree.Endorsement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EndorsementDTO {

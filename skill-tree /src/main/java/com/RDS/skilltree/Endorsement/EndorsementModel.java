@@ -9,12 +9,11 @@ import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Entity
+@Builder
+@Getter
 @Table(name = "endorsements")
 public class EndorsementModel extends TrackedProperties {
     @Id
@@ -32,10 +31,4 @@ public class EndorsementModel extends TrackedProperties {
 
     @Column(name = "endorsement_status")
     private EndorsementStatus status;
-
-    public EndorsementModel(UserModel user, SkillModel skill) {
-        this.status = EndorsementStatus.PENDING;
-        this.user = user;
-        this.skill = skill;
-    }
 }
