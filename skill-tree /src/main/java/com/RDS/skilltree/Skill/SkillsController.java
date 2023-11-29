@@ -32,9 +32,9 @@ public class SkillsController {
                     .body("CreatedBy, Type and Name are mandatory values, anyone cannot be null");
         }
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(skillsService.createSkill(skillDRO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(skillsService.createSkill(skillDRO));
         } catch(DataIntegrityViolationException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Cannot create entry for Skill as Skill name is duplicate");
         }
     }
