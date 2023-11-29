@@ -2,6 +2,8 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -23,8 +26,17 @@ public class SkillsController {
     }
 
     @PostMapping("/")
-    public String createSkill(@RequestBody(required = true) SkillDRO skillDRO){
-        return skillsService.createSkill(skillDRO);
+    public ResponseEntity<?> createSkill(@RequestBody(required = true) SkillDRO skillDRO){
+        if (skillDRO.getCreatedBy() == null || skillDRO.getType() == null || skillDRO.getName() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("CreatedBy, Type and Name are mandatory values, anyone cannot be null");
+        }
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(skillsService.createSkill(skillDRO));
+        } catch(DataIntegrityViolationException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot create entry for Skill as Skill name is duplicate");
+        }
     }
 
     @GetMapping("/")
@@ -36,7 +48,7 @@ public class SkillsController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity getSkillByName(@PathVariable(value = "name", required = true) String name){
+    public ResponseEntity<?> getSkillByName(@PathVariable(value = "name", required = true) String name){
         SkillDTO skillDTO = skillsService.getSkillByName(name);
         if (ObjectUtils.isEmpty(skillDTO)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -45,7 +57,7 @@ public class SkillsController {
         return ResponseEntity.ok(skillDTO);
     }
     @GetMapping("/{id}")
-    public ResponseEntity getSkillById(@PathVariable(value = "id", required = true) UUID id){
+    public ResponseEntity<?> getSkillById(@PathVariable(value = "id", required = true) UUID id){
         SkillDTO skillDTO = skillsService.getSkillById(id);
         if (ObjectUtils.isEmpty(skillDTO)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
