@@ -1,12 +1,14 @@
 package com.RDS.skilltree.Endorsement;
 
+import com.RDS.skilltree.EndorsementList.EndorsementListModel;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -29,6 +31,10 @@ public class EndorsementModel extends TrackedProperties {
     @JoinColumn(name = "skill_id", referencedColumnName = "id")
     private SkillModel skill;
 
+    @OneToMany(mappedBy = "endorsement")
+    private List<EndorsementListModel> endorsersList = new ArrayList<>();
+
     @Column(name = "endorsement_status")
-    private EndorsementStatus status;
+    @Enumerated(value = EnumType.STRING)
+    private EndorsementStatus status = EndorsementStatus.PENDING;
 }

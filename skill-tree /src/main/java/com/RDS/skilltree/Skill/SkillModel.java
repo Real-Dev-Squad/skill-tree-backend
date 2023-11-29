@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +27,8 @@ public class SkillModel extends TrackedProperties {
     private String name;
 
     @Column(name = "skill_type", nullable = false)
-    private SkillType type;
+    @Enumerated(value = EnumType.STRING)
+    private SkillType type = SkillType.ATOMIC;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
