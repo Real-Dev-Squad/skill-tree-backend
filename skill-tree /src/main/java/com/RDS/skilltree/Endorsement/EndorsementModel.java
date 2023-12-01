@@ -4,6 +4,7 @@ import com.RDS.skilltree.EndorsementList.EndorsementListModel;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,12 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Entity
+@Builder
+@Getter
 @Table(name = "endorsements")
 public class EndorsementModel extends TrackedProperties {
     @Id
@@ -33,15 +33,10 @@ public class EndorsementModel extends TrackedProperties {
     private SkillModel skill;
 
     @OneToMany(mappedBy = "endorsement")
+    @JsonManagedReference
     private List<EndorsementListModel> endorsersList = new ArrayList<>();
 
     @Column(name = "endorsement_status")
     @Enumerated(value = EnumType.STRING)
     private EndorsementStatus status = EndorsementStatus.PENDING;
-
-    public EndorsementModel(UserModel user, SkillModel skill) {
-        this.status = EndorsementStatus.PENDING;
-        this.user = user;
-        this.skill = skill;
-    }
 }

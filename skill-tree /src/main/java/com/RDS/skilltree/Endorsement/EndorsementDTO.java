@@ -1,39 +1,42 @@
 package com.RDS.skilltree.Endorsement;
 
+import com.RDS.skilltree.EndorsementList.EndorsementListModel;
+import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.User.UserModel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EndorsementDTO {
     private UUID id;
-    private UUID user;
-    private UUID skill;
+    private UserModel user;
+    private SkillModel skill;
     private EndorsementStatus status;
     private Instant createdAt;
     private Instant updatedAt;
-    private UUID createdBy;
-    private UUID updatedBy;
+    private UserModel createdBy;
+    private UserModel updatedBy;
+    private List<EndorsementListModel> endorsersList;
 
     public static EndorsementDTO toDto(EndorsementModel endorsementModel) {
         return EndorsementDTO.builder()
                 .id(endorsementModel.getId())
-                .user(endorsementModel.getUser().getId())
-                .skill(endorsementModel.getSkill().getId())
+                .user(endorsementModel.getUser())
+                .skill(endorsementModel.getSkill())
                 .status(endorsementModel.getStatus())
                 .createdAt(endorsementModel.getCreatedAt())
-                .createdBy(endorsementModel.getCreatedBy().getId())
+                .createdBy(endorsementModel.getCreatedBy())
                 .updatedAt(endorsementModel.getUpdatedAt())
-                .updatedBy(endorsementModel.getUpdatedBy().getId())
+                .updatedBy(endorsementModel.getUpdatedBy())
+                .endorsersList(endorsementModel.getEndorsersList())
                 .build();
     }
 }
