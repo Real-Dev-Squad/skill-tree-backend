@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
 @SpringBootTest
 class UserServiceImplTest {
 

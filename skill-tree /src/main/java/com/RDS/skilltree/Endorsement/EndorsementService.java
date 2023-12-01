@@ -1,6 +1,4 @@
 package com.RDS.skilltree.Endorsement;
-
-import java.util.Map;
 import java.util.UUID;
 
 public interface EndorsementService {

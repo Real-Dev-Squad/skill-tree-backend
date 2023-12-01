@@ -1,6 +1,4 @@
 package com.RDS.skilltree.Endorsement;
-
-import com.RDS.skilltree.EndorsementList.EndorsementListModel;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
