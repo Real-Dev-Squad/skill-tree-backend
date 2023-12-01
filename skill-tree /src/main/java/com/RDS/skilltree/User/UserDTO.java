@@ -22,8 +22,6 @@ public class UserDTO {
 
     private URL imageUrl;
 
-    private UserType type;
-
     private UserRole role;
 
     private Set<SkillModel> skills;
@@ -34,7 +32,6 @@ public class UserDTO {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getImageUrl(),
-                user.getType(),
                 user.getRole(),
                 user.getSkills());
     }

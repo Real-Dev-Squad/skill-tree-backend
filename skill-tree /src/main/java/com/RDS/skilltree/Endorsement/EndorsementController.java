@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.RDS.skilltree.Endorsement.JsonApiResponseConverter.convertToHashMap;
+
 @RestController
 @RequestMapping("/v1/endorsements")
 @Slf4j
@@ -25,10 +27,10 @@ public class EndorsementController {
     public ResponseEntity<?> getEndorsementById(@PathVariable(value = "id", required = true) String id){
         try {
             UUID uuid = UUID.fromString(id);
-            String message = "Data found successfully";
-            Map<String, Object> responseData = endorsementService.getEndorsementAsMap(uuid);
-            ApiResponse response = new ApiResponse(responseData, HttpStatus.OK.value(),HttpStatus.OK.toString(),message);
-            return ResponseEntity.ok(response);
+            EndorsementDTO response = endorsementService.getEndorsementById(uuid);
+            Map<String, Object> responseData = convertToHashMap(response);
+            return ResponseEntity.ok(responseData);
+
         } catch (IllegalArgumentException e) {
             String message = "Invalid UUID: " + id;
             ApiResponse response = new ApiResponse(null, HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.toString(),message);

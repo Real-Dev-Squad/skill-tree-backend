@@ -54,7 +54,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                     UserDRO userDro = new UserDRO(rdsUserId, rdsUserResponse.getUser().getFirst_name(),
                             rdsUserResponse.getUser().getLast_name(),
                             new URL(rdsUserResponse.getUser().getPicture().getUrl()),
-                            UserType.MEMBER, UserRole.USER);
+                            UserRole.USER);
                     userModel = UserDRO.toModel(userDro);
                     userService.createUser(userDro);
                 }

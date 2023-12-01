@@ -33,9 +33,6 @@ public class EndorsementServiceTest {
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
 
-//        UserModel userModel = UserModel.builder().id(userId).build();
-//        SkillModel skillModel = SkillModel.builder().id(skillId).build();
-
         UserModel userModel = new UserModel();
         userModel.setId(userId);
         SkillModel skillModel = new SkillModel();

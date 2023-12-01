@@ -34,7 +34,7 @@ class UserServiceImplTest {
 
     @Test
     public void testCreateUser() throws MalformedURLException {
-        UserDRO user1 = new UserDRO("12345abcd","John", "Doe",new URL("https://example.com"), UserType.MEMBER,UserRole.USER);
+        UserDRO user1 = new UserDRO("12345abcd","John", "Doe",new URL("https://example.com"),UserRole.USER);
         userService.createUser(user1);
     }
 

@@ -20,8 +20,6 @@ public class UserDRO {
 
     private URL imageUrl;
 
-    private UserType type;
-
     private UserRole role;
 
     public static UserModel toModel(UserDRO user) {
@@ -30,7 +28,6 @@ public class UserDRO {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getImageUrl(),
-                user.getType(),
                 user.getRole()
         );
     }
@@ -47,9 +44,6 @@ public class UserDRO {
         }
         if (userDRO.getImageUrl() != null) {
             user.setImageUrl(user.getImageUrl());
-        }
-        if (userDRO.getType() != null) {
-            user.setType(user.getType());
         }
         if (userDRO.getRole() != null) {
             user.setRole(user.getRole());
