@@ -4,6 +4,7 @@ import com.RDS.skilltree.EndorsementList.EndorsementListModel;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +33,9 @@ public class EndorsementModel extends TrackedProperties {
     @JoinColumn(name = "skill_id", referencedColumnName = "id")
     private SkillModel skill;
 
-    @OneToMany(mappedBy = "endorsement")
+    @OneToMany()
+    @JoinColumn(name = "endorsement_id", referencedColumnName = "id")
+    @JsonManagedReference
     private List<EndorsementListModel> endorsersList = new ArrayList<>();
 
     @Column(name = "endorsement_status")
