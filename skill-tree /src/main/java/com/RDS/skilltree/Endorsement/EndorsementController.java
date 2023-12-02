@@ -33,12 +33,16 @@ public class EndorsementController {
 
         } catch (IllegalArgumentException e) {
             String message = "Invalid UUID: " + id;
-            ApiResponse response = new ApiResponse(null, HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.toString(),message);
+            ApiResponse<String> response = new ApiResponse<>(null, HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.toString(),message);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (IllegalStateException e) {
             String message = e.getMessage();
-            ApiResponse response = new ApiResponse(null, HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND.toString(),message);
+            ApiResponse<String> response = new ApiResponse<>(null, HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND.toString(),message);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            String message = e.getMessage();
+            ApiResponse<String> response = new ApiResponse<>(null, HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.toString(),message);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }
