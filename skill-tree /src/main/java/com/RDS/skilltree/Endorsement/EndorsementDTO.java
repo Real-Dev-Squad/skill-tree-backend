@@ -14,7 +14,6 @@ import java.util.UUID;
 @Getter
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EndorsementDTO {
     private UUID id;
     private UserModel user;
