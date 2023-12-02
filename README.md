@@ -53,6 +53,32 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
 4. `grant all on skilltree.* to testuser;`
 
+## Steps for connecting mysql workbench to run mysql inside docker
+
+1. `docker exec -it rds-db-1 bin/bash`
+2. bash-4.4# `mysql -u root -p -A`
+
+By default after deployment MySQL has following connection restrictions:
+```
+mysql> select host, user from mysql.user;
++-----------+---------------+
+| host      | user          |
++-----------+---------------+
+| localhost | healthchecker |
+| localhost | mysql.session |
+| localhost | mysql.sys     |
+| localhost | root          |
++-----------+---------------+
+4 rows in set (0.00 sec)
+```
+Apparently, for security purposes, you will not be able to connect to it from outside of the docker container. If you need to change that to allow root to connect from any host (say, for development purposes), do the following:
+
+3. update mysql.user set host='%' where user='root';
+4. Quit the mysql client.
+5. Restart the docker container
+
+Now you can connect to the mysql running in the docker container, also to connect to it on the terminal type `mysql -utestuser -p -P3306 -h127.0.0.1`
+
 ## Additional Configuration Steps
 
 1. Download the EnvFile plugin from the marketplace.
