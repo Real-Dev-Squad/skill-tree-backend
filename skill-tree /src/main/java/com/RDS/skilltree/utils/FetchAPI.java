@@ -1,6 +1,7 @@
 package com.RDS.skilltree.utils;
 
 import com.RDS.skilltree.utils.RDSUser.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.CompletableFuture;
 
 @Component
+@Slf4j
 public class FetchAPI {
     private final RestTemplate restTemplate;
 
@@ -27,6 +29,7 @@ public class FetchAPI {
             Response result = response.getBody();
             return CompletableFuture.completedFuture(result);
         }catch (Exception e){
+            log.error("Error in calling the RDS backend, error : {}", e.getMessage(), e);
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

@@ -1,7 +1,9 @@
 package com.RDS.skilltree.User;
 
+import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.*;
 import org.hibernate.usertype.UserType;
+import org.springframework.util.ObjectUtils;
 
 import java.net.URL;
 import java.time.Instant;
@@ -31,6 +33,9 @@ public class UserDRO {
     }
 
     public static UserModel compareAndUpdateModel(UserModel user, UserDRO userDRO) {
+        if (ObjectUtils.isEmpty(user)){
+            throw new NoEntityException("No User found with the given Id");
+        }
         if (userDRO.getRdsUserId() != null) {
             user.setRdsUserId(user.getRdsUserId());
         }

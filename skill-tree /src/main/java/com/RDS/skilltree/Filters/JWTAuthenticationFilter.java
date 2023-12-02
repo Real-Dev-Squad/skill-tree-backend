@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -69,7 +71,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error in fetching the user details, error : {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
         filterChain.doFilter(request, response);
