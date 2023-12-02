@@ -11,13 +11,15 @@ public class JsonApiResponseConverter {
 
     public static Map<String, Object> convertToHashMap(EndorsementDTO endorsementDTO) {
         Map<String, Object> result = new HashMap<>();
-        result.put("id", endorsementDTO.getId());
-        result.put("type", "endorsement");
-        result.put("links", createLinksMap(endorsementDTO.getId().toString()));
-        result.put("attributes", createAttributesHashMap(endorsementDTO));
-        result.put("relationships",createRelationshipsHashMap(endorsementDTO));
-        result.put("included",createIncludedList(endorsementDTO));
+        Map<String, Object> dataMap = new HashMap<>();
 
+        dataMap.put("id", endorsementDTO.getId());
+        dataMap.put("type", "endorsement");
+        dataMap.put("links", createLinksMap(endorsementDTO.getId().toString()));
+        dataMap.put("attributes", createAttributesHashMap(endorsementDTO));
+        dataMap.put("relationships",createRelationshipsHashMap(endorsementDTO));
+        dataMap.put("included",createIncludedList(endorsementDTO));
+        result.put("data", dataMap);
         return result;
     }
 
