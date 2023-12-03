@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +26,7 @@ public class EndorsementListModel extends TrackedProperties {
     private EndorsementModel endorsement;
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL)
     private UserModel endorser;
 
     @Column(name = "description")
