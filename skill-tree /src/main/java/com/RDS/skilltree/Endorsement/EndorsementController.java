@@ -16,8 +16,12 @@ public class EndorsementController {
 
 
     @PostMapping("/endorsement")
-    public ResponseEntity<EndorsementModel> postEndorsement(@RequestBody EndorsementDRO endorsementDRO) {
-
-        return new ResponseEntity<>(endorsementService.createEndorsement(endorsementDRO), HttpStatus.CREATED);
+    public ResponseEntity<?> postEndorsement(@RequestBody EndorsementDRO endorsementDRO) {
+        try {
+            return new ResponseEntity<>(endorsementService.createEndorsement(endorsementDRO), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            String message = e.getMessage();
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -1,21 +1,16 @@
 package com.RDS.skilltree;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class EndorsementsIntegrationTests {
-    @Autowired
-    private ObjectMapper objectMapper = new ObjectMapper();
-    ;
 
     @Before
     public void setup() {
