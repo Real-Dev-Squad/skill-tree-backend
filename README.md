@@ -33,7 +33,7 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
         }
     }
     ```
-You may also check out https://find10archived.medium.com/how-to-connect-a-mysql-docker-container-with-a-local-spring-boot-application-9366707dce0d for additional information on setting up a MySQL database via Adminer.
+You may also check out this [link](https://find10archived.medium.com/how-to-connect-a-mysql-docker-container-with-a-local-spring-boot-application-9366707dce0d) for additional information on setting up a MySQL database via Adminer.
 
 ### Steps to Generate a JWT Token (Similar to [Website Backend Repo](https://github.com/Real-Dev-Squad/website-backend/issues))
 
