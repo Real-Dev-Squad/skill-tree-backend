@@ -2,19 +2,15 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,19 +26,19 @@ public class SkillsServiceImpl implements SkillsService{
     @Override
     public SkillDTO getSkillById(UUID id){
         Optional<SkillModel> skillModel = skillRepository.findById(id);
-        return skillModel.map(SkillDTO::toDto).orElse(null);
+        return skillModel.map(SkillDTO::getSkillsWithUsers).orElse(null);
     }
 
     @Override
     public SkillDTO  getSkillByName(String skillName){
         Optional<SkillModel> skillModel = skillRepository.findByName(skillName);
-        return skillModel.map(SkillDTO::toDto).orElse(null);
+        return skillModel.map(SkillDTO::getSkillsWithUsers).orElse(null);
     }
 
     @Override
     public Page<SkillDTO> getAllSkills(Pageable pageable){
         Page<SkillModel> skillModels = skillRepository.findAll(pageable);
-        return skillModels.map(SkillDTO::toDto);
+        return skillModels.map(SkillDTO::getSkillsWithUsers);
     }
 
     @Override

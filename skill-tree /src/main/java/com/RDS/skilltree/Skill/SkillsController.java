@@ -1,8 +1,6 @@
 package com.RDS.skilltree.Skill;
 
-import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
