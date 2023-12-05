@@ -31,8 +31,7 @@ public class EndorsementService {
         if (userOptional.isPresent() && skillOptional.isPresent()) {
             endorsementModel.setUser(userOptional.get());
             endorsementModel.setSkill(skillOptional.get());
-            endorsementRepository.save(endorsementModel);
-            return endorsementModel;
+            return endorsementRepository.save(endorsementModel);
         } else {
             if (userOptional.isEmpty())
                 throw new NoEntityException("User with id:" + userId + " not found");

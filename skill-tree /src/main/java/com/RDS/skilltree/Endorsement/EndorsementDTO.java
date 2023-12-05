@@ -24,7 +24,4 @@ public class EndorsementDTO {
     private EndorsementStatus status;
     private UserModel createdBy;
 
-    public static EndorsementDTO toDTO(EndorsementModel endorsement) {
-        return new EndorsementDTO(endorsement.getId(), endorsement.getUser(), endorsement.getSkill(), endorsement.getEndorsersList(), endorsement.getStatus(), endorsement.getCreatedBy());
-    }
 }

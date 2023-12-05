@@ -16,11 +16,4 @@ public class EndorsementListDTO {
     private UserModel endorser;
     private EndorsementType type;
 
-    public static EndorsementListDTO toDTO(EndorsementListModel endorsementListModel) {
-        return EndorsementListDTO.builder()
-                .endorser(endorsementListModel.getEndorser())
-                .description(endorsementListModel.getDescription())
-                .type(endorsementListModel.getType())
-                .build();
-    }
 }

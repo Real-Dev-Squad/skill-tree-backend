@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Endorsement;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,13 @@ public class EndorsementController {
 
 
     @PostMapping("/endorsement")
-    public ResponseEntity<?> postEndorsement(@RequestBody EndorsementDRO endorsementDRO) {
+    public ResponseEntity<?> postEndorsement(@RequestBody @Valid EndorsementDRO endorsementDRO) {
         try {
-            return new ResponseEntity<>(endorsementService.createEndorsement(endorsementDRO), HttpStatus.CREATED);
+            EndorsementModel endorsementModel = endorsementService.createEndorsement(endorsementDRO);
+            if (endorsementModel != null)
+                return new ResponseEntity<>(endorsementModel, HttpStatus.CREATED);
+            return new ResponseEntity<>("Failed to create endorsement", HttpStatus.BAD_REQUEST);
+
         } catch (IllegalArgumentException e) {
             String message = e.getMessage();
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
