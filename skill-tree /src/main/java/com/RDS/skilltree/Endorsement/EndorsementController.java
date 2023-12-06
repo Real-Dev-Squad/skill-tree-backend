@@ -25,10 +25,7 @@ public class EndorsementController {
                 return new ResponseEntity<>(endorsementModel, HttpStatus.CREATED);
             return new ResponseEntity<>("Failed to create endorsement", HttpStatus.BAD_REQUEST);
 
-        } catch (NoEntityException e) {
-            String message = e.getMessage();
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
+        } catch (NoEntityException | IllegalArgumentException e) {
             String message = e.getMessage();
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         }
