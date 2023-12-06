@@ -1,6 +1,7 @@
 package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Exceptions.NoEntityException;
+import com.RDS.skilltree.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,8 @@ public class EndorsementController {
 
         } catch (NoEntityException | IllegalArgumentException e) {
             String message = e.getMessage();
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+            ApiResponse apiResponse = new ApiResponse(message, false, 400);
+            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
         }
     }
 }
