@@ -95,7 +95,7 @@ public class SkillsIntegrationTests {
     }
 
     @Test
-    @DisplayName("Return all skills")
+    @DisplayName("Return 200, on all skills")
     public void testAPIReturns200_OnAllSkillsFound() {
         Response response = given()
                 .port(port)
@@ -117,7 +117,7 @@ public class SkillsIntegrationTests {
     }
 
     @Test
-    @DisplayName("Return all skills")
+    @DisplayName("Return 200, on no skills found")
     public void testAPIReturns200_OnNoSkillsFound() {
         skillRepository.deleteAll();
         Response response = given()
@@ -138,7 +138,7 @@ public class SkillsIntegrationTests {
     }
 
     @Test
-    @DisplayName("Return skill given skillId")
+    @DisplayName("Return 200, on skill found given skillId")
     public void testAPIReturns200_OnSkillFoundById() {
         UUID skillId = skill.getId();
 
@@ -156,7 +156,7 @@ public class SkillsIntegrationTests {
     }
 
     @Test
-    @DisplayName("Return 404 on skill not found given SkillId")
+    @DisplayName("Return 404, on skill not found given SkillId")
     public void testAPIReturns404_OnSkillNotFound() {
         UUID skillId = UUID.randomUUID();
         Response response = given()
@@ -171,7 +171,7 @@ public class SkillsIntegrationTests {
     }
 
     @Test
-    @DisplayName("Return 200 on, skill with given name")
+    @DisplayName("Return 200, on skill with given name")
     public void testAPIReturns200_OnSkillFoundGivenName() {
         Response response = given()
                 .port(port)
@@ -258,7 +258,7 @@ public class SkillsIntegrationTests {
 
     @Test
     @DisplayName("Return 409, if name is already used for Skill creation")
-    public void testAPIReturns400_OnNameAlreadyUsedForSkillCreation() {
+    public void testAPIReturns409_OnNameAlreadyUsedForSkillCreation() {
         SkillDRO skillDRO = SkillDRO.builder()
                 .type(SkillType.ATOMIC)
                 .name("Java")
