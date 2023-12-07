@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Skill;
 
+import com.RDS.skilltree.utils.MessageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -25,13 +26,13 @@ public class SkillsController {
     public ResponseEntity<?> createSkill(@RequestBody(required = true) SkillDRO skillDRO){
         if (skillDRO.getCreatedBy() == null || skillDRO.getType() == null || skillDRO.getName() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("CreatedBy, Type and Name are mandatory values, anyone cannot be null");
+                    .body(new MessageResponse("CreatedBy, Type and Name are mandatory values, anyone cannot be null"));
         }
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(skillsService.createSkill(skillDRO));
         } catch(DataIntegrityViolationException ex){
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Cannot create entry for Skill as Skill name is duplicate");
+                    .body(new MessageResponse("Cannot create entry for Skill as Skill name is duplicate"));
         }
     }
 
@@ -48,7 +49,7 @@ public class SkillsController {
         SkillDTO skillDTO = skillsService.getSkillByName(name);
         if (ObjectUtils.isEmpty(skillDTO)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Skill not found with the given name");
+                    .body(new MessageResponse("Skill not found with the given name"));
         }
         return ResponseEntity.ok(skillDTO);
     }
@@ -57,7 +58,7 @@ public class SkillsController {
         SkillDTO skillDTO = skillsService.getSkillById(id);
         if (ObjectUtils.isEmpty(skillDTO)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Skill not found with given Id");
+                    .body(new MessageResponse("Skill not found with given Id"));
         }
         return ResponseEntity.ok(skillDTO);
     }
