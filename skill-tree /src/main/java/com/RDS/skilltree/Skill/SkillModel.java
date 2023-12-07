@@ -31,7 +31,7 @@ public class SkillModel extends TrackedProperties {
     private SkillType type = SkillType.ATOMIC;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean deleted = false;
+    private boolean deleted;
 
     @JsonBackReference
     @JsonIgnore
