@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("${API_V1_PREFIX}/endorsement")
+@RequestMapping("${API_V1_PREFIX}/endorsements")
 public class EndorsementController {
 
     private final EndorsementService endorsementService;
