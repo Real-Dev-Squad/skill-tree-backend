@@ -1,8 +1,10 @@
 package com.RDS.skilltree.Endorsement;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.UUID;
 
 public interface EndorsementService {
     EndorsementDTO getEndorsementById(UUID id);
-    List<EndorsementModel> getEndorsements();
+    Page<EndorsementModel> getEndorsements(PageRequest pageRequest);
 }

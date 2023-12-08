@@ -2,9 +2,12 @@ package com.RDS.skilltree.Endorsement;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class EndorsementServiceImpl implements EndorsementService {
     }
 
     @Override
-    public List<EndorsementModel> getEndorsements() {
-        return endorsementRepository.findAll();
+    public Page<EndorsementModel> getEndorsements(PageRequest pageRequest) {
+        return endorsementRepository.findAll(pageRequest);
     }
 }
