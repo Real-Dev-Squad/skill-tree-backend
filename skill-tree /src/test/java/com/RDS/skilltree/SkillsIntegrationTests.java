@@ -4,18 +4,15 @@ import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.MalformedURLException;
@@ -26,17 +23,18 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @Testcontainers
-@Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class SkillsIntegrationTests {
     private UserRepository userRepository;
     private SkillRepository skillRepository;
+    @Container
+    @ServiceConnection
     private static MySQLContainer mysqlContainer;
     private final UserService userService;
     private final SkillsService skillsService;
     private UserDTO user;
     private SkillDTO skill;
-
 
     @Autowired
     public SkillsIntegrationTests(UserService userService, UserRepository userRepository, SkillsService skillsService, SkillRepository skillRepository) {
@@ -49,9 +47,9 @@ public class SkillsIntegrationTests {
     @LocalServerPort
     private int port;
 
-    @After
+    @BeforeAll
     private void setup() {
-        RestAssured.baseURI = "http://localhost:";
+        RestAssured.baseURI = "http://localhost";
     }
 
     @BeforeEach
@@ -89,16 +87,12 @@ public class SkillsIntegrationTests {
     @DynamicPropertySource
     static void configureTestProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
-        registry.add("spring.datasource.url", () -> mysqlContainer.getJdbcUrl());
-        registry.add("spring.datasource.username", () -> mysqlContainer.getUsername());
-        registry.add("spring.datasource.password", () -> mysqlContainer.getPassword());
     }
 
     @Test
     @DisplayName("Return 200, on all skills")
     public void testAPIReturns200_OnAllSkillsFound() {
         Response response = given()
-                .port(port)
                 .get("/v1/skills/");
 
         response.then()
@@ -121,11 +115,9 @@ public class SkillsIntegrationTests {
     public void testAPIReturns200_OnNoSkillsFound() {
         skillRepository.deleteAll();
         Response response = given()
-                .port(port)
                 .get("/v1/skills/");
 
         response.then()
-                .log().all()
                 .statusCode(200)
                 .body("content", hasSize(0))
                 .body("totalPages", equalTo(0))
@@ -143,7 +135,6 @@ public class SkillsIntegrationTests {
         UUID skillId = skill.getId();
 
         Response response = given()
-                .port(port)
                 .pathParam("id", skillId)
                 .get("/v1/skills/{id}");
 
@@ -160,7 +151,6 @@ public class SkillsIntegrationTests {
     public void testAPIReturns404_OnSkillNotFound() {
         UUID skillId = UUID.randomUUID();
         Response response = given()
-                .port(port)
                 .pathParam("id", skillId)
                 .get("/v1/skills/{id}");
 
@@ -174,7 +164,6 @@ public class SkillsIntegrationTests {
     @DisplayName("Return 200, on skill with given name")
     public void testAPIReturns200_OnSkillFoundGivenName() {
         Response response = given()
-                .port(port)
                 .pathParam("name", "Java")
                 .get("/v1/skills/name/{name}");
 
@@ -189,7 +178,6 @@ public class SkillsIntegrationTests {
     @DisplayName("Return 404, if skill given skill name is not found")
     public void testAPIReturns404_OnSkillGivenSkillNameNotFound() {
         Response response = given()
-                .port(port)
                 .pathParam("name", "Go")
                 .get("/v1/skills/name/{name}");
 
@@ -208,7 +196,6 @@ public class SkillsIntegrationTests {
                 .build();
 
         Response response = given()
-                .port(port)
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -227,7 +214,6 @@ public class SkillsIntegrationTests {
                 .build();
 
         Response response = given()
-                .port(port)
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -246,7 +232,6 @@ public class SkillsIntegrationTests {
                 .build();
 
         Response response = given()
-                .port(port)
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -266,7 +251,6 @@ public class SkillsIntegrationTests {
                 .build();
 
         Response response = given()
-                .port(port)
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -286,7 +270,6 @@ public class SkillsIntegrationTests {
                 .build();
 
         Response response = given()
-                .port(port)
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
