@@ -1,6 +1,7 @@
 package com.RDS.skilltree.Skill;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,8 +11,13 @@ import java.util.UUID;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SkillDRO {
+    @NotNull(message = "Name cannot be null")
     private String name;
+
+    @NotNull(message = "SkillType cannot be null")
     private SkillType type;
+
+    @NotNull(message = "Created by user Id cannot be null")
     private UUID createdBy;
 
 

@@ -1,6 +1,7 @@
 package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.utils.MessageResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -18,21 +19,21 @@ import java.util.UUID;
 @RequestMapping("/v1/skills")
 public class SkillsController {
     private final SkillsService skillsService;
+
     public SkillsController(SkillsService skillsService){
         this.skillsService = skillsService;
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createSkill(@RequestBody(required = true) SkillDRO skillDRO){
-        if (skillDRO.getCreatedBy() == null || skillDRO.getType() == null || skillDRO.getName() == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new MessageResponse("CreatedBy, Type and Name are mandatory values, anyone cannot be null"));
-        }
+    public ResponseEntity<?> createSkill(@RequestBody(required = true) @Valid SkillDRO skillDRO){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(skillsService.createSkill(skillDRO));
         } catch(DataIntegrityViolationException ex){
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new MessageResponse("Cannot create entry for Skill as Skill name is duplicate"));
+        } catch(Exception ex){
+            log.error("There is some error in storing the skills, error message: {}", ex.getMessage(), ex);
+            throw ex;
         }
     }
 
