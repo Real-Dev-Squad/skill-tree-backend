@@ -2,7 +2,6 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
