@@ -14,14 +14,10 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor    
 public class SkillsServiceImpl implements SkillsService{
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
-    public SkillsServiceImpl(SkillRepository skillRepository,
-                             UserRepository userRepository){
-        this.userRepository = userRepository;
-        this.skillRepository = skillRepository;
-    }
 
     @Override
     public SkillDTO getSkillById(UUID id){
