@@ -1,19 +1,13 @@
 package com.RDS.skilltree;
 
-import com.RDS.skilltree.Skill.*;
-import com.RDS.skilltree.User.*;
-import io.restassured.RestAssured;
+import com.RDS.skilltree.Skill.SkillRepository;
+import com.RDS.skilltree.Skill.SkillType;
+import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.User.UserRole;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,15 +16,11 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SkillsIntegrationTests {
+public class SkillsIntegrationTests extends TestContainerManger {
     private UserRepository userRepository;
     private SkillRepository skillRepository;
-    @Container
-    @ServiceConnection
-    private static MySQLContainer mysqlContainer;
     private final UserService userService;
     private final SkillsService skillsService;
     private UserDTO user;
@@ -42,14 +32,6 @@ public class SkillsIntegrationTests {
         this.userRepository = userRepository;
         this.skillsService = skillsService;
         this.skillRepository = skillRepository;
-    }
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeAll
-    private void setup() {
-        RestAssured.baseURI = "http://localhost";
     }
 
     @BeforeEach
@@ -74,19 +56,6 @@ public class SkillsIntegrationTests {
     private void cleanUp() {
         skillRepository.deleteAll();
         userRepository.deleteAll();
-    }
-
-    static {
-        mysqlContainer = new MySQLContainer("mysql:latest")
-                .withDatabaseName("skilltree-test")
-                .withUsername("root")
-                .withPassword("password");
-        mysqlContainer.start();
-    }
-
-    @DynamicPropertySource
-    static void configureTestProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 
     @Test
@@ -202,7 +171,7 @@ public class SkillsIntegrationTests {
 
         response.then()
                 .statusCode(400)
-                .body("message", equalTo("CreatedBy, Type and Name are mandatory values, anyone cannot be null"));
+                .body("error", equalTo("Bad Request"));
     }
 
     @Test
@@ -220,7 +189,7 @@ public class SkillsIntegrationTests {
 
         response.then()
                 .statusCode(400)
-                .body("message", equalTo("CreatedBy, Type and Name are mandatory values, anyone cannot be null"));
+                .body("error", equalTo("Bad Request")); //Todo change this on introducing the global exception handling
     }
 
     @Test
@@ -238,7 +207,7 @@ public class SkillsIntegrationTests {
 
         response.then()
                 .statusCode(400)
-                .body("message", equalTo("CreatedBy, Type and Name are mandatory values, anyone cannot be null"));
+                .body("error", equalTo("Bad Request"));
     }
 
     @Test
