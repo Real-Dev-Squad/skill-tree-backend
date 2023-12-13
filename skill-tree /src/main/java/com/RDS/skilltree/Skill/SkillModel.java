@@ -5,17 +5,19 @@ import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Entity
+@Builder
+@Getter
 @Table(name = "Skill")
 public class SkillModel extends TrackedProperties {
     @Id
@@ -23,7 +25,7 @@ public class SkillModel extends TrackedProperties {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     @Column(name = "skill_type", nullable = false)
@@ -38,9 +40,4 @@ public class SkillModel extends TrackedProperties {
     @ManyToMany(mappedBy = "skills", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserModel> users;
 
-    public SkillModel(String name, SkillType type) {
-        this.name = name;
-        this.type = type;
-        this.deleted = false;
-    }
 }

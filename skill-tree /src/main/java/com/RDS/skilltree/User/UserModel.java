@@ -16,6 +16,8 @@ import java.util.UUID;
 @Setter
 @Builder
 @JsonSerialize
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Users")
 public class UserModel extends TrackedProperties {
     @Id
@@ -23,7 +25,7 @@ public class UserModel extends TrackedProperties {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "rds_user_id")
+    @Column(name = "rds_user_id", unique = true)
     private String rdsUserId;
 
     @Column(name = "first_name", nullable = false)
@@ -44,11 +46,4 @@ public class UserModel extends TrackedProperties {
     @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<SkillModel> skills;
 
-    public UserModel(String rdsUserId, String firstName, String lastName, URL imageUrl, UserRole role) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.imageUrl = imageUrl;
-        this.role = role;
-        this.rdsUserId = rdsUserId;
-    }
 }

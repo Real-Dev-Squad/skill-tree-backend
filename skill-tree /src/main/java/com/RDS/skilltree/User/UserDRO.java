@@ -1,15 +1,18 @@
 package com.RDS.skilltree.User;
 
-import com.RDS.skilltree.Exceptions.NoEntityException;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.usertype.UserType;
-import org.springframework.util.ObjectUtils;
 
 import java.net.URL;
 import java.time.Instant;
 
 
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
 public class UserDRO {
     private String rdsUserId;
@@ -27,15 +30,22 @@ public class UserDRO {
                 .rdsUserId(user.getRdsUserId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .imageUrl(user.getImageUrl())
                 .role(user.getRole())
+                .imageUrl(user.getImageUrl())
+                .build();
+    }
+
+    public static UserDRO fromModel(UserModel user){
+        return UserDRO.builder()
+                .rdsUserId(user.getRdsUserId())
+                .role(user.getRole())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .imageUrl(user.getImageUrl())
                 .build();
     }
 
     public static UserModel compareAndUpdateModel(UserModel user, UserDRO userDRO) {
-        if (ObjectUtils.isEmpty(user)){
-            throw new NoEntityException("No User found with the given Id");
-        }
         if (userDRO.getRdsUserId() != null) {
             user.setRdsUserId(user.getRdsUserId());
         }
@@ -56,3 +66,4 @@ public class UserDRO {
         return user;
     }
 }
+
