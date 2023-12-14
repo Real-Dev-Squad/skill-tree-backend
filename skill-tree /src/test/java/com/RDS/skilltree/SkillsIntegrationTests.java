@@ -1,9 +1,7 @@
 package com.RDS.skilltree;
 
-import com.RDS.skilltree.Skill.SkillRepository;
-import com.RDS.skilltree.Skill.SkillType;
-import com.RDS.skilltree.User.UserRepository;
-import com.RDS.skilltree.User.UserRole;
+import com.RDS.skilltree.Skill.*;
+import com.RDS.skilltree.User.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SkillsIntegrationTests extends TestContainerManger {
+public class SkillsIntegrationTests extends TestContainerManager {
     private UserRepository userRepository;
     private SkillRepository skillRepository;
     private final UserService userService;
