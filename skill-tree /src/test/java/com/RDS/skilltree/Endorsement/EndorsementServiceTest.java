@@ -33,10 +33,8 @@ public class EndorsementServiceTest {
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
 
-        UserModel userModel = new UserModel();
-        userModel.setId(userId);
-        SkillModel skillModel = new SkillModel();
-        skillModel.setId(skillId);
+        UserModel userModel = UserModel.builder().id(userId).build();
+        SkillModel skillModel = SkillModel.builder().id(skillId).build();
         EndorsementModel endorsementModel = EndorsementModel.builder()
                 .id(endorsementId)
                 .user(userModel)
@@ -47,24 +45,19 @@ public class EndorsementServiceTest {
         endorsementModel.setCreatedBy(userModel);
         endorsementModel.setUpdatedBy(userModel);
 
-        // Given
         when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(endorsementModel));
 
-        // When
         EndorsementDTO result = underTest.getEndorsementById(endorsementId);
 
-        // Then
         assertNotNull(result);
         assertEquals("The Endorsement Id doesn't matches the expected endorsement Id", endorsementId, result.getId());
     }
 
     @Test
     public void itShouldHandleEndorsementNotFound() {
-        // Given
         UUID nonExistentEndorsementId = UUID.randomUUID();
         when(endorsementRepository.findById(nonExistentEndorsementId)).thenReturn(Optional.empty());
 
-        // When , Then
         assertThatThrownBy(() -> underTest.getEndorsementById(nonExistentEndorsementId))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("No endorsement with the id " + nonExistentEndorsementId + " found");
