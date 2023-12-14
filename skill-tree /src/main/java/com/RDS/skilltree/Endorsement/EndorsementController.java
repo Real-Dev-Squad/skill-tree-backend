@@ -21,22 +21,21 @@ public class EndorsementController {
     private final EndorsementService endorsementService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEndorsementById(@PathVariable(value = "id", required = true) String id){
+    public ResponseEntity<EndorsementResponse<EndorsementDTO>> getEndorsementById(@PathVariable(value = "id", required = true) String id){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         try {
             UUID uuid = UUID.fromString(id);
             EndorsementDTO response = endorsementService.getEndorsementById(uuid);
-            return ResponseEntity.ok().headers(headers).body(response);
+            return ResponseEntity.ok().headers(headers).body(new EndorsementResponse<EndorsementDTO>(response, "Data retrieved successfully"));
         } catch (IllegalArgumentException e) {
-            String jsonResponse = "{\"message\": \"" + "Invalid UUID: " + id + "\"}";
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(jsonResponse);
+            String message = "Invalid UUID: " + id;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(new EndorsementResponse<EndorsementDTO>(null, message));
         } catch (EntityNotFoundException e) {
-            String jsonResponse = "{\"message\": \"" + e.getMessage() + "\"}";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(jsonResponse);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(new EndorsementResponse<EndorsementDTO>(null, e.getMessage()));
         } catch (Exception e) {
-            String jsonResponse = "{\"message\": \"" + "Something went wrong. Please contact admin." + "\"}";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(jsonResponse);
+            String message = "Something went wrong. Please contact admin.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(new EndorsementResponse<EndorsementDTO>(null, message));
         }
     }
 }
