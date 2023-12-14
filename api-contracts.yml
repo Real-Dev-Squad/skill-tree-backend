@@ -94,13 +94,13 @@ paths:
 
 
 
-  /skills/{skillName}:
+  /skills/name/{name}:
     get:
       tags: 
         - skills
       parameters:
         - in: path
-          name: skillName
+          name: name
           required: true
           schema: 
             type: string
