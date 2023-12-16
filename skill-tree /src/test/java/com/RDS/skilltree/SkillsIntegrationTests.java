@@ -60,6 +60,8 @@ public class SkillsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 200, on all skills")
     public void testAPIReturns200_OnAllSkillsFound() {
         Response response = given()
+                .queryParam("page", 0)
+                .queryParam("size", 1)
                 .get("/v1/skills/");
 
         response.then()
@@ -71,7 +73,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .body("totalPages", equalTo(1))
                 .body("totalElements", equalTo(1))
                 .body("last", equalTo(true))
-                .body("size", equalTo(100))
+                .body("size", equalTo(1))
                 .body("number", equalTo(0))
                 .body("numberOfElements", equalTo(1))
                 .body("empty", equalTo(false));
@@ -138,6 +140,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .statusCode(200)
                 .contentType("application/json")
                 .body("name", equalTo("Java"))
+                .body("id", equalTo(skill.getId().toString()))
                 .body("type", equalTo("ATOMIC"));
     }
 
