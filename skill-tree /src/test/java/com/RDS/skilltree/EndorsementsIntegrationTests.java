@@ -3,10 +3,10 @@ package com.RDS.skilltree;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static io.restassured.RestAssured.given;
@@ -16,7 +16,7 @@ public class EndorsementsIntegrationTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Before
+    @BeforeAll
     public void setup() {
         RestAssured.baseURI = "http://localhost:8080";
     }
