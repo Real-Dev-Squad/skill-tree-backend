@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,8 +22,13 @@ import java.util.UUID;
 public class EndorsementController {
     private final EndorsementService endorsementService;
 
+    @GetMapping(value = "/")
+    public List<EndorsementModel> getEndorsements() {
+        return endorsementService.getEndorsements();
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GenericResponse<EndorsementDTO>> getEndorsementById(@PathVariable(value = "id", required = true) String id){
+    public ResponseEntity<GenericResponse<EndorsementDTO>> getEndorsementById(@PathVariable(value = "id", required = true) String id) {
         try {
             UUID uuid = UUID.fromString(id);
             EndorsementDTO response = endorsementService.getEndorsementById(uuid);

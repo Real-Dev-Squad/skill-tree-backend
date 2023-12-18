@@ -1,4 +1,5 @@
 package com.RDS.skilltree.Endorsement;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,12 @@ public class EndorsementServiceImpl implements EndorsementService {
     @Override
     public EndorsementDTO getEndorsementById(UUID id) throws IllegalStateException {
         Optional<EndorsementModel> endorsementModel = endorsementRepository.findById(id);
-        return EndorsementDTO.toDto(endorsementModel.orElseThrow(() -> new EntityNotFoundException("No endorsement with the id " + id + " found")));
+        return EndorsementDTO.toDto(endorsementModel
+                .orElseThrow(() -> new EntityNotFoundException("No endorsement with the id " + id + " found")));
+    }
+
+    @Override
+    public List<EndorsementModel> getEndorsements() {
+        return endorsementRepository.findAll();
     }
 }
