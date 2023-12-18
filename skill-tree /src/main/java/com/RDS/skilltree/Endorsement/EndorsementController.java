@@ -2,6 +2,7 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,8 +23,8 @@ public class EndorsementController {
 
     @GetMapping(value = "")
     public Page<EndorsementModel> getAllEndorsements(
-            @RequestParam(name = "offset", defaultValue = "0", required = false) int offset,
-            @RequestParam(name = "limit", defaultValue = "10", required = false) int limit
+            @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
+            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit
     ) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         return endorsementService.getEndorsements(pageRequest);
