@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService{
     public List<UserDTO> getAllUsers() {
         return null;
     }
-
     /**
      * updates the user and skill both
      * @param skillId
