@@ -1,32 +1,34 @@
-package com.RDS.skilltree.Endorsement;
+package com.RDS.skilltree.unit;
 
+import com.RDS.skilltree.Endorsement.EndorsementDTO;
+import com.RDS.skilltree.Endorsement.EndorsementModel;
+import com.RDS.skilltree.Endorsement.EndorsementRepository;
+import com.RDS.skilltree.Endorsement.EndorsementServiceImpl;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.User.UserModel;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class EndorsementServiceTest {
     @Mock
     private EndorsementRepository endorsementRepository;
 
     @InjectMocks
     @Autowired
-    private EndorsementServiceImpl underTest;
+    private EndorsementServiceImpl endorsementService;
 
     @Test
     public void itShouldGetEndorsementsById() {
@@ -48,7 +50,7 @@ public class EndorsementServiceTest {
 
         when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(endorsementModel));
 
-        EndorsementDTO result = underTest.getEndorsementById(endorsementId);
+        EndorsementDTO result = endorsementService.getEndorsementById(endorsementId);
 
         assertNotNull(result);
         assertEquals(endorsementId, result.getId(), "The Endorsement Id doesn't matches the expected endorsement Id");
@@ -59,9 +61,10 @@ public class EndorsementServiceTest {
         UUID nonExistentEndorsementId = UUID.randomUUID();
         when(endorsementRepository.findById(nonExistentEndorsementId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> underTest.getEndorsementById(nonExistentEndorsementId))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("No endorsement with the id " + nonExistentEndorsementId + " found");
-    }
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> endorsementService.getEndorsementById(nonExistentEndorsementId));
 
+        // Verify the exception message
+        assertEquals("No endorsement with the id " + nonExistentEndorsementId + " found", exception.getMessage());
+    }
 }

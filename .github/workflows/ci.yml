@@ -3,10 +3,7 @@ name: CI Build
 on:
   pull_request:
     branches:
-      - '**'
-  push:
-    branches:
-      - ["develop", "main"]
+      - "**"
 jobs:
   build:
     name: Maven Build
