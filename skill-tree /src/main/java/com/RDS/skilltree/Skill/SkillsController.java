@@ -2,6 +2,7 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.utils.MessageResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -39,9 +40,9 @@ public class SkillsController {
 
     @GetMapping("/")
     public Page<SkillDTO> getAllSkills(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "100") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+            @RequestParam(value = "offset", defaultValue = "0", required = false) @Min(0) int offset,
+            @RequestParam(value = "limit", defaultValue = "10", required = false) @Min(1) int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
         return skillsService.getAllSkills(pageable);
     }
 

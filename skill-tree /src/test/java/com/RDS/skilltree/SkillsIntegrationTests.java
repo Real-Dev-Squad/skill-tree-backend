@@ -60,8 +60,8 @@ public class SkillsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 200, on all skills")
     public void testAPIReturns200_OnAllSkillsFound() {
         Response response = given()
-                .queryParam("page", 0)
-                .queryParam("size", 1)
+                .queryParam("offset", 0)
+                .queryParam("limit", 1)
                 .get("/v1/skills/");
 
         response.then()
@@ -92,7 +92,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .body("totalPages", equalTo(0))
                 .body("totalElements", equalTo(0))
                 .body("last", equalTo(true))
-                .body("size", equalTo(100))
+                .body("size", equalTo(10))
                 .body("number", equalTo(0))
                 .body("numberOfElements", equalTo(0))
                 .body("empty", equalTo(true));
