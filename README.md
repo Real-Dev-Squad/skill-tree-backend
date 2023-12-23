@@ -5,7 +5,34 @@
 
 ### Required Tools
 
-- [Maven](https://mvnrepository.com/)
+- [Maven](https://maven.apache.org/download.cgi) version 3.9 or higher
+
+Installing Maven on macOS using Homebrew:
+1. Open your terminal.
+2. Type the following command and press Enter to install Homebrew (if not installed):
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+3.Once Homebrew is installed, run the following command to install Maven:
+brew install maven
+4.Wait for the installation process to complete.
+5.Verify the Maven installation by typing:
+mvn -version
+This should display information about the installed Maven version.
+
+Installing Maven on Windows:
+
+1. To install Maven on Windows, we head over to the Apache Maven site to download the latest version and select the Maven zip file, for example, apache-maven-3.9.6-bin.zip.
+
+2.Adding Maven to the Environment Path
+We add both M2_HOME and MAVEN_HOME variables to the Windows environment using system properties and point them to our Maven folder.
+
+3.Verify the Maven installation by typing:
+mvn -version
+
+Then, we update the PATH variable by appending the Maven bin folder — %M2_HOME%\bin — so that we can run the Maven command everywhere.
+
+Then, we unzip it to the folder where we want Maven to live.
+
+
 - Java
 - Integrated Development Environment (IDE) (Preferred - IntelliJ Community or Ultimate Edition)
 - Docker Desktop
