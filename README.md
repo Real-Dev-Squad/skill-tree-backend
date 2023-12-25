@@ -22,10 +22,10 @@ Installing Maven on Windows:
 
 1. To install Maven on Windows, we head over to the Apache Maven site to download the latest version and select the Maven zip file, for example, apache-maven-3.9.6-bin.zip.
 
-2.Adding Maven to the Environment Path
+2. Adding Maven to the Environment Path
 We add both M2_HOME and MAVEN_HOME variables to the Windows environment using system properties and point them to our Maven folder.
 
-3.Verify the Maven installation by typing:
+3. Verify the Maven installation by typing:
 mvn -version
 
 Then, we update the PATH variable by appending the Maven bin folder — %M2_HOME%\bin — so that we can run the Maven command everywhere.
@@ -42,9 +42,11 @@ Then, we unzip it to the folder where we want Maven to live.
 ### Steps to Login to MySQL
 
 1.Go to Docker Desktop
+
 2.You'll see skill-tree-backed (If the process is running)
+
 3.skill-tree-backend>skill-tree-backend-db-1>open in terminal
-login 
+ 
 to login to MySQL
 mysql -u root -p (in terminal)
 password : rootpassword
