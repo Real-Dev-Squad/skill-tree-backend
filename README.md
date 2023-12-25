@@ -11,11 +11,16 @@ Installing Maven on macOS using Homebrew:
 1. Open your terminal.
 2. Type the following command and press Enter to install Homebrew (if not installed):
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
 3.Once Homebrew is installed, run the following command to install Maven:
 brew install maven
+
 4.Wait for the installation process to complete.
+
 5.Verify the Maven installation by typing:
 mvn -version
+
+
 This should display information about the installed Maven version.
 
 Installing Maven on Windows:
