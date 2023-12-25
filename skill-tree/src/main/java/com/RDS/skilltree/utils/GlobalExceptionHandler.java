@@ -6,8 +6,12 @@ import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.List;
 
 @ControllerAdvice
 @Slf4j
@@ -33,7 +37,21 @@ public class GlobalExceptionHandler {
         log.error("Runtime Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new GenericResponse<>(null, "Something went wrong, please try communicating on `#wg-skill-tree discord` channel" ));
+                .body(new GenericResponse<>(null, "Something went wrong, please try again." ));
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<GenericResponse<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+        StringBuilder errorString = new StringBuilder();
+        List<FieldError> fieldErrors = ((MethodArgumentNotValidException) ex).getBindingResult().getFieldErrors();
+        for(FieldError fieldError: fieldErrors){
+            errorString.append(fieldError.getDefaultMessage());
+            errorString.append(" ");
+        }
+        log.error("MethodArgumentNotValidException Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, errorString.toString()));
     }
 
     @ExceptionHandler({Exception.class})
@@ -41,6 +59,6 @@ public class GlobalExceptionHandler {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new GenericResponse<>(null, "Something went wrong, please try communicating on `#wg-skill-tree discord` channel" ));
+                .body(new GenericResponse<>(null, "Something went wrong, please try again." ));
     }
 }
