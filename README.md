@@ -41,11 +41,11 @@ Then, we unzip it to the folder where we want Maven to live.
 
 ### Steps to Login to MySQL
 
-1.Go to Docker Desktop
+1. Go to Docker Desktop
 
-2.You'll see skill-tree-backed (If the process is running)
+2. You'll see skill-tree-backed (If the process is running)
 
-3.skill-tree-backend>skill-tree-backend-db-1>open in terminal
+3. skill-tree-backend>skill-tree-backend-db-1>open in terminal
  
 to login to MySQL
 mysql -u root -p (in terminal)
