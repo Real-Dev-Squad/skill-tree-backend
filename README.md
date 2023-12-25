@@ -5,7 +5,7 @@
 
 ### Required Tools
 
-- [Maven](https://maven.apache.org/download.cgi) version 3.9 or higher
+- [Maven](https://maven.apache.org/download.cgi) version 3.9.6 or higher
 
 Installing Maven on macOS using Homebrew:
 1. Open your terminal.
@@ -33,10 +33,31 @@ Then, we update the PATH variable by appending the Maven bin folder — %M2_HOME
 Then, we unzip it to the folder where we want Maven to live.
 
 
-- Java
-- Integrated Development Environment (IDE) (Preferred - IntelliJ Community or Ultimate Edition)
-- Docker Desktop
-- MySQL Docker Image
+- Java (version 17 or higher)
+- Any text editor of your choice (Preferred - IntelliJ Community or Ultimate Edition).
+- Docker Desktop (https://docs.docker.com/engine/install/)
+- MySQL Docker Image (https://hub.docker.com/_/mysql)
+
+
+### Steps to Login to MySQL
+
+1.Go to Docker Desktop
+2.You'll see skill-tree-backed (If the process is running)
+3.skill-tree-backend>skill-tree-backend-db-1>open in terminal
+login 
+to login to MySQL
+mysql -u root -p (in terminal)
+password : rootpassword
+
+
+## Steps for Creating the Database
+
+1. `create database skilltree;`
+2. `show databases;`
+3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
+4. `grant all on skilltree.* to testuser;`
+
+
 
 ### Steps to Connect the Service to MySQL Running in Docker
 
@@ -73,12 +94,6 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 6. Validate the token using [jwt.io](https://jwt.io/) by entering the public and private keys stored in the website backend.
 7. Use the public key in the Skill Tree repo to decrypt the JWT token passed for authentication.
 
-## Steps for Creating the Database
-
-1. `create database skilltree;`
-2. `show databases;`
-3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
-4. `grant all on skilltree.* to testuser;`
 
 ## Steps for connecting mysql workbench to run mysql inside docker
 
