@@ -29,11 +29,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<GenericResponse<Object>> handleRuntimException(RuntimeException ex){
+    public ResponseEntity<GenericResponse<Object>> handleRuntimeException(RuntimeException ex){
         log.error("Runtime Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new GenericResponse<>(null, "Something went wrong, please try communicating on `#wg-skill-tree discord` channel" ));
     }
 
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(Exception ex){
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new GenericResponse<>(null, "Something went wrong, please try communicating on `#wg-skill-tree discord` channel" ));
+    }
 }
