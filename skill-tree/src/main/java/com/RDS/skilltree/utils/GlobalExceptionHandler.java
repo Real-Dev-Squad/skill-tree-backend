@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
         log.error("MethodArgumentNotValidException Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, errorString.toString()));
+                .body(new GenericResponse<>(null, errorString.toString().trim()));
     }
 
     @ExceptionHandler({Exception.class})
