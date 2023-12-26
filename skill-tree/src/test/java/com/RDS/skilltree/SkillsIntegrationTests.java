@@ -173,7 +173,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
         response.then()
                 .statusCode(400)
                 .body("data",equalTo(null))
-                .body("message", equalTo("Created by user Id cannot be null "));
+                .body("message", equalTo("Created by user Id cannot be null"));
     }
 
     @Test
@@ -192,7 +192,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
         response.then()
                 .statusCode(400)
                 .body("data",equalTo(null))
-                .body("message", equalTo("SkillType cannot be null "));
+                .body("message", equalTo("SkillType cannot be null"));
     }
 
     @Test
@@ -211,7 +211,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
         response.then()
                 .statusCode(400)
                 .body("data",equalTo(null))
-                .body("message", equalTo("Name cannot be null "));
+                .body("message", equalTo("Name cannot be null"));
     }
 
     @Test
