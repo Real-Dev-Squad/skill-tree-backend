@@ -12,12 +12,12 @@ Installing Maven on macOS using Homebrew:
 2. Type the following command and press Enter to install Homebrew (if not installed):
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-3.Once Homebrew is installed, run the following command to install Maven:
+3. Once Homebrew is installed, run the following command to install Maven:
 brew install maven
 
-4.Wait for the installation process to complete.
+4. Wait for the installation process to complete.
 
-5.Verify the Maven installation by typing:
+5. Verify the Maven installation by typing:
 mvn -version
 
 
@@ -56,15 +56,30 @@ to login to MySQL
 mysql -u root -p (in terminal)
 password : rootpassword
 
+Refrence Screenshots:
+
+<img width="1680" alt="Screenshot 2023-12-26 at 9 33 17 PM" src="https://github.com/ashifkhn/skill-tree-backend/assets/54736284/57b90473-ae22-45b2-8a19-3377bfbcf1b9">
+
+![image](https://github.com/ashifkhn/skill-tree-backend/assets/54736284/d66166ae-b931-40ab-914f-f42615323a32)
+
+
 
 ## Steps for Creating the Database
 
-1. `create database skilltree;`
+1. `create database skilltree;`(semicolon is important here)
 2. `show databases;`
 3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
 4. `grant all on skilltree.* to testuser;`
 
+## Steps for Creating the Database
 
+1. After creating the database project needs to be compiled.
+2. Open skill-tree-backend in intellij.
+3. Java_Home path needs to be added here.
+4. You can either add the existing path and jdk 17 can be downloaded inside intellij.
+
+
+(Below steps are not required as of now.)
 
 ### Steps to Connect the Service to MySQL Running in Docker
 
