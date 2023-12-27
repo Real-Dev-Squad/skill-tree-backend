@@ -38,7 +38,7 @@ Then, we update the PATH variable by appending the Maven bin folder — %M2_HOME
 Then, we unzip it to the folder where we want Maven to live.
 
 
-- Java (version 17 or higher)
+- Java (version 17 or higher) [Link](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - Any text editor of your choice (Preferred - IntelliJ Community or Ultimate Edition).
 - Docker Desktop: [Installation steps](https://docs.docker.com/engine/install/)
 - MySQL Docker Image:  [Installation steps](https://hub.docker.com/_/mysql)
