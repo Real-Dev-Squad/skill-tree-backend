@@ -40,8 +40,8 @@ Then, we unzip it to the folder where we want Maven to live.
 
 - Java (version 17 or higher)
 - Any text editor of your choice (Preferred - IntelliJ Community or Ultimate Edition).
-- Docker Desktop (https://docs.docker.com/engine/install/)
-- MySQL Docker Image (https://hub.docker.com/_/mysql)
+- Docker Desktop: [Installation steps](https://docs.docker.com/engine/install/)
+- MySQL Docker Image:  [Installation steps](https://hub.docker.com/_/mysql)
 
 
 ### Steps to Login to MySQL
