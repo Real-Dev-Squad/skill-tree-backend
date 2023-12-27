@@ -18,7 +18,11 @@ brew install maven
 4. Wait for the installation process to complete.
 
 5. Verify the Maven installation by typing:
-mvn -version
+   mvn -version
+   
+6.Docker Desktop
+
+
 
 
 This should display information about the installed Maven version.
@@ -43,6 +47,12 @@ Then, we unzip it to the folder where we want Maven to live.
 - Docker Desktop (https://docs.docker.com/engine/install/)
 - MySQL Docker Image (https://hub.docker.com/_/mysql)
 
+### Steps to Start Project in Docker
+
+1. Go to project directory
+   
+2. run docker ocker compose up
+   
 
 ### Steps to Login to MySQL
 
@@ -64,12 +74,14 @@ Refrence Screenshots:
 
 
 
-## Steps for Creating the Database
-
+## Steps for Creating the Database (needs to be done only for the first time)
 1. `create database skilltree;`(semicolon is important here)
 2. `show databases;`
-3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
-4. `grant all on skilltree.* to testuser;`
+
+## Steps after connecting the database
+
+1. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
+2. `grant all on skilltree.* to testuser;`
 
 ## Steps for Creating the Database
 
