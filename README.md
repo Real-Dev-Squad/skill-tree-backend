@@ -57,9 +57,11 @@ mysql -u root -p (in terminal)
 password : rootpassword
 
 Refrence Screenshots:
-
+If the project is started with docker compose up thise can be seen once you open Docker Desktop:
 <img width="1680" alt="Screenshot 2023-12-26 at 9 33 17 PM" src="https://github.com/ashifkhn/skill-tree-backend/assets/54736284/57b90473-ae22-45b2-8a19-3377bfbcf1b9">
 
+
+Terminal needs to be opened here:
 ![image](https://github.com/ashifkhn/skill-tree-backend/assets/54736284/d66166ae-b931-40ab-914f-f42615323a32)
 
 
