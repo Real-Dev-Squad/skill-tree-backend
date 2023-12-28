@@ -172,7 +172,8 @@ public class SkillsIntegrationTests extends TestContainerManager {
 
         response.then()
                 .statusCode(400)
-                .body("error", equalTo("Bad Request"));
+                .body("data",equalTo(null))
+                .body("message", equalTo("Created by user Id cannot be null"));
     }
 
     @Test
@@ -190,7 +191,8 @@ public class SkillsIntegrationTests extends TestContainerManager {
 
         response.then()
                 .statusCode(400)
-                .body("error", equalTo("Bad Request")); //Todo change this on introducing the global exception handling
+                .body("data",equalTo(null))
+                .body("message", equalTo("SkillType cannot be null"));
     }
 
     @Test
@@ -208,7 +210,8 @@ public class SkillsIntegrationTests extends TestContainerManager {
 
         response.then()
                 .statusCode(400)
-                .body("error", equalTo("Bad Request"));
+                .body("data",equalTo(null))
+                .body("message", equalTo("Name cannot be null"));
     }
 
     @Test
