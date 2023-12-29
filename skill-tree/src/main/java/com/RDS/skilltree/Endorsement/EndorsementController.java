@@ -2,6 +2,7 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

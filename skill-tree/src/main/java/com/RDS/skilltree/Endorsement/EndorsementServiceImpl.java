@@ -1,5 +1,10 @@
 package com.RDS.skilltree.Endorsement;
 
+import com.RDS.skilltree.Exceptions.NoEntityException;
+import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.SkillRepository;
+import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.User.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,10 +39,12 @@ public class EndorsementServiceImpl implements EndorsementService {
         UUID skillId = endorsementDRO.getSkillId();
         Optional<UserModel> userOptional = userRepository.findById(userId);
         Optional<SkillModel> skillOptional = skillRepository.findById(skillId);
-        EndorsementModel endorsementModel = new EndorsementModel();
         if (userOptional.isPresent() && skillOptional.isPresent()) {
-            endorsementModel.setUser(userOptional.get());
-            endorsementModel.setSkill(skillOptional.get());
+        EndorsementModel endorsementModel =  EndorsementModel.builder()
+                .user(userOptional.get())
+                .skill(skillOptional.get())
+                .build();
+
             return endorsementRepository.save(endorsementModel);
         } else {
             if (userOptional.isEmpty())

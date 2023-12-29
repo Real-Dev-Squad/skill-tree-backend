@@ -5,8 +5,11 @@ import com.RDS.skilltree.Endorsement.EndorsementDTO;
 import com.RDS.skilltree.Endorsement.EndorsementModel;
 import com.RDS.skilltree.Endorsement.EndorsementRepository;
 import com.RDS.skilltree.Endorsement.EndorsementServiceImpl;
+import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.User.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EndorsementServiceTest {
@@ -84,11 +87,8 @@ public class EndorsementServiceTest {
         endorsementDRO.setUserId(userId);
         endorsementDRO.setSkillId(skillId);
 
-        UserModel mockUser = new UserModel();
-        mockUser.setId(userId);
-
-        SkillModel mockSkill = new SkillModel();
-        mockSkill.setId(skillId);
+        UserModel mockUser = UserModel.builder().id(userId).build();
+        SkillModel mockSkill =  SkillModel.builder().id(skillId).build();
 
         // Mock the repository behavior
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
