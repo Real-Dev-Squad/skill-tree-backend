@@ -3,7 +3,6 @@ package com.RDS.skilltree;
 import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
 import com.RDS.skilltree.Endorsement.*;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     private void addData() throws MalformedURLException {
         user = userService.createUser(UserDRO.builder()
                 .role(UserRole.MEMBER)
-                .rdsUserId("p6Bo61VEClhtVdwW0ihg")
+                .rdsUserId("p6Bo61VEClhtVdwW0iha")
                 .lastName("Doe")
                 .firstName("John")
                 .imageUrl(new URL("https://res.cloudinary.com/realdevsquad/image/upload/v1666193594/profile/p6Bo61VEClhtVdwW0iGH/lezguwdq5bgzawa3.jpg"))
@@ -52,7 +51,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                         .createdBy(user.getId())
                         .build());
     }
-
 
     @Test
     @Disabled
