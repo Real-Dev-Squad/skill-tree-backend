@@ -83,18 +83,30 @@ public class EndorsementServiceTest {
         // Mock data
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
+        UUID endorsementId  = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
         endorsementDRO.setUserId(userId);
         endorsementDRO.setSkillId(skillId);
 
         UserModel mockUser = UserModel.builder().id(userId).build();
         SkillModel mockSkill =  SkillModel.builder().id(skillId).build();
+         EndorsementModel mockEndorsement = EndorsementModel.builder()
+                 .id(endorsementId)
+                 .user(mockUser)
+                 .skill(mockSkill)
+                 .build();
+         mockEndorsement.setCreatedAt(Instant.now());
+         mockEndorsement.setUpdatedAt(Instant.now());
+         mockEndorsement.setCreatedBy(mockUser);
+         mockEndorsement.setUpdatedBy(mockUser);
 
-        // Mock the repository behavior
+         // Mock the repository behavior
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         when(skillRepository.findById(skillId)).thenReturn(Optional.of(mockSkill));
+        when(endorsementRepository.save(any(EndorsementModel.class))).thenReturn(mockEndorsement);
 
-        // Call the service method
+
+         // Call the service method
         EndorsementModel result = endorsementService.createEndorsement(endorsementDRO);
 
         // Verify the interactions
