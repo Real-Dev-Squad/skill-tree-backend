@@ -51,8 +51,9 @@ class EndorsementListServiceTest {
         UserModel mockUser = new UserModel();
         mockUser.setId(endorserId);
 
-        EndorsementModel mockEndorsement = new EndorsementModel();
-        mockEndorsement.setId(endorsementId);
+        EndorsementModel mockEndorsement = EndorsementModel.builder()
+                .id(endorsementId)
+                .build();
 
         // Mock the repository behavior
         when(userRepository.findById(endorserId)).thenReturn(Optional.of(mockUser));
