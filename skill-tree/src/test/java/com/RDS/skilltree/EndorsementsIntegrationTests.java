@@ -173,11 +173,11 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 400 on endorsements userid null")
     public void testAPIReturns400_OnEndorsementCreationUserIdNull() {
-        UUID userId = null;
+
         UUID skillId = skill.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+
         endorsementDRO.setSkillId(skillId);
         Response response = given()
                 .contentType("application/json")
@@ -196,11 +196,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 400 on endorsements skillid null")
     public void testAPIReturns400_OnEndorsementCreationSkillIdNull() {
         UUID userId = user.getId();
-        UUID skillId = null;
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
         endorsementDRO.setUserId(userId);
-        endorsementDRO.setSkillId(skillId);
+
         Response response = given()
                 .contentType("application/json")
                 .body(endorsementDRO)
