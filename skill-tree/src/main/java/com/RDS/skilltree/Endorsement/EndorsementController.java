@@ -53,8 +53,8 @@ public class EndorsementController {
 
         EndorsementModel endorsementModel = endorsementService.createEndorsement(endorsementDRO);
             if (endorsementModel != null)
-                return new ResponseEntity<>(endorsementModel, HttpStatus.CREATED);
-            return new ResponseEntity<>("Failed to create endorsement", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new GenericResponse<EndorsementModel>(endorsementModel, ""), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericResponse<EndorsementDTO>(null,"Failed to create endorsement"), HttpStatus.BAD_REQUEST);
 
     }
 }

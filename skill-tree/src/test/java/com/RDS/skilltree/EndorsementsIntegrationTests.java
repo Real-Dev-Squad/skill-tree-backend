@@ -173,8 +173,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         response.then()
                 .statusCode(201)
                 .contentType("application/json")
-                .body("user.firstName", equalTo("John"))
-                .body("skill.name", equalTo("Java"));
+                .body("data.user.firstName", equalTo("John"))
+                .body("data.skill.name", equalTo("Java"));
     }
 
     @Test
