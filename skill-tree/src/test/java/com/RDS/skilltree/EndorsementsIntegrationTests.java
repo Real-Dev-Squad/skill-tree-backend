@@ -1,22 +1,64 @@
 package com.RDS.skilltree;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.RestAssured;
+import com.RDS.skilltree.Skill.*;
+import com.RDS.skilltree.User.*;
+import com.RDS.skilltree.Endorsement.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
-public class EndorsementsIntegrationTests {
-    @Autowired
-    private ObjectMapper objectMapper;
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class EndorsementsIntegrationTests extends TestContainerManager {
 
-    @BeforeAll
-    public void setup() {
-        RestAssured.baseURI = "http://localhost:8080";
+    private UserRepository userRepository;
+    private SkillRepository skillRepository;
+    private final UserService userService;
+    private final SkillsService skillsService;
+    private UserDTO user;
+    private SkillDTO skill;
+    private EndorsementRepository endorsementRepository;
+
+    @Autowired
+    public EndorsementsIntegrationTests(UserService userService, UserRepository userRepository, SkillsService skillsService, SkillRepository skillRepository, EndorsementRepository endorsementRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.skillsService = skillsService;
+        this.skillRepository = skillRepository;
+        this.endorsementRepository = endorsementRepository;
+    }
+
+    @BeforeEach
+    private void addData() throws MalformedURLException {
+        user = userService.createUser(UserDRO.builder()
+                .role(UserRole.MEMBER)
+                .rdsUserId("p6Bo61VEClhtVdwW0ihg")
+                .lastName("Doe")
+                .firstName("John")
+                .imageUrl(new URL("https://res.cloudinary.com/realdevsquad/image/upload/v1666193594/profile/p6Bo61VEClhtVdwW0iGH/lezguwdq5bgzawa3.jpg"))
+                .build());
+
+        skill = skillsService.createSkill(
+                SkillDRO.builder()
+                        .name("Java")
+                        .type(SkillType.ATOMIC)
+                        .createdBy(user.getId())
+                        .build());
+    }
+
+    @AfterEach
+    private void cleanUp() {
+        endorsementRepository.deleteAll();
+        skillRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -114,6 +156,71 @@ public class EndorsementsIntegrationTests {
     }
 
     @Test
+    @DisplayName("Return 200 on endorsements creation")
+    public void testAPIReturns201_OnEndorsementCreation() {
+        UUID userId = user.getId();
+        UUID skillId = skill.getId();
+
+        EndorsementDRO endorsementDRO = new EndorsementDRO();
+        endorsementDRO.setUserId(userId);
+        endorsementDRO.setSkillId(skillId);
+        Response response = given()
+                .contentType("application/json")
+                .body(endorsementDRO)
+                .post("/v1/endorsements");
+
+
+        response.then()
+                .statusCode(201)
+                .contentType("application/json")
+                .body("data.user.firstName", equalTo("John"))
+                .body("data.skill.name", equalTo("Java"));
+    }
+
+    @Test
+    @DisplayName("Return 400 on endorsements userid null")
+    public void testAPIReturns400_OnEndorsementCreationUserIdNull() {
+
+        UUID skillId = skill.getId();
+
+        EndorsementDRO endorsementDRO = new EndorsementDRO();
+
+        endorsementDRO.setSkillId(skillId);
+        Response response = given()
+                .contentType("application/json")
+                .body(endorsementDRO)
+                .post("/v1/endorsements");
+
+
+        response.then()
+                .statusCode(400)
+                .contentType("application/json")
+                .body("data", equalTo(null))
+                .body("message", equalTo("user id cannot be null"));
+    }
+
+    @Test
+    @DisplayName("Return 400 on endorsements skillid null")
+    public void testAPIReturns400_OnEndorsementCreationSkillIdNull() {
+        UUID userId = user.getId();
+
+        EndorsementDRO endorsementDRO = new EndorsementDRO();
+        endorsementDRO.setUserId(userId);
+
+        Response response = given()
+                .contentType("application/json")
+                .body(endorsementDRO)
+                .post("/v1/endorsements");
+
+
+        response.then()
+                .statusCode(400)
+                .contentType("application/json")
+                .body("data", equalTo(null))
+                .body("message", equalTo("skill id cannot be null"));
+    }
+
+    @Test
     @Disabled
     @DisplayName("Return 200 on endorsements updation")
     public void testAPIReturns200_OnEndorsementGivenId() {
@@ -182,4 +289,5 @@ public class EndorsementsIntegrationTests {
                 .body("code", equalTo(404))
                 .body("message", equalTo("Endorsement not found"));
     }
+
 }
