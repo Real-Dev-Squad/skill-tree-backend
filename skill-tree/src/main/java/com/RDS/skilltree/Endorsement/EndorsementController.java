@@ -49,12 +49,12 @@ public class EndorsementController {
     }
 
     @PostMapping(value="")
-    public ResponseEntity<GenericResponse<EndorsementModel>> postEndorsement(@RequestBody @Valid EndorsementDRO endorsementDRO) {
+    public ResponseEntity<GenericResponse<EndorsementDTO>> postEndorsement(@RequestBody @Valid EndorsementDRO endorsementDRO) {
 
         EndorsementModel endorsementModel = endorsementService.createEndorsement(endorsementDRO);
             if (endorsementModel != null)
-                return new ResponseEntity<>(new GenericResponse<EndorsementModel>(endorsementModel, ""), HttpStatus.CREATED);
-            return new ResponseEntity<>(new GenericResponse<EndorsementModel>(null,"Failed to create endorsement"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new GenericResponse<EndorsementDTO>(EndorsementDTO.toDto(endorsementModel), ""), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericResponse<EndorsementDTO>(null,"Failed to create endorsement"), HttpStatus.BAD_REQUEST);
 
     }
 }
