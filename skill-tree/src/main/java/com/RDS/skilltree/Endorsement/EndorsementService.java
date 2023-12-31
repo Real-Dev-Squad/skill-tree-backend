@@ -7,4 +7,5 @@ import java.util.UUID;
 public interface EndorsementService {
     EndorsementDTO getEndorsementById(UUID id);
     Page<EndorsementModel> getEndorsements(PageRequest pageRequest);
+    EndorsementModel createEndorsement(EndorsementDRO endorsementDRO);
 }
