@@ -12,6 +12,8 @@ services:
       MYSQL_USER: testuser
       MYSQL_PASSWORD: testpassword
       MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./skilltree-database-script.sql:/docker-entrypoint-initdb.d/skilltree-database-script.sql
 
   adminer:
     image: adminer
