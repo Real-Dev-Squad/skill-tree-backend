@@ -2,6 +2,7 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,5 +46,15 @@ public class EndorsementController {
             String message = "Something went wrong. Please contact admin.";
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GenericResponse<EndorsementDTO>(null, message));
         }
+    }
+
+    @PostMapping(value="")
+    public ResponseEntity<GenericResponse<EndorsementDTO>> postEndorsement(@RequestBody @Valid EndorsementDRO endorsementDRO) {
+
+        EndorsementModel endorsementModel = endorsementService.createEndorsement(endorsementDRO);
+            if (endorsementModel != null)
+                return new ResponseEntity<>(new GenericResponse<EndorsementDTO>(EndorsementDTO.toDto(endorsementModel), ""), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericResponse<EndorsementDTO>(null,"Failed to create endorsement"), HttpStatus.BAD_REQUEST);
+
     }
 }
