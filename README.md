@@ -5,11 +5,83 @@
 
 ### Required Tools
 
-- [Maven](https://mvnrepository.com/)
-- Java
-- Integrated Development Environment (IDE) (Preferred - IntelliJ Community or Ultimate Edition)
-- Docker Desktop
-- MySQL Docker Image
+- [Maven](https://maven.apache.org/download.cgi) version 3.9.6 or higher
+
+Installing Maven on macOS using Homebrew:
+1. Open your terminal.
+2. Type the following command and press Enter to install Homebrew (if not installed):
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+3. Once Homebrew is installed, run the following command to install Maven:
+brew install maven
+
+4. Wait for the installation process to complete.
+
+5. Verify the Maven installation by typing:
+mvn -version
+
+
+This should display information about the installed Maven version.
+
+Installing Maven on Windows:
+
+1. To install Maven on Windows, we head over to the Apache Maven site to download the latest version and select the Maven zip file, for example, apache-maven-3.9.6-bin.zip.
+
+2. Adding Maven to the Environment Path
+We add both M2_HOME and MAVEN_HOME variables to the Windows environment using system properties and point them to our Maven folder.
+
+3. Verify the Maven installation by typing:
+mvn -version
+
+Then, we update the PATH variable by appending the Maven bin folder — %M2_HOME%\bin — so that we can run the Maven command everywhere.
+
+Then, we unzip it to the folder where we want Maven to live.
+
+
+- Java (version 17 or higher) [Link](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- Any text editor of your choice (Preferred - IntelliJ Community or Ultimate Edition).
+- Docker Desktop: [Installation steps](https://docs.docker.com/engine/install/)
+- MySQL Docker Image:  [Installation steps](https://hub.docker.com/_/mysql)
+
+
+### Steps to Login to MySQL
+
+1. Go to Docker Desktop
+
+2. You'll see skill-tree-backed (If the process is running)
+
+3. skill-tree-backend>skill-tree-backend-db-1>open in terminal
+ 
+to login to MySQL
+mysql -u root -p (in terminal)
+password : rootpassword
+
+Refrence Screenshots:
+If the project is started with docker compose up thise can be seen once you open Docker Desktop:
+<img width="1680" alt="Screenshot 2023-12-26 at 9 33 17 PM" src="https://github.com/ashifkhn/skill-tree-backend/assets/54736284/57b90473-ae22-45b2-8a19-3377bfbcf1b9">
+
+
+Terminal needs to be opened here:
+![image](https://github.com/ashifkhn/skill-tree-backend/assets/54736284/d66166ae-b931-40ab-914f-f42615323a32)
+
+
+
+## Steps for Creating the Database
+
+1. `create database skilltree;`(semicolon is important here)
+2. `show databases;`
+3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
+4. `grant all on skilltree.* to testuser;`
+
+## Steps for Creating the Database
+
+1. After creating the database project needs to be compiled.
+2. Open skill-tree-backend in intellij.
+3. Java_Home path needs to be added here.
+4. You can either add the existing path and jdk 17 can be downloaded inside intellij.
+
+
+(Below steps are not required as of now.)
 
 ### Steps to Connect the Service to MySQL Running in Docker
 
@@ -46,12 +118,6 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 6. Validate the token using [jwt.io](https://jwt.io/) by entering the public and private keys stored in the website backend.
 7. Use the public key in the Skill Tree repo to decrypt the JWT token passed for authentication.
 
-## Steps for Creating the Database
-
-1. `create database skilltree;`
-2. `show databases;`
-3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
-4. `grant all on skilltree.* to testuser;`
 
 ## Steps for connecting mysql workbench to run mysql inside docker
 
