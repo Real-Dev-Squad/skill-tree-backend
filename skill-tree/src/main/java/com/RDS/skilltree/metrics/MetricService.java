@@ -15,7 +15,7 @@ public class MetricService {
     }
 
     public double getUptime() {
-        return metricsEndpoint.metric("custom.uptime", null).getMeasurements()
+        return metricsEndpoint.metric("process.uptime", null).getMeasurements()
                 .stream()
                 .findFirst()
                 .map(MetricsEndpoint.Sample::getValue)
