@@ -22,9 +22,9 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-          docker build -t $DOCKERHUB_USERNAME/skill-tree-api:latest \
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/skill-tree-api:latest \
                        --build-arg SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/skilltree \
                        --build-arg SPRING_DATASOURCE_USERNAME=testuser \
                        --build-arg SPRING_DATASOURCE_PASSWORD=testpassword \
@@ -38,7 +38,7 @@ jobs:
                        --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
                        .
 
-          docker push $DOCKERHUB_USERNAME/skill-tree-api:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/skill-tree-api:latest
 
       - name: Deploy to ECS
         run: |
