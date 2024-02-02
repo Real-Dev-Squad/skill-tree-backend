@@ -43,4 +43,4 @@ jobs:
 
       - name: Deploy to ECS
         run: |
-          aws ecs update-service --cluster skill-tree --service skill-tree-service --force-new-deployment
+          aws ecs update-service --cluster skill-tree --service skill-tree-cluster --force-new-deployment
