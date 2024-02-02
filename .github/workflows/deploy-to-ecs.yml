@@ -25,17 +25,17 @@ jobs:
           echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
           docker build -t $DOCKERHUB_USERNAME/skill-tree-api:latest \
-                       --build-arg SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL \
-                       --build-arg SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME \
-                       --build-arg SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD \
-                       --build-arg SPRING_JPA_HIBERNATE_DDL_AUTO=$SPRING_JPA_HIBERNATE_DDL_AUTO \
-                       --build-arg MYSQL_HOST=$MYSQL_HOST \
-                       --build-arg DB_NAME=$DB_NAME \
-                       --build-arg MYSQL_DB_USERNAME=$MYSQL_DB_USERNAME \
-                       --build-arg MYSQL_DB_PASSWORD=$MYSQL_DB_PASSWORD \
-                       --build-arg DB_DDL_POLICY=$DB_DDL_POLICY \
-                       --build-arg API_V1_PREFIX=$API_V1_PREFIX \
-                       --build-arg SPRING_DATASOURCE_VERSION=$SPRING_DATASOURCE_VERSION \
+                       --build-arg SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/skilltree \
+                       --build-arg SPRING_DATASOURCE_USERNAME=testuser \
+                       --build-arg SPRING_DATASOURCE_PASSWORD=testpassword \
+                       --build-arg SPRING_JPA_HIBERNATE_DDL_AUTO=update \
+                       --build-arg MYSQL_HOST=db \
+                       --build-arg DB_NAME=skilltree \
+                       --build-arg MYSQL_DB_USERNAME=testuser \
+                       --build-arg MYSQL_DB_PASSWORD=testpassword \
+                       --build-arg DB_DDL_POLICY=update \
+                       --build-arg API_V1_PREFIX=/api/v1 \
+                       --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
                        .
 
           docker push $DOCKERHUB_USERNAME/skill-tree-api:latest
