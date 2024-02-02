@@ -36,7 +36,7 @@ jobs:
                        --build-arg DB_DDL_POLICY=update \
                        --build-arg API_V1_PREFIX=/api/v1 \
                        --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
-                       .
+                       -f skill-tree/Dockerfile .
 
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/skill-tree-api:latest
 
