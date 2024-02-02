@@ -1,0 +1,45 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - docker-aws
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: your-aws-region
+
+      - name: Build and Push Docker Image
+        run: |
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+          docker build -t $DOCKERHUB_USERNAME/skill-tree-api:latest \
+                       --build-arg SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL \
+                       --build-arg SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME \
+                       --build-arg SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD \
+                       --build-arg SPRING_JPA_HIBERNATE_DDL_AUTO=$SPRING_JPA_HIBERNATE_DDL_AUTO \
+                       --build-arg MYSQL_HOST=$MYSQL_HOST \
+                       --build-arg DB_NAME=$DB_NAME \
+                       --build-arg MYSQL_DB_USERNAME=$MYSQL_DB_USERNAME \
+                       --build-arg MYSQL_DB_PASSWORD=$MYSQL_DB_PASSWORD \
+                       --build-arg DB_DDL_POLICY=$DB_DDL_POLICY \
+                       --build-arg API_V1_PREFIX=$API_V1_PREFIX \
+                       --build-arg SPRING_DATASOURCE_VERSION=$SPRING_DATASOURCE_VERSION \
+                       .
+
+          docker push $DOCKERHUB_USERNAME/skill-tree-api:latest
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service --cluster skill-tree-cluster --service skill-tree-cluster-service --force-new-deployment
