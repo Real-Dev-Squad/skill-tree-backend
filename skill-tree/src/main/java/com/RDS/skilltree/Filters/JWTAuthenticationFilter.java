@@ -49,23 +49,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                 UserModel userModel;
 
-                if (userRepository.existsByRdsUserId(rdsUserId)) {
-                    userModel = userRepository.findByRdsUserId(rdsUserId).get();
-                } else {
-                    CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
-                    CompletableFuture.anyOf(userResponse).join();
-                    Response rdsUserResponse = userResponse.get();
-                    UserDRO userDRO = UserDRO.builder()
-                            .rdsUserId(rdsUserId)
-                            .firstName(rdsUserResponse.getUser().getFirst_name())
-                            .lastName(rdsUserResponse.getUser().getLast_name())
-                            .imageUrl(new URL(rdsUserResponse.getUser().getPicture().getUrl()))
-                            .role(UserRole.USER)
-                            .build();
-                    userModel = UserDRO.toModel(userDRO);
-                    userService.createUser(userDRO);
-                }
-
                 UserAuthenticationToken authentication = new UserAuthenticationToken(userModel);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
