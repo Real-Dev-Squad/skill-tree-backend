@@ -23,7 +23,7 @@ public class FetchAPI {
 
     @Async
     public CompletableFuture<Response> getRDSUserData(String userId) {
-        String url = String.format("https://api.realdevsquad.com/users/userId/%s", userId);
+        String url = String.format("http://localhost:3000/users/userId/%s", userId);
         try{
             ResponseEntity<Response> response = restTemplate.getForEntity(url, Response.class);
             Response result = response.getBody();
