@@ -163,11 +163,13 @@ Now you can connect to the mysql running in the docker container, also to connec
 4. Give it a name instead of "Unnamed".
 5. In "Build and Run", select Java 17.
 6. In the class , check "Enable Env file" and "Substitute env var" checkboxes.
-7. Click "Apply" and "OK".
-8. Click "Build and Run".
-9. Retrieve the Bearer token by accessing `http://localhost:3000/auth/github/login` and locating the key `rds-session-development` in the application. The value associated with this key is the `Bearer token`.
-10. Click the green "Run" button or "Shift + F10" to start the application
-11. After starting the Tomcat server on port `8080`, attempt to access the dummy route `http://localhost:8080/test` using the `GET` method in Postman or ThunderClient while providing the `bearer token`. If the terminal displays `test123`, it indicates that the setup has been successful.
+   <img width="1152" alt="image" src="https://github.com/Real-Dev-Squad/skill-tree-backend/assets/42600164/42986311-71d9-41d6-a56f-dfffc8f83729">
+
+8. Click "Apply" and "OK".
+9. Click "Build and Run".
+10. Retrieve the Bearer token by accessing `http://localhost:3000/auth/github/login` and locating the key `rds-session-development` in the application. The value associated with this key is the `Bearer token`.
+11. Click the green "Run" button or "Shift + F10" to start the application
+12. After starting the Tomcat server on port `8080`, attempt to access the dummy route `http://localhost:8080/test` using the `GET` method in Postman or ThunderClient while providing the `bearer token`. If the terminal displays `test123`, it indicates that the setup has been successful.
 
 ## Known Issues Faced by Other Developers
 1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)
