@@ -26,15 +26,15 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/skill-tree-api:latest \
-                       --build-arg SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/skilltree \
-                       --build-arg SPRING_DATASOURCE_USERNAME=testuser \
-                       --build-arg SPRING_DATASOURCE_PASSWORD=testpassword \
-                       --build-arg SPRING_JPA_HIBERNATE_DDL_AUTO=update \
-                       --build-arg MYSQL_HOST=db \
-                       --build-arg DB_NAME=skilltree \
-                       --build-arg MYSQL_DB_USERNAME=testuser \
-                       --build-arg MYSQL_DB_PASSWORD=testpassword \
-                       --build-arg DB_DDL_POLICY=update \
+                       --build-arg SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
+                       --build-arg SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
+                       --build-arg SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
+                       --build-arg SPRING_JPA_HIBERNATE_DDL_AUTO=${{ secrets.SPRING_JPA_HIBERNATE_DDL_AUTO }} \
+                       --build-arg MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
+                       --build-arg DB_NAME=${{ secrets.DB_NAME }} \
+                       --build-arg MYSQL_DB_USERNAME=${{ secrets.MYSQL_DB_USERNAME }} \
+                       --build-arg MYSQL_DB_PASSWORD=${{ secrets.MYSQL_DB_PASSWORD }} \
+                       --build-arg DB_DDL_POLICY=${{ secrets.DB_DDL_POLICY }} \
                        --build-arg API_V1_PREFIX=/api/v1 \
                        --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
                        -f skill-tree/Dockerfile .
