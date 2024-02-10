@@ -46,8 +46,17 @@ public class JWTUtils {
         return (RSAPublicKey) keyFactory.generatePublic(keySpec);
     }
 
+    private Claims extractAllClaims (String token) throws Exception{
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(convertToRSAPublicKey(publicRDSKeyString))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String getRDSUserId(String token) throws Exception {
-        Claims claims = Jwts.parser().setSigningKey(convertToRSAPublicKey(publicRDSKeyString)).parseClaimsJws(token).getBody();
+        Claims claims = extractAllClaims(token);
         String temp = claims.get("userId", String.class);
         return temp;
     }

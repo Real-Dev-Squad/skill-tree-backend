@@ -11,8 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -46,7 +48,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
                 String rdsUserId = jwtUtils.getRDSUserId(token);
 
+//                Object sc = request.getSession().getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+//
+//                if(sc != null)
+//                System.out.println(((SecurityContext) sc).getAuthentication());
 
+                 /*
+                 * get user data from RDS using the userId
+                 * */
                 UserModel userModel;
 
                 CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
@@ -62,7 +71,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 userModel = UserDRO.toModel(userDRO);
 
 
-                UserAuthenticationToken authentication = new UserAuthenticationToken(userModel);
+                UserAuthenticationToken authentication = new UserAuthenticationToken(rdsUserId);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -70,6 +79,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             log.error("Error in fetching the user details, error : {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         filterChain.doFilter(request, response);
     }
 

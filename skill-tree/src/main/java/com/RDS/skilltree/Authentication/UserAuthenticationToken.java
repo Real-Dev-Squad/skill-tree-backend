@@ -3,14 +3,15 @@ package com.RDS.skilltree.Authentication;
 import com.RDS.skilltree.User.UserModel;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import javax.security.auth.Subject;
+import java.util.UUID;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
+private final String userId;
 
-    private final UserModel user;
 
-    public UserAuthenticationToken(UserModel user) {
+    public UserAuthenticationToken(String userId) {
         super(null);
-        this.user = user;
+        this.userId = userId;
         setAuthenticated(true);
     }
 
@@ -21,7 +22,7 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return user;
+        return userId;
     }
 
     @Override
