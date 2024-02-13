@@ -6,12 +6,11 @@ import javax.security.auth.Subject;
 import java.util.UUID;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
-private final String userId;
+    private final UserModel user;
 
-
-    public UserAuthenticationToken(String userId) {
+    public UserAuthenticationToken(UserModel user) {
         super(null);
-        this.userId = userId;
+        this.user = user;
         setAuthenticated(true);
     }
 
@@ -22,7 +21,7 @@ private final String userId;
 
     @Override
     public Object getPrincipal() {
-        return userId;
+        return user;
     }
 
     @Override

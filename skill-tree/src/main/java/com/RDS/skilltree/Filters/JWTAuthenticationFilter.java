@@ -18,6 +18,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
@@ -44,36 +45,34 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = getJWTFromRequest(request);
+
         try {
             if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
                 String rdsUserId = jwtUtils.getRDSUserId(token);
 
-//                Object sc = request.getSession().getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-//
-//                if(sc != null)
-//                System.out.println(((SecurityContext) sc).getAuthentication());
+if(SecurityContextHolder.getContext().getAuthentication() == null) {
+    UserModel userModel;
 
-                 /*
-                 * get user data from RDS using the userId
-                 * */
-                UserModel userModel;
-
-                CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
-                CompletableFuture.anyOf(userResponse).join();
-                Response rdsUserResponse = userResponse.get();
-                UserDRO userDRO = UserDRO.builder()
-                        .rdsUserId(rdsUserId)
-                        .firstName(rdsUserResponse.getUser().getFirst_name())
-                        .lastName(rdsUserResponse.getUser().getLast_name())
-                        .imageUrl(new URL(rdsUserResponse.getUser().getPicture().getUrl()))
-                        .role(UserRole.USER)
-                        .build();
-                userModel = UserDRO.toModel(userDRO);
+    CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
+    if (userResponse == null) {                                     // (3)
+        throw new AuthenticationException("could not login");
+    }
+    CompletableFuture.anyOf(userResponse).join();
+    Response rdsUserResponse = userResponse.get();
+    UserDRO userDRO = UserDRO.builder()
+            .rdsUserId(rdsUserId)
+            .firstName(rdsUserResponse.getUser().getFirst_name())
+            .lastName(rdsUserResponse.getUser().getLast_name())
+            .imageUrl(new URL(rdsUserResponse.getUser().getPicture().getUrl()))
+            .role(UserRole.USER)
+            .build();
+    userModel = UserDRO.toModel(userDRO);
 
 
-                UserAuthenticationToken authentication = new UserAuthenticationToken(rdsUserId);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+    UserAuthenticationToken authentication = new UserAuthenticationToken(userModel);
+    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+}
             }
         } catch (Exception e) {
             log.error("Error in fetching the user details, error : {}", e.getMessage(), e);

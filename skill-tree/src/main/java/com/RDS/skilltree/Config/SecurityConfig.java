@@ -30,10 +30,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/{userId}").access(new WebExpressionAuthorizationManager("#userId == authentication.userId"))  // user self details
                         .requestMatchers("/**").authenticated())
                 .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.maximumSessions(1));
+
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

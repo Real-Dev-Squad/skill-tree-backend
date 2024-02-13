@@ -1,8 +1,10 @@
 package com.RDS.skilltree.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -16,6 +18,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Date;
+import java.util.function.Function;
 
 @Component
 @Slf4j
@@ -48,11 +52,17 @@ public class JWTUtils {
 
     private Claims extractAllClaims (String token) throws Exception{
         return Jwts
-                .parserBuilder()
+                .parser()
                 .setSigningKey(convertToRSAPublicKey(publicRDSKeyString))
-                .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private Boolean isTokenExpired(String token) throws Exception {
+        Claims claims = extractAllClaims(token);
+
+        final Date expiration = claims.get("exp", Date.class);
+        return expiration.before(new Date());
     }
 
     public String getRDSUserId(String token) throws Exception {
@@ -63,10 +73,12 @@ public class JWTUtils {
 
     public boolean validateToken(String token) throws Exception { //TODO check for the case where token is expired
         try {
-            Jwts.parser().setSigningKey(convertToRSAPublicKey(publicRDSKeyString)).parseClaimsJws(token);
-            return true;
+            return (!isTokenExpired(token));
+
         } catch (InvalidKeySpecException e) {
             throw new RuntimeException(e);
+        }catch (ExpiredJwtException e) {
+            throw new AuthenticationCredentialsNotFoundException("Given jwt token is expired !!");
         } catch (Exception e) {
             throw new AuthenticationCredentialsNotFoundException("Invalid JWT");
         }
