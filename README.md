@@ -52,35 +52,58 @@ Then, we unzip it to the folder where we want Maven to live.
 
 2. You'll see skill-tree-backed (If the process is running)
 
-3. skill-tree-backend>skill-tree-backend-db-1>open in terminal
+3. skill-tree-backend > skill-tree-backend-db-1 > open in terminal
  
-to login to MySQL
-mysql -u root -p (in terminal)
-password : rootpassword
+To login to MySQL
+```
+mysql -u root -p
+```
+(in terminal)
+password : password
 
-Refrence Screenshots:
-If the project is started with docker compose up thise can be seen once you open Docker Desktop:
+Reference Screenshots:
+
+If the project is started with ```docker compose up```, this can be seen once you open Docker Desktop:
+
 <img width="1680" alt="Screenshot 2023-12-26 at 9 33 17 PM" src="https://github.com/ashifkhn/skill-tree-backend/assets/54736284/57b90473-ae22-45b2-8a19-3377bfbcf1b9">
 
 
+
 Terminal needs to be opened here:
+
 ![image](https://github.com/ashifkhn/skill-tree-backend/assets/54736284/d66166ae-b931-40ab-914f-f42615323a32)
 
 
 
-## Steps for Creating the Database
+## Steps for Creating the Database (To be executed in order)
 
-1. `create database skilltree;`(semicolon is important here)
-2. `show databases;`
-3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
-4. `grant all on skilltree.* to testuser;`
+Semicolon is important in the commands
 
-## Steps for Creating the Database
+Username: testuser
+Password: testpassword
+
+```
+CREATE DATABASE skilltree;
+SHOW DATABASES;
+CREATE USER 'testuser' IDENTIFIED BY 'testpassword';
+GRANT ALL ON skilltree.* TO testuser;
+```
+
+## Steps for setting up skill-tree in Intellij
 
 1. After creating the database project needs to be compiled.
 2. Open skill-tree-backend in intellij.
 3. Java_Home path needs to be added here.
-4. You can either add the existing path and jdk 17 can be downloaded inside intellij.
+4. You can either add the existing path and JDK 17 can be downloaded inside intellij.
+5. If adding from the existing path, go to Settings > Project Structure > Choose the earlier installed Java 17 SDK.
+
+
+## Creating Run/Debug Configuration
+1. Create a .env file inside the skill-tree folder with content mentioned in the Additional Configuration Steps below
+2. Click on "Edit Configurations" > Add new "Application" Configuration
+3. Choose "Java 17" and "skill-tree" folder in the dropdown
+4. Choose com.RDS.skilltree.SkillTreeApplication as the Main class
+5. Add the .env file you created in the first step for the environment variables and click "OK"
 
 
 (Below steps are not required as of now.)
@@ -123,7 +146,7 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 
 ## Steps for connecting mysql workbench to run mysql inside docker
 
-1. `docker exec -it rds-db-1 bin/bash`
+1. `docker exec -it skill-tree-db-1 bin/bash`
 2. bash-4.4# `mysql -u root -p -A`
 
 By default after deployment MySQL has following connection restrictions:
@@ -155,6 +178,7 @@ Now you can connect to the mysql running in the docker container, also to connec
    DB_NAME=${DB_NAME}
    MYSQL_USERNAME=testuser
    MYSQL_PASSWORD=testpassword
+   MYSQL_ROOT_PASSWORD=password
    DB_DDL_POLICY=update
    RDS_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
