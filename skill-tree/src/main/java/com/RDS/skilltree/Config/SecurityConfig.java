@@ -32,7 +32,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/**").authenticated())
                 .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
-                .sessionManagement(session -> session.maximumSessions(1));
+                .sessionManagement(session -> session.maximumSessions(1).maxSessionsPreventsLogin(true)
+                );
+//        https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
