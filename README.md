@@ -95,6 +95,7 @@ GRANT ALL ON skilltree.* TO testuser;
 2. Open skill-tree-backend in intellij.
 3. Java_Home path needs to be added here.
 4. You can either add the existing path and JDK 17 can be downloaded inside intellij.
+5. If adding from the existing path, go to Settings > Project Structure > Choose the earlier installed Java 17 SDK.
 
 
 (Below steps are not required as of now.)
