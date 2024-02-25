@@ -2,6 +2,7 @@ package com.RDS.skilltree.Config;
 
 import com.RDS.skilltree.Authentication.AuthEntryPoint;
 import com.RDS.skilltree.Filters.JWTAuthenticationFilter;
+import com.RDS.skilltree.User.UserRole;
 import com.RDS.skilltree.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,12 +35,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource( corsConfigurationSource()))
-                .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/**").authenticated())
-                .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
-                .sessionManagement(session -> session.maximumSessions(1).maxSessionsPreventsLogin(true)
-                );
+        http
+            .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+            .authorizeHttpRequests(auth->auth
+                    .requestMatchers("/**").hasRole(UserRole.USER.name())
+                    .requestMatchers("/v1/**").hasRole(UserRole.USER.name()))
+            .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //        https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

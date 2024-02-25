@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -48,54 +49,41 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
         String token = getJWTFromRequest(request);
 
         try {
             if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
-                String rdsUserId = jwtUtils.getRDSUserId(token);
-
-if(SecurityContextHolder.getContext().getAuthentication() == null) {
-    UserModel userModel;
-
-    CompletableFuture<Response> userResponse = fetchAPI.getRDSUserData(rdsUserId);
-    if (userResponse == null) {                                     // (3)
-        throw new AuthenticationException("could not login");
-    }
-    CompletableFuture.anyOf(userResponse).join();
-    Response rdsUserResponse = userResponse.get();
-    UserDRO userDRO = UserDRO.builder()
-            .rdsUserId(rdsUserId)
-            .firstName(rdsUserResponse.getUser().getFirst_name())
-            .lastName(rdsUserResponse.getUser().getLast_name())
-            .imageUrl(new URL(rdsUserResponse.getUser().getPicture().getUrl()))
-            .role(UserRole.USER)
-            .build();
-    userModel = UserDRO.toModel(userDRO);
+                String rdsUserId   = jwtUtils.getRDSUserId(token);
+                String role= jwtUtils.getUserRole(token);
 
 
-    UserAuthenticationToken authentication = new UserAuthenticationToken(userModel);
-    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    SecurityContextHolder.getContext().setAuthentication(authentication);
-}
+            UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             }
         } catch (Exception e) {
             log.error("Error in fetching the user details, error : {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getAuthorities());
         filterChain.doFilter(request, response);
     }
 
     private String getJWTFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
+        /*  */
         Cookie RDScookie = WebUtils.getCookie(request, cookieName);
         if(RDScookie != null)
             return RDScookie.getValue();
 
-
+        /*  */
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
