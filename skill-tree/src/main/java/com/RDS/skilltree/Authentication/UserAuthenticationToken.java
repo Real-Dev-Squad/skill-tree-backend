@@ -16,7 +16,6 @@ private final UserRole role ;
 
     public UserAuthenticationToken(String role, String rdsUserId) {
         super(List.of(new SimpleGrantedAuthority(role)));
-//        System.out.println( List.of(new SimpleGrantedAuthority(role)));
 
         this.rdsUserId = rdsUserId;
         this.role  = UserRole.fromString(role);

@@ -51,18 +51,4 @@ public  class UserModel   {
     @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<SkillModel> skills;
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return List.of(new SimpleGrantedAuthority(role.name()));
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return firstName +" "+ lastName;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
 }

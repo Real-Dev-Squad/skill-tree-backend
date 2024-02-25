@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,23 +28,21 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final AuthEntryPoint authEntryPoint;
+private final String[] roles = Arrays.stream(UserRole.values()).map(role -> role.label).toArray(String[]::new);
 
     @Autowired
     public SecurityConfig(UserService userService, AuthEntryPoint authEntryPoint) {
         this.userService = userService;
         this.authEntryPoint = authEntryPoint;
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
             .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth->auth
-//                    .requestMatchers("/**").authenticated()
-                    .requestMatchers(HttpMethod.GET,"/v1/endorsements/**").hasAuthority("super_user").anyRequest().authenticated())
+                    .requestMatchers("/v1/endorsements/**").hasAnyAuthority(roles).anyRequest().authenticated())
             .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

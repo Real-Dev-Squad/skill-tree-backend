@@ -1,10 +1,7 @@
 package com.RDS.skilltree.Filters;
 
 import com.RDS.skilltree.Authentication.UserAuthenticationToken;
-import com.RDS.skilltree.User.*;
-import com.RDS.skilltree.utils.FetchAPI;
 import com.RDS.skilltree.utils.JWTUtils;
-import com.RDS.skilltree.utils.RDSUser.Response;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -14,19 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
