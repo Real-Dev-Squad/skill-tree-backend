@@ -20,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@TestPropertySource(locations="classpath:test.properties")
 class JWTAuthenticationFilterTest  {
 
     @Mock
@@ -35,8 +37,8 @@ class JWTAuthenticationFilterTest  {
     @InjectMocks
     private JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${cookieName}")
-    private String cookieName;
+
+    private String cookieName="rds-session-v2-development";
 
     @BeforeEach
     void setUp() {
