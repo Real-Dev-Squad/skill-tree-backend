@@ -27,9 +27,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JWTUtils jwtUtils;
 
-    @Autowired
-    private FetchAPI fetchAPI;
-
 
     @Override
     public void doFilterInternal(HttpServletRequest request,
