@@ -41,8 +41,8 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth->auth
-                    .requestMatchers("/**").hasRole(UserRole.USER.name())
-                    .requestMatchers("/v1/**").hasRole(UserRole.USER.name()))
+//                    .requestMatchers("/**").authenticated()
+                    .requestMatchers(HttpMethod.GET,"/v1/endorsements/**").hasAuthority("super_user").anyRequest().authenticated())
             .exceptionHandling(ex->ex.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //        https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
@@ -65,6 +65,6 @@ public class SecurityConfig {
     }
     @Bean
     public JWTAuthenticationFilter jwtAuthenticationFilter(){
-        return new JWTAuthenticationFilter(userService);
+        return new JWTAuthenticationFilter();
     }
 }

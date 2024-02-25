@@ -81,10 +81,6 @@ public class JWTUtils {
         try {
             return (!isTokenExpired(token));
 
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }catch (ExpiredJwtException e) {
-            throw new AuthenticationCredentialsNotFoundException("Given jwt token is expired !!");
         } catch (Exception e) {
             throw new AuthenticationCredentialsNotFoundException("Invalid JWT");
         }

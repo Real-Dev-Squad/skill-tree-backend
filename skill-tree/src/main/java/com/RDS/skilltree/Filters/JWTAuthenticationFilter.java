@@ -39,20 +39,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private FetchAPI fetchAPI;
 
-    private final UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    public JWTAuthenticationFilter(UserService userService){
-        this.userService = userService;
-    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    public void doFilterInternal(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 FilterChain filterChain)
             throws ServletException, IOException {
+
         String token = getJWTFromRequest(request);
 
         try {
@@ -71,12 +64,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throw new RuntimeException(e);
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getAuthorities());
+        System.out.println(authentication.getPrincipal());
         filterChain.doFilter(request, response);
     }
 
-    private String getJWTFromRequest(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
+    public String getJWTFromRequest(HttpServletRequest request) {
 
         /*  */
         Cookie RDScookie = WebUtils.getCookie(request, cookieName);
