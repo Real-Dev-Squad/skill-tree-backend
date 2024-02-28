@@ -98,6 +98,14 @@ GRANT ALL ON skilltree.* TO testuser;
 5. If adding from the existing path, go to Settings > Project Structure > Choose the earlier installed Java 17 SDK.
 
 
+## Creating Run/Debug Configuration
+1. Create a .env file inside the skill-tree folder with content mentioned in the Additional Configuration Steps below
+2. Click on "Edit Configurations" > Add new "Application" Configuration
+3. Choose "Java 17" and "skill-tree" folder in the dropdown
+4. Choose com.RDS.skilltree.SkillTreeApplication as the Main class
+5. Add the .env file you created in the first step for the environment variables and click "OK"
+
+
 (Below steps are not required as of now.)
 
 ### Steps to Connect the Service to MySQL Running in Docker
@@ -170,6 +178,7 @@ Now you can connect to the mysql running in the docker container, also to connec
    DB_NAME=${DB_NAME}
    MYSQL_USERNAME=testuser
    MYSQL_PASSWORD=testpassword
+   MYSQL_ROOT_PASSWORD=password
    DB_DDL_POLICY=update
    RDS_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
