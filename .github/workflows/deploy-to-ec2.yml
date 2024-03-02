@@ -39,10 +39,10 @@ jobs:
                        --build-arg DB_DDL_POLICY=${{ secrets.DB_DDL_POLICY }} \
                        --build-arg API_V1_PREFIX=/api/v1 \
                        --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
-                       -f ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree-backend:latest .
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree-backend:latest
+                       -f ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest .
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest
 
       - name: Deploy to EC2
         run: |
           # Example command to SSH into your EC2 instance and deploy the Docker container
-          ssh -i path/to/your/private/key.pem ec2-user@your-ec2-instance-ip "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree-backend:latest && docker run -d -p 80:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree-backend:latest"
+          ssh -i path/to/your/private/key.pem ec2-user@your-ec2-instance-ip "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest && docker run -d -p 80:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest"
