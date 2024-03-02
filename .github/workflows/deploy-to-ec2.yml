@@ -26,7 +26,6 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          cd skill-tree
           docker build -t ${{ secrets.ECR_URI }}:latest \
                        --build-arg SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
                        --build-arg SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
@@ -39,7 +38,7 @@ jobs:
                        --build-arg DB_DDL_POLICY=${{ secrets.DB_DDL_POLICY }} \
                        --build-arg API_V1_PREFIX=/api/v1 \
                        --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
-                       -f Dockerfile .
+                       -f skill-tree/Dockerfile .
           docker push ${{ secrets.ECR_URI }}:latest
 
       - name: Deploy to EC2
