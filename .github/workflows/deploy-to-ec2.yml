@@ -27,7 +27,7 @@ jobs:
       - name: Build Docker Image
         run: |
           cd skill-tree
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/skill-tree-api:latest \
+          docker build -t ${{ secrets.ECR_URI }}:latest \
                        --build-arg SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
                        --build-arg SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
                        --build-arg SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
@@ -39,10 +39,9 @@ jobs:
                        --build-arg DB_DDL_POLICY=${{ secrets.DB_DDL_POLICY }} \
                        --build-arg API_V1_PREFIX=/api/v1 \
                        --build-arg SPRING_DATASOURCE_VERSION=8.1.0 \
-                       -f ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest .
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest
+                       -f Dockerfile .
+          docker push ${{ secrets.ECR_URI }}:latest
 
       - name: Deploy to EC2
         run: |
-          # Example command to SSH into your EC2 instance and deploy the Docker container
-          ssh -i path/to/your/private/key.pem ec2-user@your-ec2-instance-ip "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest && docker run -d -p 80:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/skill-tree:latest"
+          ssh -i path/to/your/private/key.pem ${{secrets.AWS_EC2_IP}} "docker pull ${{ secrets.ECR_URI }}:latest && docker-compose -f path/to/your/docker-compose.yml up -d"
