@@ -1,0 +1,20 @@
+package utils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class RestAPIHelper {
+   public static Map<String, String> getSuperUserCookie(){
+
+       Map<String, String> cookie= new HashMap<>();
+       cookie.put("rds-session-v2", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZlFFbVgyRW85a3lhM3NHdlJMMiIsInJvbGUiOiJzdXBlcl91c2VyIiwiaWF0IjoxNzA4NzgyODczLCJleHAiOjE3MTEzNzQ4NzN9.pOpm_pJk9hKqZ_JDtyFietItb4P1Wr2VvA53Qo0_nx1KHjjd24MPnQg-NOUaFZ2X_GWe8zOMklLgf3vX271tXTW98GQOiQdyqJZENtwJuxhiwT-3eLhPW8Kg2flfa3_mew0_s89e_hy3i1I4GH-YsCUaQ_SxrtlmZudYlExDhj-RuPVmz5djd7ra2mz6rsQhUMY047YKm0Szi3UMK1iWYJTHehwdtG0Y3PlR2hHyBrUFPpsxdFALcKwkV7rdcJgpDwZd6AnWCFiut940Mbr9W6tq7VMQLMC9Hjlnd5_2dVdz7NEUQ7BHTTFyStt6HdS_0-IgyZZR64AUXyMp-JAOwpLJr4A3psCc1pwn0UPy_2weRfXBm7k0xJO3cmV5x19k1jHxdW6LxaJthbsx9r_dY6B4IrsIJxBS_CefPrDv8JhW1EEkkYGWMpyzvMjqf5bpexJ1KLsKsqKIh-nEfE-CG-Yj5Cm5xFhdYE5iBdyehuClnaiBkUO4DU6GrcmgYkevsJs6uhfg_iVqZKt3xisO_0DNr1chCLCGBG_M25Xj5kT_ljzqLtaxi-OTIMQXK5lhx2e_sTrxC1T3gZ2em-WRSkC960tYfP2xnVS_DbNmk5yk3ZQEpOGgKfl7MhbJVYaXMUqR-lWLU1JoFvAsBvkh65ucztmPbXTNK6VcudWWGYI");
+   return cookie;
+   }
+
+    public static Map<String, String> getUserCookie(){
+
+        Map<String, String> cookie= new HashMap<>();
+        cookie.put("rds-session-v2", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZlFFbVgyRW85a3lhM3NHdlJMMiIsInJvbGUiOiJzdXBlcl91c2VyIiwiaWF0IjoxNzA4NzgyODczLCJleHAiOjE3MTEzNzQ4NzN9.pOpm_pJk9hKqZ_JDtyFietItb4P1Wr2VvA53Qo0_nx1KHjjd24MPnQg-NOUaFZ2X_GWe8zOMklLgf3vX271tXTW98GQOiQdyqJZENtwJuxhiwT-3eLhPW8Kg2flfa3_mew0_s89e_hy3i1I4GH-YsCUaQ_SxrtlmZudYlExDhj-RuPVmz5djd7ra2mz6rsQhUMY047YKm0Szi3UMK1iWYJTHehwdtG0Y3PlR2hHyBrUFPpsxdFALcKwkV7rdcJgpDwZd6AnWCFiut940Mbr9W6tq7VMQLMC9Hjlnd5_2dVdz7NEUQ7BHTTFyStt6HdS_0-IgyZZR64AUXyMp-JAOwpLJr4A3psCc1pwn0UPy_2weRfXBm7k0xJO3cmV5x19k1jHxdW6LxaJthbsx9r_dY6B4IrsIJxBS_CefPrDv8JhW1EEkkYGWMpyzvMjqf5bpexJ1KLsKsqKIh-nEfE-CG-Yj5Cm5xFhdYE5iBdyehuClnaiBkUO4DU6GrcmgYkevsJs6uhfg_iVqZKt3xisO_0DNr1chCLCGBG_M25Xj5kT_ljzqLtaxi-OTIMQXK5lhx2e_sTrxC1T3gZ2em-WRSkC960tYfP2xnVS_DbNmk5yk3ZQEpOGgKfl7MhbJVYaXMUqR-lWLU1JoFvAsBvkh65ucztmPbXTNK6VcudWWGYI");
+        return cookie;
+    }
+}
