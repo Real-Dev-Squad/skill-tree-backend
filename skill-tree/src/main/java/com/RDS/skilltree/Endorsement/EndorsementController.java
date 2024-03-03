@@ -24,14 +24,19 @@ public class EndorsementController {
     private final EndorsementService endorsementService;
 
     @GetMapping(value = "")
-    public Page<EndorsementModelFromJSON> getAllEndorsements(
+    public ResponseEntity<Page<EndorsementModelFromJSON>>  getAllEndorsements(
             @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
             @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
              @RequestParam(name = "skillID", required = false) String skillIdString,
             @RequestParam(name = "userID", required = false) String userIdString
     ) throws IOException {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return endorsementService.getEndorsementsFromDummyData(pageRequest,skillIdString,userIdString);
+        Page<EndorsementModelFromJSON> pagedEndorsements = endorsementService.getEndorsementsFromDummyData(pageRequest,skillIdString,userIdString);
+        if(pagedEndorsements.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.ok(pagedEndorsements);
+        }
     }
 
 
