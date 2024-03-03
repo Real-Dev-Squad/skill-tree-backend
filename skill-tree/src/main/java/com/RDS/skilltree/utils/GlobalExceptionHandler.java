@@ -2,6 +2,7 @@ package com.RDS.skilltree.utils;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -61,4 +62,13 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new GenericResponse<>(null, "Something went wrong, please try again." ));
     }
+
+    @ExceptionHandler({InvalidParameterException.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(InvalidParameterException ex){
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, ex.getMessage() ));
+    }
+
 }

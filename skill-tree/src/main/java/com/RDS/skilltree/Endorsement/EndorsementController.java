@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -23,13 +24,16 @@ public class EndorsementController {
     private final EndorsementService endorsementService;
 
     @GetMapping(value = "")
-    public Page<EndorsementModel> getAllEndorsements(
+    public Page<EndorsementModelFromJSON> getAllEndorsements(
             @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
-            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit
-    ) {
+            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
+             @RequestParam(name = "skillID", required = false) String skillIdString,
+            @RequestParam(name = "userID", required = false) String userIdString
+    ) throws IOException {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return endorsementService.getEndorsements(pageRequest);
+        return endorsementService.getEndorsementsFromDummyData(pageRequest,skillIdString,userIdString);
     }
+
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse<EndorsementDTO>> getEndorsementById(@PathVariable(value = "id", required = true) String id) {
