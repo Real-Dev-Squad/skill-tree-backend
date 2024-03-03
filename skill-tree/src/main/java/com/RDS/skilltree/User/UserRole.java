@@ -2,6 +2,7 @@ package com.RDS.skilltree.User;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public enum UserRole  {
@@ -21,6 +22,9 @@ public enum UserRole  {
             }
         }
         return null;
+    }
+    public static String[] getAllRoles(){
+        return  Arrays.stream(UserRole.values()).map(role -> role.label).toArray(String[]::new);
     }
 
 }

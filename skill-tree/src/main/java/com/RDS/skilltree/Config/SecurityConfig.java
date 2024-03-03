@@ -29,7 +29,6 @@ public class SecurityConfig {
 
     private final AuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final String[] roles = Arrays.stream(UserRole.values()).map(role -> role.label).toArray(String[]::new);
 
 
     public SecurityConfig(AuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
@@ -43,11 +42,11 @@ public class SecurityConfig {
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/endorsements/status").hasAuthority(UserRole.SUPERUSER.label)
-                        .requestMatchers("/v1/endorsements/**").hasAnyAuthority(roles)
+                        .requestMatchers("/v1/**").hasAnyAuthority(UserRole.getAllRoles())
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
