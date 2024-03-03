@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,13 +28,8 @@ public class GlobalExceptionHandler {
                 .body(new GenericResponse<>(null, ex.getMessage()));
     }
 
-    @ExceptionHandler({SignatureException.class })
-    public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(SignatureException ex) {
-        return ResponseEntity.status( HttpStatus.UNAUTHORIZED).body(new GenericResponse<>(null,  ex.getMessage()));
-    }
-
-    @ExceptionHandler({AuthenticationException.class})
-    public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(AuthenticationException ex) {
+    @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
+    public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(Exception ex) {
         return ResponseEntity.status( HttpStatus.UNAUTHORIZED).body(new GenericResponse<>(null, "The access token provided is expired, revoked, malformed, or invalid for other reasons."+ ex.getMessage()));
     }
     @ExceptionHandler({AccessDeniedException.class})
