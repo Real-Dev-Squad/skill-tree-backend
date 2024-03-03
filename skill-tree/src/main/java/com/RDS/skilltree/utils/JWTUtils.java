@@ -67,14 +67,12 @@ public class JWTUtils {
 
     public String getRDSUserId(String token) throws Exception {
         Claims claims = extractAllClaims(token);
-        String rdsUserId = claims.get("userId", String.class);
-        return rdsUserId;
+        return claims.get("userId", String.class);
     }
     public String getUserRole(String token) throws Exception {
         Claims claims = extractAllClaims(token);
 
-        String role = claims.get("role", String.class);
-        return role;
+        return claims.get("role", String.class);
     }
 
     public boolean validateToken(String token) throws Exception { //TODO check for the case where token is expired

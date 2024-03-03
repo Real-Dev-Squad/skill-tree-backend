@@ -49,12 +49,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             log.error("Error in fetching the user details, error : {}", e.getMessage(), e);
-            throw new RuntimeException(e);
         }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(authentication !=null)
-            System.out.println(authentication.getPrincipal());
 
         filterChain.doFilter(request, response);
     }

@@ -1,17 +1,29 @@
 package com.RDS.skilltree.Authentication;
 
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.file.AccessDeniedException;
 
 @Component
 public class AuthEntryPoint implements AuthenticationEntryPoint {
+
+
+    private final HandlerExceptionResolver resolver;
+
+    public AuthEntryPoint(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+        this.resolver = resolver;
+    }
+
 
     /**
      * A description of the entire Java function.
@@ -24,8 +36,15 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
      */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        PrintWriter writer = response.getWriter();
-        writer.println("Access Denied !! " + authException.getMessage());
-    }
+
+        this.resolver.resolveException(request, response,null, authException);
+   }
+
+//    @ExceptionHandler(value = {AccessDeniedException.class})
+//    public void commence(HttpServletRequest request, HttpServletResponse response,
+//                         AccessDeniedException accessDeniedException) throws IOException {
+//        // 403
+//        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization Failed : " + accessDeniedException.getMessage());
+//    }
+
 }

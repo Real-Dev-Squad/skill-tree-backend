@@ -24,7 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Users")
-public  class UserModel   {
+public class UserModel extends TrackedProperties  {
     @Id
     @GeneratedValue
     @Column(name = "id", columnDefinition = "BINARY(16)")
