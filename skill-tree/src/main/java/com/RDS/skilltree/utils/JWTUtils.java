@@ -33,24 +33,28 @@ public class JWTUtils {
     public void init() throws NoSuchAlgorithmException {
         keyFactory = KeyFactory.getInstance("RSA");
     }
+
     /**
      * Converts the given public key string to an RSAPublicKey object.
      *
      * @param publicKeyString the public key string to be converted
      * @return the RSAPublicKey object converted from the public key string
-     * @throws Exception if there is an error during the conversion process
      */
-    private RSAPublicKey convertToRSAPublicKey(String publicKeyString) throws Exception {
-        publicKeyString = publicKeyString.replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
+    private RSAPublicKey convertToRSAPublicKey(String publicKeyString) {
+        try {
+            publicKeyString = publicKeyString.replace("-----BEGIN PUBLIC KEY-----", "")
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
 
-        byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyString);
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
-        return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyString);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+            return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+        } catch (InvalidKeySpecException exception) {
+            throw new RuntimeException("Invalid RSA key");
+        }
     }
 
-    private Claims extractAllClaims (String token) throws Exception{
+    private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
                 .setSigningKey(convertToRSAPublicKey(publicRDSKeyString))
@@ -58,26 +62,27 @@ public class JWTUtils {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) throws Exception {
+    private Boolean isTokenExpired(String token) {
         Claims claims = extractAllClaims(token);
 
         final Date expiration = claims.get("exp", Date.class);
         return expiration.before(new Date());
     }
 
-    public String getRDSUserId(String token) throws Exception {
+    public String getRDSUserId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("userId", String.class);
     }
-    public String getUserRole(String token) throws Exception {
+
+    public String getUserRole(String token) {
         Claims claims = extractAllClaims(token);
 
         return claims.get("role", String.class);
     }
 
-    public boolean validateToken(String token) throws Exception {
+    public boolean validateToken(String token) {
 
-            return (!isTokenExpired(token));
+        return (!isTokenExpired(token));
     }
 
 }

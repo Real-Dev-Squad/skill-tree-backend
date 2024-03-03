@@ -32,7 +32,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         String token = getJWTFromRequest(request);
 
-        try {
+
             if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
                 String rdsUserId = jwtUtils.getRDSUserId(token);
                 String role = jwtUtils.getUserRole(token);
@@ -41,11 +41,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
             }
-        } catch (Exception e) {
-            log.error("Error in fetching the user details, error : {}", e.getMessage(), e);
-        }
+
+
 
         filterChain.doFilter(request, response);
     }
