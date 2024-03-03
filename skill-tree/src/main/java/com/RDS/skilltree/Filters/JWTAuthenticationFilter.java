@@ -27,24 +27,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JWTUtils jwtUtils;
 
-
     @Override
-    public void doFilterInternal(HttpServletRequest request,
-                                 HttpServletResponse response,
-                                 FilterChain filterChain)
-            throws ServletException, IOException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String token = getJWTFromRequest(request);
 
         try {
             if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
-                String rdsUserId   = jwtUtils.getRDSUserId(token);
-                String role= jwtUtils.getUserRole(token);
+                String rdsUserId = jwtUtils.getRDSUserId(token);
+                String role = jwtUtils.getUserRole(token);
 
 
-            UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
             }
         } catch (Exception e) {
@@ -56,12 +52,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     public String getJWTFromRequest(HttpServletRequest request) {
 
-        /*  */
+        /* check for cookie */
         Cookie RDScookie = WebUtils.getCookie(request, cookieName);
-        if(RDScookie != null)
-            return RDScookie.getValue();
+        if (RDScookie != null) return RDScookie.getValue();
 
-        /*  */
+        /* extract token from header */
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);

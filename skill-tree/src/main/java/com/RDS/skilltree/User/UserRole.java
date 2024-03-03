@@ -7,8 +7,7 @@ import java.util.Collection;
 public enum UserRole  {
     USER("user"),
     MEMBER("member"),
-    SUPERUSER("super_user"),
-    MAVEN("maven");
+    SUPERUSER("super_user");
 
     public final String label;
 

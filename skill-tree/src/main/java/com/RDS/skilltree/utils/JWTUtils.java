@@ -75,13 +75,9 @@ public class JWTUtils {
         return claims.get("role", String.class);
     }
 
-    public boolean validateToken(String token) throws Exception { //TODO check for the case where token is expired
-        try {
-            return (!isTokenExpired(token));
+    public boolean validateToken(String token) throws Exception {
 
-        } catch (Exception e) {
-            throw new AuthenticationCredentialsNotFoundException("Invalid JWT");
-        }
+            return (!isTokenExpired(token));
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -28,25 +29,25 @@ public class SecurityConfig {
 
     private final AuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-private final String[] roles = Arrays.stream(UserRole.values()).map(role -> role.label).toArray(String[]::new);
+    private final String[] roles = Arrays.stream(UserRole.values()).map(role -> role.label).toArray(String[]::new);
 
 
     public SecurityConfig(AuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
         this.authEntryPoint = authEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth->auth
-                    .requestMatchers( "/v1/endorsements/status").hasAuthority(UserRole.SUPERUSER.label)
-                    .requestMatchers("/v1/endorsements/**").hasAnyAuthority(roles)
-                    .anyRequest().authenticated())
-
-            .exceptionHandling(ex->ex.accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.authEntryPoint))
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v1/endorsements/status").hasAuthority(UserRole.SUPERUSER.label)
+                        .requestMatchers("/v1/endorsements/**").hasAnyAuthority(roles)
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.authEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -63,8 +64,9 @@ private final String[] roles = Arrays.stream(UserRole.values()).map(role -> role
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter(){
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
         return new JWTAuthenticationFilter();
     }
 }

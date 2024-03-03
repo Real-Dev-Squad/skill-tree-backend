@@ -40,11 +40,4 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
         this.resolver.resolveException(request, response,null, authException);
    }
 
-//    @ExceptionHandler(value = {AccessDeniedException.class})
-//    public void commence(HttpServletRequest request, HttpServletResponse response,
-//                         AccessDeniedException accessDeniedException) throws IOException {
-//        // 403
-//        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization Failed : " + accessDeniedException.getMessage());
-//    }
-
 }

@@ -90,6 +90,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <!--   io.jsonwebtoken     -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -111,6 +113,8 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>${io.jsonwebtoken.version}</version>
         </dependency>
+        <!--   io.jsonwebtoken     -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

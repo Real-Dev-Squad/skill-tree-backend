@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
     public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(Exception ex) {
-        return ResponseEntity.status( HttpStatus.UNAUTHORIZED).body(new GenericResponse<>(null, "The access token provided is expired, revoked, malformed, or invalid for other reasons."+ ex.getMessage()));
+        return ResponseEntity.status( HttpStatus.UNAUTHORIZED).body(new GenericResponse<>(null, "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
     }
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<GenericResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {

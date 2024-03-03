@@ -17,14 +17,14 @@ public class SecurityContextIntegrationTest extends TestContainerManager {
     public void testTokenIsNotPresent() {
 
         Response response = given().get("/v1/health");
-        response.then().statusCode(401).body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons.Full authentication is required to access this resource"));
+        response.then().statusCode(401).body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons."));
     }
 
     @Test
     public void testInvalidToken() {
 
         Response response = given().cookie("rds-session-v2", "invalidtoken").get("/v1/health");
-        response.then().statusCode(401).body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons.Full authentication is required to access this resource"));
+        response.then().statusCode(401).body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons."));
     }
 
     @Test
