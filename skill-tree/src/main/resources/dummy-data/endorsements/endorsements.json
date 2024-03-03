@@ -1,0 +1,182 @@
+[
+  {
+    "id": "7f6cb5e8-2e22-4a33-a120-6a0f684fb1fc",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "PENDING",
+    "created_at": "2024-02-24T12:00:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-02-24T12:00:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "c13a5db1-8df0-4b63-99fd-4e75f97d383c",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "4dcf2994-e5b4-45f3-8974-d2db0272a6cc",
+    "status": "APPROVED",
+    "created_at": "2024-02-25T10:30:00Z",
+    "created_by": "Alice Smith",
+    "updated_at": "2024-02-25T10:30:00Z",
+    "updated_by": "Alice Smith"
+  },
+  {
+    "id": "e1766a05-8ed3-4e0d-b7e1-c785cc2d1d94",
+    "user_id": "a991837b-eb22-48db-8d81-6f6159ed87e9",
+    "skill_id": "3f3c7c27-17f5-4a2c-b878-0a8a3b5727aa",
+    "status": "REJECTED",
+    "created_at": "2024-02-26T14:45:00Z",
+    "created_by": "Bob Johnson",
+    "updated_at": "2024-02-26T14:45:00Z",
+    "updated_by": "Bob Johnson"
+  },
+  {
+    "id": "97a42671-bcc4-470a-8844-4e36a5fc99d5",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "PENDING",
+    "created_at": "2024-02-27T11:00:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-02-27T11:00:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "bc3d94b8-56c4-45a2-ba68-30a03710a840",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "4dcf2994-e5b4-45f3-8974-d2db0272a6cc",
+    "status": "APPROVED",
+    "created_at": "2024-02-28T09:15:00Z",
+    "created_by": "Alice Smith",
+    "updated_at": "2024-02-28T09:15:00Z",
+    "updated_by": "Alice Smith"
+  },
+  {
+    "id": "9ae2e5f1-43d1-4094-9e05-8314e6846975",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "3f3c7c27-17f5-4a2c-b878-0a8a3b5727aa",
+    "status": "REJECTED",
+    "created_at": "2024-02-29T13:20:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-02-29T13:20:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "a9fe1d42-4ee1-453f-b10d-8d3d5c12ee3a",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "PENDING",
+    "created_at": "2024-03-01T08:45:00Z",
+    "created_by": "Alice Smith",
+    "updated_at": "2024-03-01T08:45:00Z",
+    "updated_by": "Alice Smith"
+  },
+  {
+    "id": "b6f08bb4-d314-4c1f-a5c5-f354b3b9d86e",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "4dcf2994-e5b4-45f3-8974-d2db0272a6cc",
+    "status": "APPROVED",
+    "created_at": "2024-03-02T15:10:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-03-02T15:10:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "f89203b8-b3ab-4a1f-bad7-c71d1459e5de",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "3f3c7c27-17f5-4a2c-b878-0a8a3b5727aa",
+    "status": "PENDING",
+    "created_at": "2024-03-03T11:30:00Z",
+    "created_by": "Alice Smith",
+    "updated_at": "2024-03-03T11:30:00Z",
+    "updated_by": "Alice Smith"
+  },
+  {
+    "id": "cd0cb121-69ee-4b7e-9d8a-dc7493630b81",
+    "user_id": "a991837b-eb22-48db-8d81-6f6159ed87e9",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "REJECTED",
+    "created_at": "2024-03-04T16:40:00Z",
+    "created_by": "Bob Johnson",
+    "updated_at": "2024-03-04T16:40:00Z",
+    "updated_by": "Bob Johnson"
+  },
+  {
+    "id": "e1e2e1dc-34c9-41b0-9f1c-08a2f9cbca41",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "3f3c7c27-17f5-4a2c-b878-0a8a3b5727aa",
+    "status": "APPROVED",
+    "created_at": "2024-03-05T09:00:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-03-05T09:00:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "31c34e6b-243d-418b-9e82-354d3fb63d03",
+    "user_id": "a991837b-eb22-48db-8d81-6f6159ed87e9",
+    "skill_id": "4dcf2994-e5b4-45f3-8974-d2db0272a6cc",
+    "status": "PENDING",
+    "created_at": "2024-03-06T14:00:00Z",
+    "created_by": "Bob Johnson",
+    "updated_at": "2024-03-06T14:00:00Z",
+    "updated_by": "Bob Johnson"
+  },
+  {
+    "id": "c7757c62-eb71-468f-bd23-03b59c74149f",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "REJECTED",
+    "created_at": "2024-03-07T16:30:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-03-07T16:30:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "4c6b1d5f-b1c5-4cc5-bb1e-62b0aa93d067",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "3f3c7c27-17f5-4a2c-b878-0a8a3b5727aa",
+    "status": "APPROVED",
+    "created_at": "2024-03-08T11:45:00Z",
+    "created_by": "Alice Smith",
+    "updated_at": "2024-03-08T11:45:00Z",
+    "updated_by": "Alice Smith"
+  },
+  {
+    "id": "b6465d99-8a32-45a6-bf9a-d2f1a5ec007e",
+    "user_id": "a991837b-eb22-48db-8d81-6f6159ed87e9",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "PENDING",
+    "created_at": "2024-03-09T09:10:00Z",
+    "created_by": "Bob Johnson",
+    "updated_at": "2024-03-09T09:10:00Z",
+    "updated_by": "Bob Johnson"
+  },
+  {
+    "id": "1c5265f2-045a-4a49-b59e-d148c3645d71",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "4dcf2994-e5b4-45f3-8974-d2db0272a6cc",
+    "status": "REJECTED",
+    "created_at": "2024-03-10T15:20:00Z",
+    "created_by": "Alice Smith",
+    "updated_at": "2024-03-10T15:20:00Z",
+    "updated_by": "Alice Smith"
+  },
+  {
+    "id": "abc5d0dc-fd87-4cf5-8229-7b1882f378e6",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "3f3c7c27-17f5-4a2c-b878-0a8a3b5727aa",
+    "status": "APPROVED",
+    "created_at": "2024-03-11T10:40:00Z",
+    "created_by": "John Doe",
+    "updated_at": "2024-03-11T10:40:00Z",
+    "updated_by": "John Doe"
+  },
+  {
+    "id": "3b5c30f2-e5d2-472a-aa15-94dd03cd87b1",
+    "user_id": "a991837b-eb22-48db-8d81-6f6159ed87e9",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "PENDING",
+    "created_at": "2024-03-12T12:00:00Z",
+    "created_by": "Bob Johnson",
+    "updated_at": "2024-03-12T12:00:00Z",
+    "updated_by": "Bob Johnson"
+  }
+]
