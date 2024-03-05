@@ -5,20 +5,36 @@ import com.RDS.skilltree.Endorsement.EndorsementDTO;
 import com.RDS.skilltree.Endorsement.EndorsementModel;
 import com.RDS.skilltree.Endorsement.EndorsementRepository;
 import com.RDS.skilltree.Endorsement.EndorsementServiceImpl;
+import com.RDS.skilltree.Endorsement.EndorsementModelFromJSON;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.PageImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.testcontainers.shaded.com.google.common.reflect.ClassPath;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,9 +52,17 @@ public class EndorsementServiceTest {
     @Mock
     private SkillRepository skillRepository;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     @Autowired
     private EndorsementServiceImpl endorsementService;
+
+    @BeforeEach
+    public void setUp() {
+        ReflectionTestUtils.setField(endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements/endorsements.json");
+    }
 
     @Test
     public void itShouldGetEndorsementsById() {
@@ -64,6 +88,92 @@ public class EndorsementServiceTest {
 
         assertNotNull(result);
         assertEquals(endorsementId, result.getId(), "The Endorsement Id doesn't matches the expected endorsement Id");
+    }
+
+    @Test
+    void itShouldGetEndorsementsGivenUserID() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "PENDING",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, null, userIDString);
+
+        assertEquals(new PageImpl<>(dummyEndorsements, pageRequest, dummyEndorsements.size()), result);
+    }
+
+    @Test
+    public void itShouldReturnEndorsementsGivenSkillID() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "APPROVED",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, skillIDString, null);
+
+        assertEquals(new PageImpl<>(dummyEndorsements, pageRequest, dummyEndorsements.size()), result);
+    }
+
+    @Test
+    public void itShouldReturnEmptyDataGivenUserIDNotPresent() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "APPROVED",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+        List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, UUID.randomUUID().toString(), null);
+
+        assertEquals(new PageImpl<>(endorsementsResult, pageRequest, endorsementsResult.size()), result);
+    }
+
+    @Test
+    void itShouldReturnIOExceptionIfErrorReadingData() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = null;
+        String userIDString = null;
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any())).thenThrow(new IOException("Error reading data"));
+
+        assertThrows(IOException.class, () -> endorsementService.getEndorsementsFromDummyData(pageRequest, skillIDString, userIDString));
     }
 
     @Test

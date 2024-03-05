@@ -64,7 +64,7 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     private List<EndorsementModelFromJSON> readEndorsementsFromJSON() throws IOException {
         ClassPathResource resource = new ClassPathResource(dummyEndorsementDataPath);
-        return objectMapper.readValue(resource.getInputStream(), new TypeReference<>() {});
+        return objectMapper.readValue(resource.getInputStream(), new TypeReference<List<EndorsementModelFromJSON>>() {});
     }
 
     private List<EndorsementModelFromJSON> filterEndorsements(List<EndorsementModelFromJSON> endorsements, String skillIDString, String userIDString) {
@@ -88,9 +88,6 @@ public class EndorsementServiceImpl implements EndorsementService {
         List<EndorsementModelFromJSON> currentPageEndorsements = endorsements.subList(startIdx, endIdx);
         return new PageImpl<>(currentPageEndorsements, pageRequest, endorsements.size());
     }
-
-
-
 
     @Override
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
