@@ -1,9 +1,10 @@
 name: CI Build
 
 on:
-  pull_request:
+  push:
     branches:
       - docker-aws
+
 jobs:
   build:
     name: Maven Build
