@@ -37,7 +37,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @BeforeEach
-    private void addData() throws MalformedURLException {
+    public void addData() throws MalformedURLException {
         user = userService.createUser(UserDRO.builder()
                 .role(UserRole.MEMBER)
                 .rdsUserId("p6Bo61VEClhtVdwW0ihg")
@@ -55,7 +55,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @AfterEach
-    private void cleanUp() {
+    public void cleanUp() {
         endorsementRepository.deleteAll();
         skillRepository.deleteAll();
         userRepository.deleteAll();
@@ -290,4 +290,96 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("message", equalTo("Endorsement not found"));
     }
 
+    @Test
+    @DisplayName("Return 200 with the endorsements of a particular user given userID")
+    public void testAPIReturn200_OnEndorsementSearchByUserID() {
+        String userIDString = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
+
+            given()
+                .when()
+                    .get("/v1/endorsements?userID=" + userIDString)
+                .then()
+                    .statusCode(200)
+                    .contentType("application/json")
+                    .body("content", everyItem(hasKey("user_id")))
+                    .body("content.user_id", everyItem(equalTo(userIDString)));
+    }
+
+    @Test
+    @DisplayName("Return 200 with the endorsements of a particular skill given skillID")
+    public void testAPIReturn200_OnEndorsementSearchBySkillID() {
+        String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
+            given()
+                .when()
+                    .get("/v1/endorsements?skillID=" + skillIDString)
+                .then()
+                    .statusCode(200)
+                    .contentType("application/json")
+                    .body("content", everyItem(hasKey("skill_id")))
+                    .body("content.user_id", everyItem(equalTo(skillIDString)));
+    }
+
+    @Test
+    @DisplayName("Return 200 with the endorsements matching the given userID and skillID")
+    public void testAPIReturn200_OnEndorsementSearchByBothUserIDAndSkillID() {
+        String userIDString = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
+        String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
+
+            given()
+                .when()
+                    .get("/v1/endorsements?skillID=" + skillIDString + "&userID=" + userIDString)
+                .then()
+                    .statusCode(200)
+                    .contentType("application/json")
+                    .body("content", everyItem(hasKey("skill_id")))
+                    .body("content.skill_id", everyItem(equalTo(skillIDString)))
+                    .body("content", everyItem(hasKey("user_id")))
+                    .body("content.user_id", everyItem(equalTo(userIDString)));
+    }
+
+    @Test
+    @DisplayName("Return 204 when there are no endorsements present for the given userID")
+    public void testAPIReturn204_OnEndorsementSearchWithValidUserID() {
+        String userIDString = UUID.randomUUID().toString();
+
+            given()
+                .when()
+                    .get("/v1/endorsements?userID=" + userIDString)
+                .then()
+                    .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Return 204 when there are no endorsements present for the given skillID")
+    public void testAPIReturn204_OnEndorsementSearchWithValidSkillID() {
+        String skillIDString = UUID.randomUUID().toString();
+
+            given()
+                .when()
+                    .get("/v1/endorsements?skillID=" + skillIDString)
+                .then()
+                    .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Return 400 given an invalid userID")
+    public void testAPIReturn400_OnEndorsementSearchWithInvalidUserID() {
+        String userIDString = "invalid-user-id";
+            given()
+                .when()
+                    .get("/v1/endorsements?userID=" + userIDString)
+                .then()
+                    .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Return 400 given an invalid skillID")
+    public void testAPIReturn400_OnEndorsementSearchWithInvalidSkillID() {
+        String skillIDString = "invalid-skill-id";
+            given()
+                .when()
+                    .get("/v1/endorsements?skillID=" + skillIDString)
+                .then()
+                    .statusCode(400);
+    }
 }
