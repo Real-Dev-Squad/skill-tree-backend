@@ -3,7 +3,7 @@ name: CI Build
 on:
   pull_request:
     branches:
-      - "**"
+      - docker-aws
 jobs:
   build:
     name: Maven Build
@@ -19,3 +19,36 @@ jobs:
 
       - name: Build with Maven
         run: mvn verify --file skill-tree/pom.xml
+      - name: Build Project
+        run: mvn clean install -DskipTests
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR Public
+        id: login-ecr
+        run: aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Build Docker image
+        run: docker build -t skill-tree-backend -f skill-tree/Dockerfile .
+      - name: Tag Docker image
+        run: docker tag skill-tree-backend:latest ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+
+      - name: Push Docker image to ECR Public
+        run: docker push ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull Image from ECR
+        run: docker pull ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+      - name: Delete old container
+        run: docker rm -f skill-tree-backend
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name skill-tree-backend ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
+
