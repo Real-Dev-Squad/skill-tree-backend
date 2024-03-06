@@ -316,7 +316,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                     .statusCode(200)
                     .contentType("application/json")
                     .body("content", everyItem(hasKey("skill_id")))
-                    .body("content.user_id", everyItem(equalTo(skillIDString)));
+                    .body("content.skill_id", everyItem(equalTo(skillIDString)));
     }
 
     @Test
