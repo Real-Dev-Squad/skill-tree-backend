@@ -85,7 +85,7 @@ Password: testpassword
 ```
 CREATE DATABASE skilltree;
 SHOW DATABASES;
-CREATE USER 'testuser' IDENTIFIED BY 'testpassword';
+CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpassword';
 GRANT ALL ON skilltree.* TO testuser;
 ```
 
@@ -96,6 +96,7 @@ GRANT ALL ON skilltree.* TO testuser;
 3. Java_Home path needs to be added here.
 4. You can either add the existing path and JDK 17 can be downloaded inside intellij.
 5. If adding from the existing path, go to Settings > Project Structure > Choose the earlier installed Java 17 SDK.
+6. Install Lombok plug-in, if you see annotation errors
 
 
 ## Creating Run/Debug Configuration
@@ -176,8 +177,8 @@ Now you can connect to the mysql running in the docker container, also to connec
 2. Create a new Env file with the provided content and fill in the RDS public key value.
    ```env
    DB_NAME=${DB_NAME}
-   MYSQL_USERNAME=testuser
-   MYSQL_PASSWORD=testpassword
+   MYSQL_DB_USERNAME=testuser
+   MYSQL_DB_PASSWORD=testpassword
    MYSQL_ROOT_PASSWORD=password
    DB_DDL_POLICY=update
    RDS_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
