@@ -43,6 +43,14 @@ class UUIDValidationInterceptorTest {
     }
 
     @Test
+    public void itShouldReturnTrueIfValidUserIDAndValidSkillIDIsGiven() {
+        when(request.getParameter("userID")).thenReturn(UUID.randomUUID().toString());
+        when(request.getParameter("skillID")).thenReturn(UUID.randomUUID().toString());
+
+        assertTrue(interceptor.preHandle(request, response, null));
+    }
+
+    @Test
     public void itShouldReturnFalseIfInvalidUserIDIsGiven() {
         when(request.getParameter("userID")).thenReturn("null");
         when(request.getParameter("skillID")).thenReturn(UUID.randomUUID().toString());
@@ -58,4 +66,11 @@ class UUIDValidationInterceptorTest {
         assertThrows(InvalidParameterException.class, () -> interceptor.preHandle(request, response, null));
     }
 
+    @Test
+    public void itShouldReturnFalseIfInvalidUserIDAndInvalidSkillIDIsGiven() {
+        when(request.getParameter("userID")).thenReturn("invalid-user-id");
+        when(request.getParameter("skillID")).thenReturn("invalid-skill-id");
+
+        assertThrows(InvalidParameterException.class, () -> interceptor.preHandle(request, response, null));
+    }
 }

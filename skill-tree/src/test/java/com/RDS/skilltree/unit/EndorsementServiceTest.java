@@ -92,6 +92,33 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @DisplayName("Get endorsements given a valid skillID")
+    public void itShouldReturnEndorsementsGivenSkillID() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "APPROVED",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, skillIDString, null);
+
+        assertEquals(new PageImpl<>(dummyEndorsements, pageRequest, dummyEndorsements.size()), result);
+        assertEquals(1, result.getTotalElements());
+    }
+
+    @Test
     @DisplayName("Get endorsements given a valid userID")
     void itShouldGetEndorsementsGivenUserID() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
@@ -119,8 +146,8 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @DisplayName("Get endorsements given a valid skillID")
-    public void itShouldReturnEndorsementsGivenSkillID() throws IOException {
+    @DisplayName("Get endorsements given an invalid userID")
+    public void itShouldThrowErrorIfInvalidUserIDIsGiven() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillIDString = UUID.randomUUID().toString();
         String userIDString = UUID.randomUUID().toString();
@@ -130,7 +157,7 @@ public class EndorsementServiceTest {
                 UUID.randomUUID(),
                 UUID.fromString(userIDString),
                 UUID.fromString(skillIDString),
-                "APPROVED",
+                "PENDING",
                 LocalDateTime.now(),
                 UUID.randomUUID(),
                 LocalDateTime.now(),
@@ -139,10 +166,58 @@ public class EndorsementServiceTest {
 
         when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
-        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, skillIDString, null);
 
-        assertEquals(new PageImpl<>(dummyEndorsements, pageRequest, dummyEndorsements.size()), result);
-        assertEquals(1, result.getTotalElements());
+        assertThrows(IllegalArgumentException.class, () -> endorsementService.getEndorsementsFromDummyData(pageRequest, null, "invalid-user-id"));
+    }
+
+    @Test
+    @DisplayName("Get endorsements given an invalid skillID")
+    public void itShouldThrowIllegalArgumentExceptionIfInvalidSkillIDIsGiven() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "PENDING",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+
+        assertThrows(IllegalArgumentException.class, () -> endorsementService.getEndorsementsFromDummyData(pageRequest, "invalid-skill-id", null));
+    }
+
+    @Test
+    @DisplayName("Get endorsements given a valid userID and invalid skillID")
+    public void itShouldThrowIllegalArgumentExceptionIfInvalidUserIDIsGiven() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "PENDING",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+
+        assertThrows(IllegalArgumentException.class, () -> endorsementService.getEndorsementsFromDummyData(pageRequest, "invalid-skill-id", UUID.randomUUID().toString()));
     }
 
     @Test
@@ -223,7 +298,63 @@ public class EndorsementServiceTest {
 
         when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, null, UUID.randomUUID().toString());
+
+        assertEquals(new PageImpl<>(endorsementsResult, pageRequest, endorsementsResult.size()), result);
+        assertEquals(0, result.getTotalElements());
+    }
+
+    @Test
+    @DisplayName("Return empty endorsement list given a skillID which is not present")
+    public void itShouldReturnEmptyDataGivenSkillIDNotPresent() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "APPROVED",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+        List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, UUID.randomUUID().toString(), null);
+
+        assertEquals(new PageImpl<>(endorsementsResult, pageRequest, endorsementsResult.size()), result);
+        assertEquals(0, result.getTotalElements());
+    }
+
+    @Test
+    @DisplayName("Return empty endorsement list given a skillID and userID which is not present")
+    public void itShouldReturnEmptyDataGivenSkillIDAndUserIDNotPresent() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "APPROVED",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+        List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, UUID.randomUUID().toString(), UUID.randomUUID().toString());
 
         assertEquals(new PageImpl<>(endorsementsResult, pageRequest, endorsementsResult.size()), result);
         assertEquals(0, result.getTotalElements());
