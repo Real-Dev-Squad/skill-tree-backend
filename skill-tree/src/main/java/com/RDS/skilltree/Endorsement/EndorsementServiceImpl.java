@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,9 +52,13 @@ public class EndorsementServiceImpl implements EndorsementService {
     }
 
     public Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest, String skillIDString, String userIDString) throws IOException {
-
         try {
             List<EndorsementModelFromJSON> endorsementModelFromJSONList = readEndorsementsFromJSON();
+
+            if (endorsementModelFromJSONList.isEmpty()) {
+                return Page.empty(pageRequest);
+            }
+
             List<EndorsementModelFromJSON> filteredEndorsements = filterEndorsements(endorsementModelFromJSONList, skillIDString, userIDString);
             return createPagedEndorsements(filteredEndorsements, pageRequest);
         } catch (IOException e) {
@@ -84,6 +89,12 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     private Page<EndorsementModelFromJSON> createPagedEndorsements(List<EndorsementModelFromJSON> endorsements, PageRequest pageRequest) {
         int startIdx = (int) pageRequest.getOffset();
+        int totalEndorsements = endorsements.size();
+
+        if (startIdx >= totalEndorsements) {
+            return new PageImpl<>(Collections.emptyList(), pageRequest, totalEndorsements);
+        }
+
         int endIdx = Math.min(startIdx + pageRequest.getPageSize(), endorsements.size());
         List<EndorsementModelFromJSON> currentPageEndorsements = endorsements.subList(startIdx, endIdx);
         return new PageImpl<>(currentPageEndorsements, pageRequest, endorsements.size());

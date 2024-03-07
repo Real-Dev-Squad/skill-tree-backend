@@ -21,14 +21,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.testcontainers.shaded.com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +60,7 @@ public class EndorsementServiceTest {
 
     @BeforeEach
     public void setUp() {
-        ReflectionTestUtils.setField(endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements/endorsements.json");
+        ReflectionTestUtils.setField(endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements.json");
     }
 
     @Test

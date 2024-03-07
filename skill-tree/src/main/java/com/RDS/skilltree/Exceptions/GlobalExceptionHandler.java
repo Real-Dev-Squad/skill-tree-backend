@@ -1,9 +1,10 @@
-package com.RDS.skilltree.utils;
+package com.RDS.skilltree.Exceptions;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,5 +71,14 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new GenericResponse<>(null, ex.getMessage() ));
     }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(ConstraintViolationException ex){
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, ex.getMessage() ));
+    }
+
 
 }
