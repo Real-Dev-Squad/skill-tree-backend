@@ -92,7 +92,7 @@ public class EndorsementServiceImpl implements EndorsementService {
         int totalEndorsements = endorsements.size();
 
         if (startIdx >= totalEndorsements) {
-            return new PageImpl<>(Collections.emptyList(), pageRequest, totalEndorsements);
+            return Page.empty(pageRequest);
         }
 
         int endIdx = Math.min(startIdx + pageRequest.getPageSize(), endorsements.size());

@@ -382,4 +382,24 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                     .statusCode(400);
     }
+
+    @Test
+    @DisplayName("Return 204, given an offset value greater than maximum endorsements")
+    public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
+        given()
+                .when()
+                    .get("/v1/endorsements?offset=100")
+                .then()
+                    .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Return 204, given a negative offset value")
+    public void itShouldReturn400OnEndorsementSearchWithInvalidSkillIDOffset() {
+            given()
+                .when()
+                    .get("/v1/endorsements?offset=-100")
+                .then()
+                    .statusCode(400);
+    }
 }
