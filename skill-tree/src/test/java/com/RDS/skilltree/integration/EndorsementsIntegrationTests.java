@@ -1,4 +1,4 @@
-package com.RDS.skilltree;
+package com.RDS.skilltree.integration;
 
 import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
@@ -37,7 +37,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @BeforeEach
-    public void addData() throws MalformedURLException {
+    private void addData() throws MalformedURLException {
         user = userService.createUser(UserDRO.builder()
                 .role(UserRole.MEMBER)
                 .rdsUserId("p6Bo61VEClhtVdwW0ihg")
@@ -55,7 +55,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @AfterEach
-    public void cleanUp() {
+    private void cleanUp() {
         endorsementRepository.deleteAll();
         skillRepository.deleteAll();
         userRepository.deleteAll();
@@ -291,8 +291,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 200 with the endorsements of a particular user given userID")
-    public void testAPIReturn200_OnEndorsementSearchByUserID() {
+    @DisplayName("Return 200, along with the endorsements of a particular user given userID")
+    public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
         String userIDString = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
             given()
@@ -306,8 +306,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 200 with the endorsements of a particular skill given skillID")
-    public void testAPIReturn200_OnEndorsementSearchBySkillID() {
+    @DisplayName("Return 200, along with the endorsements of a particular skill given skillID")
+    public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
         String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
             given()
                 .when()
@@ -320,8 +320,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 200 with the endorsements matching the given userID and skillID")
-    public void testAPIReturn200_OnEndorsementSearchByBothUserIDAndSkillID() {
+    @DisplayName("Return 200, along with the endorsements matching the given userID and skillID")
+    public void itShouldReturn200OnEndorsementSearchGivenBothUserIDAndSkillID() {
         String userIDString = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
         String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
@@ -338,8 +338,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 204 when there are no endorsements present for the given userID")
-    public void testAPIReturn204_OnEndorsementSearchWithValidUserID() {
+    @DisplayName("Return 204, when there are no endorsements present for the given userID in UUID form")
+    public void itShouldReturn204OnEndorsementSearchWithValidUserIDButNotPresentInList() {
         String userIDString = UUID.randomUUID().toString();
 
             given()
@@ -350,8 +350,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 204 when there are no endorsements present for the given skillID")
-    public void testAPIReturn204_OnEndorsementSearchWithValidSkillID() {
+    @DisplayName("Return 204, when there are no endorsements present for the given skillID in UUID form")
+    public void itShouldReturn204OnEndorsementSearchWithValidSkillIDButNotPresentInList() {
         String skillIDString = UUID.randomUUID().toString();
 
             given()
@@ -362,8 +362,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 400 given an invalid userID")
-    public void testAPIReturn400_OnEndorsementSearchWithInvalidUserID() {
+    @DisplayName("Return 400, given a userID which is not a UUID")
+    public void itShouldReturn400OnEndorsementSearchWithInvalidUserID() {
         String userIDString = "invalid-user-id";
             given()
                 .when()
@@ -373,8 +373,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 400 given an invalid skillID")
-    public void testAPIReturn400_OnEndorsementSearchWithInvalidSkillID() {
+    @DisplayName("Return 400, given a skillID which is not a UUID")
+    public void itShouldReturn400OnEndorsementSearchWithInvalidSkillID() {
         String skillIDString = "invalid-skill-id";
             given()
                 .when()
