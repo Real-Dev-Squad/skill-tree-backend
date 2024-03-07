@@ -27,37 +27,26 @@ public class JWTUtils {
 
     @Value("${jwt.rds.public.key}")
     private String publicRDSKeyString;
-    private KeyFactory keyFactory;
+    /* the RSAPublicKey object converted from the public key string*/
+    private RSAPublicKey publicKey;
 
+    /* Converts the given public key string to an RSAPublicKey object. */
     @PostConstruct
-    public void init() throws NoSuchAlgorithmException {
-        keyFactory = KeyFactory.getInstance("RSA");
-    }
+    public void init() throws NoSuchAlgorithmException, InvalidKeySpecException {
+       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        publicRDSKeyString = publicRDSKeyString.replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
 
-    /**
-     * Converts the given public key string to an RSAPublicKey object.
-     *
-     * @param publicKeyString the public key string to be converted
-     * @return the RSAPublicKey object converted from the public key string
-     */
-    private RSAPublicKey convertToRSAPublicKey(String publicKeyString) {
-        try {
-            publicKeyString = publicKeyString.replace("-----BEGIN PUBLIC KEY-----", "")
-                    .replace("-----END PUBLIC KEY-----", "")
-                    .replaceAll("\\s", "");
-
-            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyString);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
-            return (RSAPublicKey) keyFactory.generatePublic(keySpec);
-        } catch (InvalidKeySpecException exception) {
-            throw new RuntimeException("Invalid RSA key");
-        }
+        byte[] publicKeyBytes = Base64.getDecoder().decode(publicRDSKeyString);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+        publicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
     }
 
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .setSigningKey(convertToRSAPublicKey(publicRDSKeyString))
+                .setSigningKey(publicKey)
                 .parseClaimsJws(token)
                 .getBody();
     }

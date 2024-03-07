@@ -38,11 +38,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/endorsements/status").hasAuthority(UserRole.SUPERUSER.label)
-                        .requestMatchers("/v1/**").hasAnyAuthority(UserRole.getAllRoles())
+                        .requestMatchers("/v1/health").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/v1/**").hasAnyAuthority(UserRole.getAllRoles()) // give read-only access to all
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

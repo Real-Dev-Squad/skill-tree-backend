@@ -8,7 +8,8 @@ import java.util.Collection;
 public enum UserRole  {
     USER("user"),
     MEMBER("member"),
-    SUPERUSER("super_user");
+    SUPERUSER("super_user"),
+    GUEST("guest");
 
     public final String label;
 
@@ -21,10 +22,10 @@ public enum UserRole  {
                 return b;
             }
         }
-        return null;
+        return UserRole.GUEST;
     }
     public static String[] getAllRoles(){
-        return  Arrays.stream(UserRole.values()).map(role -> role.label).toArray(String[]::new);
+        return  Arrays.stream(UserRole.values()).map(UserRole::name).toArray(String[]::new);
     }
 
 }

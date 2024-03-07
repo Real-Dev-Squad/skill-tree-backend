@@ -11,14 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
-private final String rdsUserId;
-private final UserRole role ;
+
+private final UserModel user ;
 
     public UserAuthenticationToken(String role, String rdsUserId) {
-        super(List.of(new SimpleGrantedAuthority(role)));
-
-        this.rdsUserId = rdsUserId;
-        this.role  = UserRole.fromString(role);
+        super(List.of(new SimpleGrantedAuthority(UserRole.fromString(role).name())));
+this.user = UserModel.builder().rdsUserId(rdsUserId).role(UserRole.fromString(role)).build();
         setAuthenticated(true);
     }
 
@@ -29,8 +27,8 @@ private final UserRole role ;
     }
 
     @Override
-    public Object getPrincipal(){
-        return UserModel.builder().rdsUserId(rdsUserId).role(role).build();
+    public UserModel getPrincipal(){
+        return user;
     }
 
 

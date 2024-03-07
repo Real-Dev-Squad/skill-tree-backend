@@ -58,9 +58,4 @@ public class EndorsementController {
 
     }
 
-    // NOTE: dummy endpoint added to check super-user authorisation
-    @PostMapping (value="/status")
-    public String updateEndorsementStatus(){
-        return "This is a Super user only route";
-    }
 }

@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
@@ -26,6 +26,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private String cookieName;
     @Autowired
     private JWTUtils jwtUtils;
+
+    private static final String bearerString = "Bearer ";
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -55,9 +57,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (RDScookie != null) return RDScookie.getValue();
 
         /* extract token from header */
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(bearerString)) {
+            return bearerToken.substring(bearerString.length());
         }
         return null;
     }
