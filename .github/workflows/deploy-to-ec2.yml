@@ -22,7 +22,7 @@ jobs:
 
       - name: Login to Amazon ECR Public
         id: login-ecr
-        run: aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URI }}
+        run: echo "${{ secrets.AWS_SECRET_ACCESS_KEY }}" | aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URI }}
 
       - name: Build Docker image
         run: docker build -t skill-tree-backend -f skill-tree/Dockerfile .
