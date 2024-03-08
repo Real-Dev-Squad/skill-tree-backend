@@ -22,9 +22,7 @@ jobs:
 
       - name: Login to Amazon ECR Public
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
+        run: aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URI }}
 
       - name: Build Docker image
         run: docker build -t skill-tree-backend -f skill-tree/Dockerfile .
