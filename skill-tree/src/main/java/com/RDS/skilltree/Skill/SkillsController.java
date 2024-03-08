@@ -26,7 +26,7 @@ public class SkillsController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createSkill(  SkillDRO skillDRO){
+    public ResponseEntity<?> createSkill(@RequestBody(required = true) @Valid  SkillDRO skillDRO){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(skillsService.createSkill(skillDRO));
         } catch(DataIntegrityViolationException ex){

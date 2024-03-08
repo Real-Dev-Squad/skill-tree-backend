@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/health").permitAll()
                         .requestMatchers(HttpMethod.GET,"/v1/**").hasAnyAuthority(UserRole.getAllRoles()) // give read-only access to all
+                        .requestMatchers("/v1/**").hasAnyAuthority(UserRole.USER.name(),UserRole.MEMBER.name(), UserRole.SUPERUSER.name())
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.accessDeniedHandler(this.accessDeniedHandler).authenticationEntryPoint(this.authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

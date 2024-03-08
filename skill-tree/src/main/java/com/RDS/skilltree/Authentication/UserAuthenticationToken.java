@@ -16,7 +16,7 @@ private final UserModel user ;
 
     public UserAuthenticationToken(String role, String rdsUserId) {
         super(List.of(new SimpleGrantedAuthority(UserRole.fromString(role).name())));
-this.user = UserModel.builder().rdsUserId(rdsUserId).role(UserRole.fromString(role)).build();
+        this.user = UserModel.builder().rdsUserId(rdsUserId).role(UserRole.fromString(role)).build();
         setAuthenticated(true);
     }
 
