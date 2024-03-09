@@ -2,6 +2,7 @@ package com.RDS.skilltree.Filters;
 
 import com.RDS.skilltree.Authentication.UserAuthenticationToken;
 import com.RDS.skilltree.utils.JWTUtils;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -26,7 +27,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private String cookieName;
     @Autowired
     private JWTUtils jwtUtils;
-
     private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
@@ -35,13 +35,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         String token = getJWTFromRequest(request);
 
 
-            if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
-                String rdsUserId = jwtUtils.getRDSUserId(token);
-                String role = jwtUtils.getUserRole(token);
+            if (StringUtils.hasText(token)) {
+                Claims claims = jwtUtils.validateToken(token);
+                String rdsUserId = jwtUtils.getRDSUserId(claims);
+                String role = jwtUtils.getUserRole(claims);
 
 
                 UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                authentication.setDetails(new WebAuthenticationDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
@@ -56,8 +58,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         /* extract token from header */
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(bearerString)) {
-            return bearerToken.substring(bearerString.length());
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(BEARER_PREFIX.length());
         }
         return null;
     }

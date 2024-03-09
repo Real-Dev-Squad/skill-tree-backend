@@ -51,27 +51,18 @@ public class JWTUtils {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
-        Claims claims = extractAllClaims(token);
 
-        final Date expiration = claims.get("exp", Date.class);
-        return expiration.before(new Date());
-    }
-
-    public String getRDSUserId(String token) {
-        Claims claims = extractAllClaims(token);
+    public String getRDSUserId(Claims claims) {
         return claims.get("userId", String.class);
     }
 
-    public String getUserRole(String token) {
-        Claims claims = extractAllClaims(token);
-
+    public String getUserRole(Claims claims) {
         return claims.get("role", String.class);
     }
 
-    public boolean validateToken(String token) {
-
-        return (!isTokenExpired(token));
+    public Claims validateToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims;
     }
 
 }

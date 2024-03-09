@@ -17,9 +17,9 @@ public enum UserRole  {
         this.label = label;
     }
     public static UserRole fromString(String text) {
-        for (  UserRole b : UserRole.values()) {
-            if (b.label.equalsIgnoreCase(text)) {
-                return b;
+        for (  UserRole role : UserRole.values()) {
+            if (role.label.equalsIgnoreCase(text)) {
+                return role;
             }
         }
         return UserRole.GUEST;
