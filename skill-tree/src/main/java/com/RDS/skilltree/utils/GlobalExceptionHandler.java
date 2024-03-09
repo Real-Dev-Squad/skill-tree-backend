@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<GenericResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse<>(null,"No Permission"+  ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse<>(null, ex.getMessage()));
     }
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
