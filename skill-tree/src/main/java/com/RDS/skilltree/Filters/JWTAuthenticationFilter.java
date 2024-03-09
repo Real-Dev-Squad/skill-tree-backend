@@ -27,7 +27,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JWTUtils jwtUtils;
 
-    private static final String bearerString = "Bearer ";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
