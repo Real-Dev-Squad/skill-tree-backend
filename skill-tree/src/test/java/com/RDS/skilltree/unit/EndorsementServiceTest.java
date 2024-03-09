@@ -344,6 +344,33 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @DisplayName("Return empty endorsement list given empty userID and skillID")
+    public void itShouldReturnEmptyDataGivenEmptyUserIDAndSkillID() throws IOException {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        String skillIDString = UUID.randomUUID().toString();
+        String userIDString = UUID.randomUUID().toString();
+
+        List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
+        dummyEndorsements.add(new EndorsementModelFromJSON(
+                UUID.randomUUID(),
+                UUID.fromString(userIDString),
+                UUID.fromString(skillIDString),
+                "APPROVED",
+                LocalDateTime.now(),
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                UUID.randomUUID()
+        ));
+
+        when(objectMapper.readValue(ArgumentMatchers.<InputStream>any(), ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                .thenReturn(dummyEndorsements);
+        Page<EndorsementModelFromJSON> result = endorsementService.getEndorsementsFromDummyData(pageRequest, "", "");
+
+        assertEquals(new PageImpl<>(dummyEndorsements, pageRequest, dummyEndorsements.size()), result);
+        assertEquals(1, result.getTotalElements());
+    }
+
+    @Test
     @DisplayName("Return empty endorsement list given a skillID which is not present")
     public void itShouldReturnEmptyDataGivenSkillIDNotPresent() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);

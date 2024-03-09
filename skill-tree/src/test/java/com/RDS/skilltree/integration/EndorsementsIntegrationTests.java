@@ -295,28 +295,29 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
         String userIDString = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
-            given()
-                .when()
-                    .get("/v1/endorsements?userID=" + userIDString)
-                .then()
-                    .statusCode(200)
-                    .contentType("application/json")
-                    .body("content", everyItem(hasKey("user_id")))
-                    .body("content.user_id", everyItem(equalTo(userIDString)));
+        Response response = given()
+                .get("/v1/endorsements?userID=" + userIDString);
+
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("content", everyItem(hasKey("user_id")))
+                .body("content.user_id", everyItem(equalTo(userIDString)));
     }
 
     @Test
     @DisplayName("Return 200, along with the endorsements of a particular skill given skillID")
     public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
         String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
-            given()
-                .when()
-                    .get("/v1/endorsements?skillID=" + skillIDString)
-                .then()
-                    .statusCode(200)
-                    .contentType("application/json")
-                    .body("content", everyItem(hasKey("skill_id")))
-                    .body("content.skill_id", everyItem(equalTo(skillIDString)));
+
+        Response response = given()
+                .get("/v1/endorsements?skillID=" + skillIDString);
+
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("content", everyItem(hasKey("skill_id")))
+                .body("content.skill_id", everyItem(equalTo(skillIDString)));
     }
 
     @Test
@@ -325,16 +326,16 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String userIDString = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
         String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
-            given()
-                .when()
-                    .get("/v1/endorsements?skillID=" + skillIDString + "&userID=" + userIDString)
-                .then()
-                    .statusCode(200)
-                    .contentType("application/json")
-                    .body("content", everyItem(hasKey("skill_id")))
-                    .body("content.skill_id", everyItem(equalTo(skillIDString)))
-                    .body("content", everyItem(hasKey("user_id")))
-                    .body("content.user_id", everyItem(equalTo(userIDString)));
+        Response response = given()
+                .get("/v1/endorsements?skillID=" + skillIDString + "&userID=" + userIDString);
+
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("content", everyItem(hasKey("skill_id")))
+                .body("content.skill_id", everyItem(equalTo(skillIDString)))
+                .body("content", everyItem(hasKey("user_id")))
+                .body("content.user_id", everyItem(equalTo(userIDString)));
     }
 
     @Test
@@ -342,11 +343,11 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn204OnEndorsementSearchWithValidUserIDButNotPresentInList() {
         String userIDString = UUID.randomUUID().toString();
 
-            given()
-                .when()
-                    .get("/v1/endorsements?userID=" + userIDString)
-                .then()
-                    .statusCode(204);
+        Response response = given()
+                .get("/v1/endorsements?userID=" + userIDString);
+
+        response.then()
+                .statusCode(204);
     }
 
     @Test
@@ -354,52 +355,54 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn204OnEndorsementSearchWithValidSkillIDButNotPresentInList() {
         String skillIDString = UUID.randomUUID().toString();
 
-            given()
-                .when()
-                    .get("/v1/endorsements?skillID=" + skillIDString)
-                .then()
-                    .statusCode(204);
+        Response response = given()
+                .get("/v1/endorsements?skillID=" + skillIDString);
+
+        response.then()
+                .statusCode(204);
     }
 
     @Test
     @DisplayName("Return 400, given a userID which is not a UUID")
     public void itShouldReturn400OnEndorsementSearchWithInvalidUserID() {
         String userIDString = "invalid-user-id";
-            given()
-                .when()
-                    .get("/v1/endorsements?userID=" + userIDString)
-                .then()
-                    .statusCode(400);
+
+        Response response = given()
+                .get("/v1/endorsements?userID=" + userIDString);
+
+        response.then()
+                .statusCode(400);
     }
 
     @Test
     @DisplayName("Return 400, given a skillID which is not a UUID")
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillID() {
         String skillIDString = "invalid-skill-id";
-            given()
-                .when()
-                    .get("/v1/endorsements?skillID=" + skillIDString)
-                .then()
-                    .statusCode(400);
+
+        Response response = given()
+                .get("/v1/endorsements?skillID=" + skillIDString);
+
+        response.then()
+                .statusCode(400);
     }
 
     @Test
     @DisplayName("Return 204, given an offset value greater than maximum endorsements")
     public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
-        given()
-                .when()
-                    .get("/v1/endorsements?offset=100")
-                .then()
-                    .statusCode(204);
+        Response response = given()
+                .get("/v1/endorsements?offset=100");
+
+        response.then()
+                .statusCode(204);
     }
 
     @Test
     @DisplayName("Return 204, given a negative offset value")
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillIDOffset() {
-            given()
-                .when()
-                    .get("/v1/endorsements?offset=-100")
-                .then()
-                    .statusCode(400);
+        Response response = given()
+                .get("/v1/endorsements?offset=-100");
+
+        response.then()
+                .statusCode(400);
     }
 }
