@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.UUID;
 
+/**
+ * Middleware to intercept request and perform UUID validation
+ */
 @Component
 public class UUIDValidationInterceptor implements HandlerInterceptor {
 
