@@ -3,11 +3,13 @@ package com.RDS.skilltree.utils;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.hibernate.validator.internal.constraintvalidators.hv.UUIDValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Middleware to intercept request and perform UUID validation
@@ -34,11 +36,9 @@ public class UUIDValidationInterceptor implements HandlerInterceptor {
     }
 
     private boolean isValidUUID(String uuidString) {
-        try {
-            UUID.fromString(uuidString);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        Pattern UUID_REGEX =
+                Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        return UUID_REGEX.matcher(uuidString).matches();
+
     }
 }
