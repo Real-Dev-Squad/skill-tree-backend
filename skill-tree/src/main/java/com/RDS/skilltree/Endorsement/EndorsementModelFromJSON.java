@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/* TODO:Dummy JSON code, needs to be changed as part of #103 */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

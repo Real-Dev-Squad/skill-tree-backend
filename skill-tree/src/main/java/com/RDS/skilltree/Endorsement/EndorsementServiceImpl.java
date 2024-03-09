@@ -51,6 +51,7 @@ public class EndorsementServiceImpl implements EndorsementService {
         return endorsementRepository.findAll(pageRequest);
     }
 
+    /* TODO:Dummy JSON code, needs to be changed as part of #103 */
     public Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest, String skillIDString, String userIDString) throws IOException {
         try {
             List<EndorsementModelFromJSON> endorsementModelFromJSONList = readEndorsementsFromJSON();
