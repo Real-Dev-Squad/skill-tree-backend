@@ -3,7 +3,6 @@ package com.RDS.skilltree.utils;
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
