@@ -4,12 +4,16 @@ import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.access.AccessDeniedException;
+
 
 import java.util.List;
 
@@ -22,6 +26,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new GenericResponse<>(null, ex.getMessage()));
+    }
+
+    @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
+    public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(Exception ex) {
+        return ResponseEntity.status( HttpStatus.UNAUTHORIZED).body(new GenericResponse<>(null, "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+    }
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<GenericResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse<>(null, ex.getMessage()));
     }
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
@@ -37,7 +50,7 @@ public class GlobalExceptionHandler {
         log.error("Runtime Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new GenericResponse<>(null, "Something went wrong, please try again." ));
+                .body(new GenericResponse<>(null, "Runtime Exception - Something went wrong, please try again." ));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -59,6 +72,6 @@ public class GlobalExceptionHandler {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new GenericResponse<>(null, "Something went wrong, please try again." ));
+                .body(new GenericResponse<>(null, "Something unexpected happened, please try again." ));
     }
 }
