@@ -32,7 +32,8 @@ jobs:
           IMAGE_TAG: latest
         run: |
           docker build -t skill-tree-backend -f skill-tree/Dockerfile .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY/skill-tree-backend:$IMAGE_TAG
+          docker tag skill-tree-backend:latest public.ecr.aws/f8t4v7s2/skill-tree-backend:latest
+          docker push public.ecr.aws/f8t4v7s2/skill-tree-backend:latest
 
       - name: Push Docker image to ECR Public
         run: docker push ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
