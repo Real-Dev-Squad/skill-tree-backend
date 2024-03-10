@@ -18,17 +18,19 @@ import java.util.regex.Pattern;
 public class UUIDValidationInterceptor implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(UUIDValidationInterceptor.class);
+    private static final Pattern UUID_REGEX =
+            Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String skillIdString = request.getParameter("skillID");
-        String userIdString = request.getParameter("userID");
+        String skillID = request.getParameter("skillID");
+        String userID = request.getParameter("userID");
 
-        if (skillIdString != null && !skillIdString.isEmpty() && !isValidUUID(skillIdString)) {
+        if (skillID != null && !skillID.isEmpty() && !isValidUUID(skillID)) {
             throw new InvalidParameterException("skillID","Invalid UUID format");
         }
 
-        if (userIdString != null && !userIdString.isEmpty() && !isValidUUID(userIdString)) {
+        if (userID != null && !userID.isEmpty() && !isValidUUID(userID)) {
             throw new InvalidParameterException("userID","Invalid UUID format");
         }
 
@@ -36,9 +38,7 @@ public class UUIDValidationInterceptor implements HandlerInterceptor {
     }
 
     private boolean isValidUUID(String uuidString) {
-        Pattern UUID_REGEX =
-                Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-        return UUID_REGEX.matcher(uuidString).matches();
 
+        return UUID_REGEX.matcher(uuidString).matches();
     }
 }

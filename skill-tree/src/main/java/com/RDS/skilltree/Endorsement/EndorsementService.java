@@ -9,6 +9,6 @@ public interface EndorsementService {
     EndorsementDTO getEndorsementById(UUID id);
     Page<EndorsementModel> getEndorsements(PageRequest pageRequest);
     /* TODO:Dummy JSON code, needs to be changed as part of #103 */
-    Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest,String userIDString,String skillIDString) throws IOException;
+    Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest,String skillID,String userID) throws IOException;
     EndorsementModel createEndorsement(EndorsementDRO endorsementDRO);
 }

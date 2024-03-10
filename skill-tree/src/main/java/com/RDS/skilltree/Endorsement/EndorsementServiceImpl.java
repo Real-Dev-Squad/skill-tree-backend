@@ -52,7 +52,7 @@ public class EndorsementServiceImpl implements EndorsementService {
     }
 
     /* TODO:Dummy JSON code, needs to be changed as part of #103 */
-    public Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest, String skillIDString, String userIDString) throws IOException {
+    public Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest, String skillID, String userID) throws IOException {
         try {
             List<EndorsementModelFromJSON> endorsementModelFromJSONList = readEndorsementsFromJSON();
 
@@ -60,7 +60,7 @@ public class EndorsementServiceImpl implements EndorsementService {
                 return Page.empty(pageRequest);
             }
 
-            List<EndorsementModelFromJSON> filteredEndorsements = filterEndorsements(endorsementModelFromJSONList, skillIDString, userIDString);
+            List<EndorsementModelFromJSON> filteredEndorsements = filterEndorsements(endorsementModelFromJSONList, skillID, userID);
             return createPagedEndorsements(filteredEndorsements, pageRequest);
         } catch (IOException e) {
             logger.error("Error reading endorsements JSON data: {}", e.getMessage());
@@ -73,19 +73,19 @@ public class EndorsementServiceImpl implements EndorsementService {
         return objectMapper.readValue(resource.getInputStream(), new TypeReference<List<EndorsementModelFromJSON>>() {});
     }
 
-    private List<EndorsementModelFromJSON> filterEndorsements(List<EndorsementModelFromJSON> endorsements, String skillIDString, String userIDString) {
+    private List<EndorsementModelFromJSON> filterEndorsements(List<EndorsementModelFromJSON> endorsements, String skillID, String userID) {
         return endorsements.stream()
-                .filter(endorsement -> isMatchingSkillId(endorsement, skillIDString))
-                .filter(endorsement -> isMatchingUserId(endorsement, userIDString))
+                .filter(endorsement -> isMatchingSkillId(endorsement, skillID))
+                .filter(endorsement -> isMatchingUserId(endorsement, userID))
                 .collect(Collectors.toList());
     }
 
-    private boolean isMatchingSkillId(EndorsementModelFromJSON endorsement, String skillIDString) {
-        return skillIDString == null || skillIDString.isEmpty() || endorsement.getSkillId().equals(UUID.fromString(skillIDString));
+    private boolean isMatchingSkillId(EndorsementModelFromJSON endorsement, String skillID) {
+        return skillID == null || skillID.isEmpty() || endorsement.getSkillId().equals(UUID.fromString(skillID));
     }
 
-    private boolean isMatchingUserId(EndorsementModelFromJSON endorsement, String userIDString) {
-        return userIDString == null || userIDString.isEmpty() || endorsement.getUserID().equals(UUID.fromString(userIDString));
+    private boolean isMatchingUserId(EndorsementModelFromJSON endorsement, String userID) {
+        return userID == null || userID.isEmpty() || endorsement.getUserID().equals(UUID.fromString(userID));
     }
 
     private Page<EndorsementModelFromJSON> createPagedEndorsements(List<EndorsementModelFromJSON> endorsements, PageRequest pageRequest) {

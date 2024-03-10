@@ -29,11 +29,11 @@ public class EndorsementController {
     public ResponseEntity<Page<EndorsementModelFromJSON>>  getAllEndorsements(
             @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
             @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
-            @RequestParam(name = "skillID", required = false) String skillIdString,
-            @RequestParam(name = "userID", required = false) String userIdString
+            @RequestParam(name = "skillID", required = false) String skillID,
+            @RequestParam(name = "userID", required = false) String userID
     ) throws IOException {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        Page<EndorsementModelFromJSON> pagedEndorsements = endorsementService.getEndorsementsFromDummyData(pageRequest,skillIdString,userIdString);
+        Page<EndorsementModelFromJSON> pagedEndorsements = endorsementService.getEndorsementsFromDummyData(pageRequest,skillID,userID);
         if(pagedEndorsements.isEmpty()){
             return ResponseEntity.noContent().build();
         }else{
