@@ -6,7 +6,7 @@ on:
       - docker-aws
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,9 +31,15 @@ jobs:
 
       - name: Push Docker image to ECR Public
         run: docker push ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
-      - name: Pull Image from ECR
+
+  deploy: 
+    needs: build-and-push
+    runs-on: [skill-tree-ec2]
+    steps:
+      - name: Pull Image from docker hub
         run: docker pull ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
       - name: Delete old container
         run: docker rm -f skill-tree-backend
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name skill-tree-backend ${{ secrets.AWS_ECR_URI }}/skill-tree-ba
+        run: docker run -d -p 8080:8080 --name skill-tree-backend ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
+      
