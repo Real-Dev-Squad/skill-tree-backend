@@ -21,19 +21,20 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR Public
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
 
-      - name: Build and push the tagged docker image to Amazon ECR
-        id : containerImage
+      - name: Build, tag, and push docker image to Amazon ECR Public
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{secrets.AWS_ECR_URI}}
-          IMAGE_TAG: latest
+          REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+          REGISTRY_ALIAS: f8t4v7s2
+          REPOSITORY: skill-tree-backend
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t skill-tree-backend -f skill-tree/Dockerfile .
-          docker tag skill-tree-backend:latest public.ecr.aws/f8t4v7s2/skill-tree-backend:latest
-          docker push public.ecr.aws/f8t4v7s2/skill-tree-backend:latest
+          docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG -f skill-tree/Dockerfile .
+          docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
 
       - name: Push Docker image to ECR Public
         run: docker push ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
