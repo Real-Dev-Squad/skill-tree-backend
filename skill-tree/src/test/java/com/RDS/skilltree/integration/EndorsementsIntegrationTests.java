@@ -293,58 +293,58 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 200, along with the endorsements of a particular user given userID")
     public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
-        String userIDString = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
+        String userID = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
         Response response = given()
-                .get("/v1/endorsements?userID=" + userIDString);
+                .get("/v1/endorsements?userID=" + userID);
 
         response.then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("user_id")))
-                .body("content.user_id", everyItem(equalTo(userIDString)));
+                .body("content.user_id", everyItem(equalTo(userID)));
     }
 
     @Test
     @DisplayName("Return 200, along with the endorsements of a particular skill given skillID")
     public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
-        String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
+        String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
         Response response = given()
-                .get("/v1/endorsements?skillID=" + skillIDString);
+                .get("/v1/endorsements?skillID=" + skillID);
 
         response.then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("skill_id")))
-                .body("content.skill_id", everyItem(equalTo(skillIDString)));
+                .body("content.skill_id", everyItem(equalTo(skillID)));
     }
 
     @Test
     @DisplayName("Return 200, along with the endorsements matching the given userID and skillID")
     public void itShouldReturn200OnEndorsementSearchGivenBothUserIDAndSkillID() {
-        String userIDString = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
-        String skillIDString = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
+        String userID = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
+        String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
         Response response = given()
-                .get("/v1/endorsements?skillID=" + skillIDString + "&userID=" + userIDString);
+                .get("/v1/endorsements?skillID=" + skillID + "&userID=" + userID);
 
         response.then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("skill_id")))
-                .body("content.skill_id", everyItem(equalTo(skillIDString)))
+                .body("content.skill_id", everyItem(equalTo(skillID)))
                 .body("content", everyItem(hasKey("user_id")))
-                .body("content.user_id", everyItem(equalTo(userIDString)));
+                .body("content.user_id", everyItem(equalTo(userID)));
     }
 
     @Test
     @DisplayName("Return 204, when there are no endorsements present for the given userID in UUID form")
     public void itShouldReturn204OnEndorsementSearchWithValidUserIDButNotPresentInList() {
-        String userIDString = UUID.randomUUID().toString();
+        String userID = UUID.randomUUID().toString();
 
         Response response = given()
-                .get("/v1/endorsements?userID=" + userIDString);
+                .get("/v1/endorsements?userID=" + userID);
 
         response.then()
                 .statusCode(204);
@@ -353,10 +353,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 204, when there are no endorsements present for the given skillID in UUID form")
     public void itShouldReturn204OnEndorsementSearchWithValidSkillIDButNotPresentInList() {
-        String skillIDString = UUID.randomUUID().toString();
+        String skillID = UUID.randomUUID().toString();
 
         Response response = given()
-                .get("/v1/endorsements?skillID=" + skillIDString);
+                .get("/v1/endorsements?skillID=" + skillID);
 
         response.then()
                 .statusCode(204);
@@ -365,10 +365,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 400, given a userID which is not a UUID")
     public void itShouldReturn400OnEndorsementSearchWithInvalidUserID() {
-        String userIDString = "invalid-user-id";
+        String userID = "invalid-user-id";
 
         Response response = given()
-                .get("/v1/endorsements?userID=" + userIDString);
+                .get("/v1/endorsements?userID=" + userID);
 
         response.then()
                 .statusCode(400);
@@ -377,10 +377,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 400, given a skillID which is not a UUID")
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillID() {
-        String skillIDString = "invalid-skill-id";
+        String skillID = "invalid-skill-id";
 
         Response response = given()
-                .get("/v1/endorsements?skillID=" + skillIDString);
+                .get("/v1/endorsements?skillID=" + skillID);
 
         response.then()
                 .statusCode(400);
