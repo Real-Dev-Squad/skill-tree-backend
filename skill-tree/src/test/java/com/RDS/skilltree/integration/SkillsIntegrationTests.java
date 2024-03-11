@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import utils.RestAPIHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,6 +63,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
         Response response = given()
                 .queryParam("offset", 0)
                 .queryParam("limit", 1)
+                .cookies(RestAPIHelper.getUserCookie())
                 .get("/v1/skills/");
 
         response.then()
@@ -84,6 +86,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     public void testAPIReturns200_OnNoSkillsFound() {
         skillRepository.deleteAll();
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .get("/v1/skills/");
 
         response.then()
@@ -104,6 +107,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
         UUID skillId = skill.getId();
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("id", skillId)
                 .get("/v1/skills/{id}");
 
@@ -120,6 +124,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     public void testAPIReturns404_OnSkillNotFound() {
         UUID skillId = UUID.randomUUID();
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("id", skillId)
                 .get("/v1/skills/{id}");
 
@@ -133,6 +138,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 200, on skill with given name")
     public void testAPIReturns200_OnSkillFoundGivenName() {
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("name", "Java")
                 .get("/v1/skills/name/{name}");
 
@@ -148,6 +154,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 404, if skill given skill name is not found")
     public void testAPIReturns404_OnSkillGivenSkillNameNotFound() {
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("name", "Go")
                 .get("/v1/skills/name/{name}");
 
@@ -166,6 +173,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .build();
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -185,6 +193,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .build();
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -204,6 +213,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .build();
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -224,6 +234,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .build();
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");
@@ -243,6 +254,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
                 .build();
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(skillDRO)
                 .post("/v1/skills/");

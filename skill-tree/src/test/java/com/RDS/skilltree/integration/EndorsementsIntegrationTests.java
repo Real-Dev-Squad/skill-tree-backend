@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import utils.RestAPIHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -85,6 +86,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
   ]
 }        */
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .get("/endorsements");
 
         response.then()
@@ -108,6 +110,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Fetch all the endorsements given endorsement status")
     public void testAPIReturnsEndorsementsGivenStatus() {
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .queryParam("status", "PENDING")
                 .get("/endorsements");
 
@@ -131,6 +134,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 400 on invalid endorsement status passed")
     public void testAPIReturns400_OnInvalidStatusPassed() {
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .queryParam("status", "APPROVAL")
                 .get("/endorsements");
 
@@ -146,6 +150,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void testAPIReturns400_OnInvalidParameterPassed() {
         String endorsementId = "randomId";
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("endorsementId", endorsementId)
                 .patch("/endorsements");
 
@@ -165,6 +170,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         endorsementDRO.setUserId(userId);
         endorsementDRO.setSkillId(skillId);
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(endorsementDRO)
                 .post("/v1/endorsements");
@@ -187,6 +193,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
         endorsementDRO.setSkillId(skillId);
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(endorsementDRO)
                 .post("/v1/endorsements");
@@ -208,6 +215,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         endorsementDRO.setUserId(userId);
 
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .contentType("application/json")
                 .body(endorsementDRO)
                 .post("/v1/endorsements");
@@ -226,6 +234,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void testAPIReturns200_OnEndorsementGivenId() {
         String endorsementId = "e-1";
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("endorsementId", endorsementId)
                 .patch("/endorsements");
 
@@ -266,6 +275,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void testAPIReturn400_OnInvalidIdPassed() {
         String endorsementId = "randomId";
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("endorsementId", endorsementId)
                 .get("/endorsements");
 
@@ -281,6 +291,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void testAPIReturn404_OnEndorsementNotFound() {
         String endorsementId = "randomId";
         Response response = given()
+                .cookies(RestAPIHelper.getUserCookie())
                 .pathParam("endorsementId", endorsementId)
                 .get("/endorsements");
 
