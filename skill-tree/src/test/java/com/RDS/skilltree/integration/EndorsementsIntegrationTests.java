@@ -307,6 +307,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String userID = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?userID=" + userID);
 
         response.then()
@@ -322,6 +323,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?skillID=" + skillID);
 
         response.then()
@@ -338,6 +340,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?skillID=" + skillID + "&userID=" + userID);
 
         response.then()
@@ -355,6 +358,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String userID = UUID.randomUUID().toString();
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?userID=" + userID);
 
         response.then()
@@ -367,6 +371,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String skillID = UUID.randomUUID().toString();
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?skillID=" + skillID);
 
         response.then()
@@ -379,6 +384,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String userID = "invalid-user-id";
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?userID=" + userID);
 
         response.then()
@@ -391,6 +397,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String skillID = "invalid-skill-id";
 
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?skillID=" + skillID);
 
         response.then()
@@ -401,6 +408,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 204, given an offset value greater than maximum endorsements")
     public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?offset=100");
 
         response.then()
@@ -408,12 +416,24 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 204, given a negative offset value")
+    @DisplayName("Return 400, given a negative offset value")
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillIDOffset() {
         Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
                 .get("/v1/endorsements?offset=-100");
 
         response.then()
                 .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Return 401, when request is made without a valid cookie")
+    public void itShouldReturn401OnEndorsementSearchWithoutCookie() {
+        Response response = given()
+                .get("/v1/endorsements");
+
+        response.then()
+                .statusCode(401)
+                .body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons."));
     }
 }
