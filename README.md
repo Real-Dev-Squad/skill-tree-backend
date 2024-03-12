@@ -171,6 +171,14 @@ Now you can connect to the mysql running in the docker container, also to connec
 10. Click the green "Run" button or "Shift + F10" to start the application
 11. After starting the Tomcat server on port `8080`, attempt to access the dummy route `http://localhost:8080/test` using the `GET` method in Postman or ThunderClient while providing the `bearer token`. If the terminal displays `test123`, it indicates that the setup has been successful.
 
+## Contributing
+### Code Formatting
+
+This repo uses https://github.com/diffplug/spotless/tree/main/plugin-maven#java for formatting files.
+Please run `mvn spotless:apply` before check-in to fix any formatting errors.
+
+The Continuous Integration build for pushed commits may fail when a Pull Request is created if formatting is not applied.
+
 ## Known Issues Faced by Other Developers
 1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)
 2. Local MySQL Conflict: Make sure there is no local Mysql running on the local machine
