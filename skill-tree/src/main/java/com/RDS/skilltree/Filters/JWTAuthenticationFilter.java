@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,34 +19,32 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-import java.io.IOException;
-
 @Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${cookieName}")
     private String cookieName;
-    @Autowired
-    private JWTUtils jwtUtils;
+
+    @Autowired private JWTUtils jwtUtils;
     private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String token = getJWTFromRequest(request);
 
+        if (StringUtils.hasText(token)) {
+            Claims claims = jwtUtils.validateToken(token);
+            String rdsUserId = jwtUtils.getRDSUserId(claims);
+            String role = jwtUtils.getUserRole(claims);
 
-            if (StringUtils.hasText(token)) {
-                Claims claims = jwtUtils.validateToken(token);
-                String rdsUserId = jwtUtils.getRDSUserId(claims);
-                String role = jwtUtils.getUserRole(claims);
+            UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
 
-
-                UserAuthenticationToken authentication = new UserAuthenticationToken(role, rdsUserId);
-
-                authentication.setDetails(new WebAuthenticationDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            authentication.setDetails(new WebAuthenticationDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
 
         filterChain.doFilter(request, response);
     }

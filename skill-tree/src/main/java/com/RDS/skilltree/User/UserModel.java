@@ -5,11 +5,10 @@ import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.net.URL;
 import java.util.Set;
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Getter
@@ -43,7 +42,9 @@ public class UserModel extends TrackedProperties {
 
     @JsonManagedReference
     @ManyToMany(targetEntity = SkillModel.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    @JoinTable(
+            name = "user_skill",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<SkillModel> skills;
-
 }

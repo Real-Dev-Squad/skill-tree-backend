@@ -1,14 +1,11 @@
 package com.RDS.skilltree.User;
 
+import java.net.URL;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.usertype.UserType;
-
-import java.net.URL;
-import java.time.Instant;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +32,7 @@ public class UserDRO {
                 .build();
     }
 
-    public static UserDRO fromModel(UserModel user){
+    public static UserDRO fromModel(UserModel user) {
         return UserDRO.builder()
                 .rdsUserId(user.getRdsUserId())
                 .role(user.getRole())
@@ -66,4 +63,3 @@ public class UserDRO {
         return user;
     }
 }
-

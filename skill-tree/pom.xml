@@ -165,11 +165,18 @@
                             <style>GOOGLE</style>
                             <formatJavadoc>false</formatJavadoc>
                         </googleJavaFormat>
+                        <indent>
+                            <tabs>true</tabs>
+                            <spacesPerTab>2</spacesPerTab>
+                        </indent>
+                        <indent>
+                            <spaces>true</spaces>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
                         <trimTrailingWhitespace/>
                         <endWithNewline/>
                         <importOrder />
                         <removeUnusedImports />
-                        <formatAnnotations />
                     </java>
                 </configuration>
                 <executions>
