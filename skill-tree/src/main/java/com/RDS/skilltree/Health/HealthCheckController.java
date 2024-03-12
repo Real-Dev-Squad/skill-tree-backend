@@ -24,6 +24,6 @@ public class HealthCheckController {
     @GetMapping("")
     public Map<String, Object> checkHealth() {
         double uptime = metricService.getUptime();
-        return Map.of("Mehul", uptime);
+        return Map.of("uptimeInSeconds", uptime);
     }
 }
