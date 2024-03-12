@@ -145,22 +145,25 @@ paths:
     get:
       tags:
         - endorsements
-      summary: Fetch all endorsements / filter for a status
-      description: Fetch all endorsements / fetch for a given status
+      summary: Fetch all endorsements / query based on skillID and userID
+      description: Fetch all endorsements / query based on skillID and userID
       operationId: getEndorsements
       parameters:
-        - name: status
+        - name: userID
           in: query
-          description: Status values that need to be considered for filter
+          description: The ID of the user
           required: false
-          explode: true
           schema:
             type: string
-            default: PENDING_APPROVAL
-            enum:
-              - PENDING_APPROVAL
-              - APPROVED
-              - REJECTED
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        - name: skillID
+          in: query
+          description: The ID of the skill 
+          required: false
+          schema:
+            type: string
+            example: 550e8400-e29b-41d4-a716-446655440000
+      
       responses:
         '200':
           description: successful operation
@@ -169,23 +172,29 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/endorsementResponse'
+                  $ref: '#/components/schemas/DummyEndorsementResponse'
+
+        '204':
+          description: endorsement not found
 
         '400':
-          description: Invalid status value
+          description: Invalid parameter(s)
           content:
             application/json:
               schema:
-                type: object
                 $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+              examples:
+                invalidParameterUUID:
+                  value:
+                    code: BAD_REQUEST
+                    message: Invalid parameter(s) provided
+
         '503':
           description: Service Unavailable
           content:
             application/json:
               schema:
-                type: object
-                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'  
-
+                $ref: '#/components/schemas/ApiResponseFailureServiceUnavailable'
     post:
       tags:
         - endorsements
@@ -422,6 +431,89 @@ components:
         userName: 
           type: string
           example: John doe
+
+    DummyEndorsementResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/DummyEndorsement'
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        last:
+          type: boolean
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        first:
+          type: boolean
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: '#/components/schemas/Sort'
+        numberOfElements:
+          type: integer
+        empty:
+          type: boolean
+
+    DummyEndorsement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: ["PENDING", "APPROVED"]
+        user_id:
+          type: string
+          format: uuid
+        skill_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+          format: uuid
+        updated_at:
+          type: string
+          format: date-time
+        updated_by:
+          type: string
+          format: uuid
+
+    Pageable:
+      type: object
+      properties:
+        sort:
+          $ref: '#/components/schemas/Sort'
+        offset:
+          type: integer
+        pageSize:
+          type: integer
+        pageNumber:
+          type: integer
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+
           
     ApiResponseFailureAllSkills:
       type: object

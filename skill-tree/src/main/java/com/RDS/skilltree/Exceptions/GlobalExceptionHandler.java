@@ -1,8 +1,10 @@
-package com.RDS.skilltree.utils;
+package com.RDS.skilltree.Exceptions;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
@@ -74,4 +76,22 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new GenericResponse<>(null, "Something unexpected happened, please try again." ));
     }
+
+    @ExceptionHandler({InvalidParameterException.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(InvalidParameterException ex){
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, ex.getMessage() ));
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(ConstraintViolationException ex){
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, ex.getMessage() ));
+    }
+
+
 }

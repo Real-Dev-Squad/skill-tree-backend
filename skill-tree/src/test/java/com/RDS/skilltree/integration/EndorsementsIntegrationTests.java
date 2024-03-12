@@ -1,4 +1,4 @@
-package com.RDS.skilltree;
+package com.RDS.skilltree.integration;
 
 import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
@@ -301,4 +301,139 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("message", equalTo("Endorsement not found"));
     }
 
+    @Test
+    @DisplayName("Return 200, along with the endorsements of a particular user given userID")
+    public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
+        String userID = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?userID=" + userID);
+
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("content", everyItem(hasKey("user_id")))
+                .body("content.user_id", everyItem(equalTo(userID)));
+    }
+
+    @Test
+    @DisplayName("Return 200, along with the endorsements of a particular skill given skillID")
+    public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
+        String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?skillID=" + skillID);
+
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("content", everyItem(hasKey("skill_id")))
+                .body("content.skill_id", everyItem(equalTo(skillID)));
+    }
+
+    @Test
+    @DisplayName("Return 200, along with the endorsements matching the given userID and skillID")
+    public void itShouldReturn200OnEndorsementSearchGivenBothUserIDAndSkillID() {
+        String userID = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
+        String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?skillID=" + skillID + "&userID=" + userID);
+
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("content", everyItem(hasKey("skill_id")))
+                .body("content.skill_id", everyItem(equalTo(skillID)))
+                .body("content", everyItem(hasKey("user_id")))
+                .body("content.user_id", everyItem(equalTo(userID)));
+    }
+
+    @Test
+    @DisplayName("Return 204, when there are no endorsements present for the given userID in UUID form")
+    public void itShouldReturn204OnEndorsementSearchWithValidUserIDButNotPresentInList() {
+        String userID = UUID.randomUUID().toString();
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?userID=" + userID);
+
+        response.then()
+                .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Return 204, when there are no endorsements present for the given skillID in UUID form")
+    public void itShouldReturn204OnEndorsementSearchWithValidSkillIDButNotPresentInList() {
+        String skillID = UUID.randomUUID().toString();
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?skillID=" + skillID);
+
+        response.then()
+                .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Return 400, given a userID which is not a UUID")
+    public void itShouldReturn400OnEndorsementSearchWithInvalidUserID() {
+        String userID = "invalid-user-id";
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?userID=" + userID);
+
+        response.then()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Return 400, given a skillID which is not a UUID")
+    public void itShouldReturn400OnEndorsementSearchWithInvalidSkillID() {
+        String skillID = "invalid-skill-id";
+
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?skillID=" + skillID);
+
+        response.then()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Return 204, given an offset value greater than maximum endorsements")
+    public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?offset=100");
+
+        response.then()
+                .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Return 400, given a negative offset value")
+    public void itShouldReturn400OnEndorsementSearchWithInvalidSkillIDOffset() {
+        Response response = given()
+                .cookies(RestAPIHelper.getGuestUserCookie())
+                .get("/v1/endorsements?offset=-100");
+
+        response.then()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Return 401, when request is made without a valid cookie")
+    public void itShouldReturn401OnEndorsementSearchWithoutCookie() {
+        Response response = given()
+                .get("/v1/endorsements");
+
+        response.then()
+                .statusCode(401)
+                .body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+    }
 }

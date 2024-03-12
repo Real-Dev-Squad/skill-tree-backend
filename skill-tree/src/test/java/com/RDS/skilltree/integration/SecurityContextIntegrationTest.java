@@ -1,4 +1,4 @@
-package com.RDS.skilltree;
+package com.RDS.skilltree.integration;
 
 import com.RDS.skilltree.Skill.SkillDRO;
 import com.RDS.skilltree.Skill.SkillType;
