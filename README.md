@@ -175,9 +175,11 @@ Now you can connect to the mysql running in the docker container, also to connec
 ### Code Formatting
 
 This repo uses https://github.com/diffplug/spotless/tree/main/plugin-maven#java for formatting files.
-Please run `mvn spotless:apply` before check-in to fix any formatting errors.
 
-The Continuous Integration build for pushed commits may fail when a Pull Request is created if formatting is not applied.
+Please build using `mvn compile` in local or run `mvn spotless:apply` before pushing the code to fix any formatting errors.
+To check if the codebase is formatted, you can explicitly use `mvn spotless:check`
+
+The Continuous Integration build for pushed commits may fail when a Pull Request is created if your code doesn't follow project's formatting guideline.
 
 ## Known Issues Faced by Other Developers
 1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)

@@ -137,6 +137,25 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>local-build-profile</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spotless.goal>apply</spotless.goal>
+            </properties>
+        </profile>
+        <profile>
+            <id>git-build-profile</id>
+            <properties>
+                <spotless.goal>check</spotless.goal>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -181,9 +200,9 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>check</goal>
+                            <goal>${spotless.goal}</goal>
                         </goals>
                     </execution>
                 </executions>
