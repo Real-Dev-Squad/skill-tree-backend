@@ -160,7 +160,7 @@ Now you can connect to the mysql running in the docker container, also to connec
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                    -----END PUBLIC KEY-----"
    ```
-   Note : Publickey in both backend and skilltree backend should be the same.
+  > Note : Publickey in both backend and skilltree backend should be the same.
 3. Click "Edit Configurations" -> Create a new application.
 4. Give it a name instead of "Unnamed".
 5. In "Build and Run", select Java 17.
@@ -170,6 +170,16 @@ Now you can connect to the mysql running in the docker container, also to connec
 9. Retrieve the Bearer token by accessing `http://localhost:3000/auth/github/login` and locating the key `rds-session-development` in the application. The value associated with this key is the `Bearer token`.
 10. Click the green "Run" button or "Shift + F10" to start the application
 11. After starting the Tomcat server on port `8080`, attempt to access the dummy route `http://localhost:8080/test` using the `GET` method in Postman or ThunderClient while providing the `bearer token`. If the terminal displays `test123`, it indicates that the setup has been successful.
+
+## To Authenticate Yourself
+
+Using Website - backend
+On Local - https://localhost:3000/auth/github/login?redirectURL=https://staging-status.realdevsquad.com/tasks?v2=true
+This will create a cookie in your browser `rds-session-v2-development`
+
+On Staging - https://staging-api.realdevsquad.com/auth/github/login?redirectURL=https://staging-status.realdevsquad.com/tasks?v2=true
+This will create a cookie in your browser `rds-session-v2-staging`
+
 
 ## Known Issues Faced by Other Developers
 1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)
