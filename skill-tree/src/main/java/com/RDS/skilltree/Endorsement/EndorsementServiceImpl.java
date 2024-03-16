@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +32,13 @@ public class EndorsementServiceImpl implements EndorsementService {
     @Override
     public Page<EndorsementModel> getEndorsements(PageRequest pageRequest) {
         return endorsementRepository.findAll(pageRequest);
+    }
+
+    @Override
+    public Page<EndorsementModelFromJSON> getEndorsementsFromDummyData(PageRequest pageRequest, String skillID, String userID) throws IOException {
+
+        //TODO: temporary stub, implement in followup PR
+        return null;
     }
 
     @Override
