@@ -2,10 +2,9 @@ package com.RDS.skilltree.Endorsement;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
 
 /* TODO:Dummy JSON code, needs to be changed as part of #103 */
 @Data
@@ -37,5 +36,4 @@ public class EndorsementModelFromJSON {
 
     @JsonProperty("updated_by")
     private UUID updatedBy;
-
 }
