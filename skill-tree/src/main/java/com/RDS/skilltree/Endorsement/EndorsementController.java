@@ -4,6 +4,7 @@ import com.RDS.skilltree.Common.Response.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +23,20 @@ public class EndorsementController {
     private final EndorsementService endorsementService;
 
     @GetMapping(value = "")
-    public Page<EndorsementModel> getAllEndorsements(
+    public ResponseEntity<Page<EndorsementModelFromJSON>> getAllEndorsements(
             @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
-            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit) {
+            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
+            @RequestParam(name = "skillID", required = false) String skillID,
+            @RequestParam(name = "userID", required = false) String userID)
+            throws IOException {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        return endorsementService.getEndorsements(pageRequest);
+        Page<EndorsementModelFromJSON> pagedEndorsements =
+                endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
+        if (pagedEndorsements.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(pagedEndorsements);
+        }
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
