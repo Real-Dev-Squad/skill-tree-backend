@@ -4,6 +4,7 @@ import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
 import com.RDS.skilltree.Endorsement.*;
 import io.restassured.response.Response;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +19,7 @@ import static org.hamcrest.Matchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Category(IntegrationTest.class)
 public class EndorsementsIntegrationTests extends TestContainerManager {
 
     private UserRepository userRepository;

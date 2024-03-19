@@ -5,12 +5,14 @@ import static org.mockito.Mockito.*;
 
 import com.RDS.skilltree.Health.HealthCheckController;
 import com.RDS.skilltree.metrics.MetricService;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-class HealthCheckTest {
+@Category(UnitTest.class)
+public class HealthCheckTest {
 
     @Mock private MetricService metricService;
 

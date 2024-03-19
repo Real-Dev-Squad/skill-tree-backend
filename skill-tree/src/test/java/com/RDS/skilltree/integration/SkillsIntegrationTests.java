@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import utils.RestAPIHelper;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Category(IntegrationTest.class)
 public class SkillsIntegrationTests extends TestContainerManager {
     private UserRepository userRepository;
     private SkillRepository skillRepository;

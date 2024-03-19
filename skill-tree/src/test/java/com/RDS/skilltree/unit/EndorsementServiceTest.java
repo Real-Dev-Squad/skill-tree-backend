@@ -17,7 +17,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ExtendWith(MockitoExtension.class)
+@Category(UnitTest.class)
 public class EndorsementServiceTest {
     @Mock private EndorsementRepository endorsementRepository;
 
@@ -77,7 +79,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    void testCreateEndorsement() {
+    public void testCreateEndorsement() {
         // Mock data
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
@@ -113,7 +115,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    void testCreateEndorsementWithInvalidUser() {
+    public void testCreateEndorsementWithInvalidUser() {
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
@@ -134,7 +136,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    void testCreateEndorsementWithInvalidSkill() {
+    public void testCreateEndorsementWithInvalidSkill() {
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
