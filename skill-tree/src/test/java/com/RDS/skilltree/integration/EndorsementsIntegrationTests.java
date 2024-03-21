@@ -1,20 +1,19 @@
 package com.RDS.skilltree.integration;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
+import com.RDS.skilltree.Endorsement.*;
 import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
-import com.RDS.skilltree.Endorsement.*;
 import io.restassured.response.Response;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.UUID;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import utils.RestAPIHelper;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.UUID;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -29,7 +28,12 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     private EndorsementRepository endorsementRepository;
 
     @Autowired
-    public EndorsementsIntegrationTests(UserService userService, UserRepository userRepository, SkillsService skillsService, SkillRepository skillRepository, EndorsementRepository endorsementRepository) {
+    public EndorsementsIntegrationTests(
+            UserService userService,
+            UserRepository userRepository,
+            SkillsService skillsService,
+            SkillRepository skillRepository,
+            EndorsementRepository endorsementRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.skillsService = skillsService;
@@ -39,20 +43,21 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
     @BeforeEach
     private void addData() throws MalformedURLException {
-        user = userService.createUser(UserDRO.builder()
-                .role(UserRole.MEMBER)
-                .rdsUserId("p6Bo61VEClhtVdwW0ihg")
-                .lastName("Doe")
-                .firstName("John")
-                .imageUrl(new URL("https://res.cloudinary.com/realdevsquad/image/upload/v1666193594/profile/p6Bo61VEClhtVdwW0iGH/lezguwdq5bgzawa3.jpg"))
-                .build());
+        user =
+                userService.createUser(
+                        UserDRO.builder()
+                                .role(UserRole.MEMBER)
+                                .rdsUserId("p6Bo61VEClhtVdwW0ihg")
+                                .lastName("Doe")
+                                .firstName("John")
+                                .imageUrl(
+                                        new URL(
+                                                "https://res.cloudinary.com/realdevsquad/image/upload/v1666193594/profile/p6Bo61VEClhtVdwW0iGH/lezguwdq5bgzawa3.jpg"))
+                                .build());
 
-        skill = skillsService.createSkill(
-                SkillDRO.builder()
-                        .name("Java")
-                        .type(SkillType.ATOMIC)
-                        .createdBy(user.getId())
-                        .build());
+        skill =
+                skillsService.createSkill(
+                        SkillDRO.builder().name("Java").type(SkillType.ATOMIC).createdBy(user.getId()).build());
     }
 
     @AfterEach
@@ -66,30 +71,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Disabled
     @DisplayName("Fetch all the endorsements")
     public void testAPIReturnsAllEndorsements() {
-        /*
-  {
-  "code": 200,
-  "data": [
-    {
-      "endorseeId": "user-1",
-      "skillName": "Java",
-      "status": "APPROVED",
-      "endorsementType": "POSITIVE",
-      "endorsersList": [
-        {
-          "endorserId": "user-2",
-          "description": "string",
-          "userType": "NORMAL_USER"
-        }
-      ]
-    }
-  ]
-}        */
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .get("/endorsements");
+        Response response = given().cookies(RestAPIHelper.getUserCookie()).get("/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("data", hasSize(1))
@@ -100,21 +85,23 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data[0].endorsersList", hasSize(1))
                 .body("data[0].endorserList[0].endorserId", equalTo("user-2"))
                 .body("data[0].endorserList[0].description", isA(String.class))
-                .body("data[0].endorserList[0].userType", anyOf(equalTo("NORMAL_USER"), equalTo("SUPER_USER"), equalTo("MAVEN")));
-
-
+                .body(
+                        "data[0].endorserList[0].userType",
+                        anyOf(equalTo("NORMAL_USER"), equalTo("SUPER_USER"), equalTo("MAVEN")));
     }
 
     @Test
     @Disabled
     @DisplayName("Fetch all the endorsements given endorsement status")
     public void testAPIReturnsEndorsementsGivenStatus() {
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .queryParam("status", "PENDING")
-                .get("/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .queryParam("status", "PENDING")
+                        .get("/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("data", hasSize(1))
@@ -125,20 +112,23 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data[0].endorsersList", hasSize(1))
                 .body("data[0].endorserList[0].endorserId", equalTo("user-2"))
                 .body("data[0].endorserList[0].description", isA(String.class))
-                .body("data[0].endorserList[0].userType", anyOf(equalTo("NORMAL_USER"), equalTo("SUPER_USER"), equalTo("MAVEN")));
-
+                .body(
+                        "data[0].endorserList[0].userType",
+                        anyOf(equalTo("NORMAL_USER"), equalTo("SUPER_USER"), equalTo("MAVEN")));
     }
 
     @Test
     @Disabled
     @DisplayName("Return 400 on invalid endorsement status passed")
     public void testAPIReturns400_OnInvalidStatusPassed() {
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .queryParam("status", "APPROVAL")
-                .get("/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .queryParam("status", "APPROVAL")
+                        .get("/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(400)
                 .body("code", equalTo(400))
                 .body("message", equalTo("Invalid status passed"));
@@ -149,12 +139,14 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 400 on invalid endorsementId passed")
     public void testAPIReturns400_OnInvalidParameterPassed() {
         String endorsementId = "randomId";
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .pathParam("endorsementId", endorsementId)
-                .patch("/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .pathParam("endorsementId", endorsementId)
+                        .patch("/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(400)
                 .body("code", equalTo(400))
                 .body("message", equalTo("Invalid endorsementId passed"));
@@ -169,14 +161,15 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         EndorsementDRO endorsementDRO = new EndorsementDRO();
         endorsementDRO.setUserId(userId);
         endorsementDRO.setSkillId(skillId);
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .contentType("application/json")
-                .body(endorsementDRO)
-                .post("/v1/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .contentType("application/json")
+                        .body(endorsementDRO)
+                        .post("/v1/endorsements");
 
-
-        response.then()
+        response
+                .then()
                 .statusCode(201)
                 .contentType("application/json")
                 .body("data.user.firstName", equalTo("John"))
@@ -192,14 +185,15 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         EndorsementDRO endorsementDRO = new EndorsementDRO();
 
         endorsementDRO.setSkillId(skillId);
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .contentType("application/json")
-                .body(endorsementDRO)
-                .post("/v1/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .contentType("application/json")
+                        .body(endorsementDRO)
+                        .post("/v1/endorsements");
 
-
-        response.then()
+        response
+                .then()
                 .statusCode(400)
                 .contentType("application/json")
                 .body("data", equalTo(null))
@@ -214,14 +208,15 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         EndorsementDRO endorsementDRO = new EndorsementDRO();
         endorsementDRO.setUserId(userId);
 
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .contentType("application/json")
-                .body(endorsementDRO)
-                .post("/v1/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .contentType("application/json")
+                        .body(endorsementDRO)
+                        .post("/v1/endorsements");
 
-
-        response.then()
+        response
+                .then()
                 .statusCode(400)
                 .contentType("application/json")
                 .body("data", equalTo(null))
@@ -233,28 +228,14 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 200 on endorsements updation")
     public void testAPIReturns200_OnEndorsementGivenId() {
         String endorsementId = "e-1";
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .pathParam("endorsementId", endorsementId)
-                .patch("/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .pathParam("endorsementId", endorsementId)
+                        .patch("/endorsements");
 
-        /*
-        {
-          "endorseeId": "user-1",
-          "skillName": "Java",
-          "status": "APPROVED",
-          "endorsementType": "POSITIVE",
-          "endorsersList": [
-                {
-                  "endorserId": "user-2",
-                  "description": "string",
-                  "userType": "NORMAL_USER"
-                }
-              ]
-        }
-         */
-
-        response.then()
+        response
+                .then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("code", equalTo(200))
@@ -265,8 +246,9 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data.endorsersList", hasSize(1))
                 .body("data.endorsersList[0].endorserId", equalTo("user-2"))
                 .body("data.endorsersList[0].description", isA(String.class))
-                .body("data.endorsersList[0].userType", anyOf(equalTo("SUPER_USER"), equalTo("MAVEN"), equalTo("USER")));
-
+                .body(
+                        "data.endorsersList[0].userType",
+                        anyOf(equalTo("SUPER_USER"), equalTo("MAVEN"), equalTo("USER")));
     }
 
     @Test
@@ -274,12 +256,14 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 400 on invalid endorsementId passed")
     public void testAPIReturn400_OnInvalidIdPassed() {
         String endorsementId = "randomId";
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .pathParam("endorsementId", endorsementId)
-                .get("/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .pathParam("endorsementId", endorsementId)
+                        .get("/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(400)
                 .body("code", equalTo(400))
                 .body("message", equalTo("Invalid endorsementId passed"));
@@ -290,28 +274,32 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 404 when endorsement not found given endorsementId")
     public void testAPIReturn404_OnEndorsementNotFound() {
         String endorsementId = "randomId";
-        Response response = given()
-                .cookies(RestAPIHelper.getUserCookie())
-                .pathParam("endorsementId", endorsementId)
-                .get("/endorsements");
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .pathParam("endorsementId", endorsementId)
+                        .get("/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(404)
                 .body("code", equalTo(404))
                 .body("message", equalTo("Endorsement not found"));
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 200, along with the endorsements of a particular user given userID")
     public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
         String userID = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?userID=" + userID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?userID=" + userID);
 
-        response.then()
+        response
+                .then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("user_id")))
@@ -319,16 +307,18 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 200, along with the endorsements of a particular skill given skillID")
     public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?skillID=" + skillID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?skillID=" + skillID);
 
-        response.then()
+        response
+                .then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("skill_id")))
@@ -336,17 +326,19 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 200, along with the endorsements matching the given userID and skillID")
     public void itShouldReturn200OnEndorsementSearchGivenBothUserIDAndSkillID() {
         String userID = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?skillID=" + skillID + "&userID=" + userID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?skillID=" + skillID + "&userID=" + userID);
 
-        response.then()
+        response
+                .then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("skill_id")))
@@ -356,94 +348,95 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-	@Disabled
-    @DisplayName("Return 204, when there are no endorsements present for the given userID in UUID form")
+    @Disabled
+    @DisplayName(
+            "Return 204, when there are no endorsements present for the given userID in UUID form")
     public void itShouldReturn204OnEndorsementSearchWithValidUserIDButNotPresentInList() {
         String userID = UUID.randomUUID().toString();
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?userID=" + userID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?userID=" + userID);
 
-        response.then()
-                .statusCode(204);
+        response.then().statusCode(204);
     }
 
     @Test
-	@Disabled
-    @DisplayName("Return 204, when there are no endorsements present for the given skillID in UUID form")
+    @Disabled
+    @DisplayName(
+            "Return 204, when there are no endorsements present for the given skillID in UUID form")
     public void itShouldReturn204OnEndorsementSearchWithValidSkillIDButNotPresentInList() {
         String skillID = UUID.randomUUID().toString();
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?skillID=" + skillID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?skillID=" + skillID);
 
-        response.then()
-                .statusCode(204);
+        response.then().statusCode(204);
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 400, given a userID which is not a UUID")
     public void itShouldReturn400OnEndorsementSearchWithInvalidUserID() {
         String userID = "invalid-user-id";
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?userID=" + userID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?userID=" + userID);
 
-        response.then()
-                .statusCode(400);
+        response.then().statusCode(400);
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 400, given a skillID which is not a UUID")
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillID() {
         String skillID = "invalid-skill-id";
 
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?skillID=" + skillID);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?skillID=" + skillID);
 
-        response.then()
-                .statusCode(400);
+        response.then().statusCode(400);
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 204, given an offset value greater than maximum endorsements")
     public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?offset=100");
+        Response response =
+                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?offset=100");
 
-        response.then()
-                .statusCode(204);
+        response.then().statusCode(204);
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 400, given a negative offset value")
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillIDOffset() {
-        Response response = given()
-                .cookies(RestAPIHelper.getGuestUserCookie())
-                .get("/v1/endorsements?offset=-100");
+        Response response =
+                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?offset=-100");
 
-        response.then()
-                .statusCode(400);
+        response.then().statusCode(400);
     }
 
     @Test
-	@Disabled
+    @Disabled
     @DisplayName("Return 401, when request is made without a valid cookie")
     public void itShouldReturn401OnEndorsementSearchWithoutCookie() {
-        Response response = given()
-                .get("/v1/endorsements");
+        Response response = given().get("/v1/endorsements");
 
-        response.then()
+        response
+                .then()
                 .statusCode(401)
-                .body("message", equalTo("The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+                .body(
+                        "message",
+                        equalTo(
+                                "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
     }
 }
