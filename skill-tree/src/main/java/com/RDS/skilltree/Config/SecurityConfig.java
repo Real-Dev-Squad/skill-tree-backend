@@ -42,15 +42,17 @@ public class SecurityConfig {
                                 httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers("/v1/health")
-                                        .permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/v1/**")
-                                        .hasAnyAuthority(UserRole.getAllRoles()) // give read-only access to all
-                                        .requestMatchers("/v1/**")
-                                        .hasAnyAuthority(
-                                                UserRole.USER.name(), UserRole.MEMBER.name(), UserRole.SUPERUSER.name())
-                                        .anyRequest()
-                                        .authenticated())
+                                auth.anyRequest().permitAll()
+                )
+//                                auth.requestMatchers("/v1/health")
+//                                        .permitAll()
+//                                        .requestMatchers(HttpMethod.GET, "/v1/**")
+//                                        .hasAnyAuthority(UserRole.getAllRoles()) // give read-only access to all
+//                                        .requestMatchers("/v1/**")
+//                                        .hasAnyAuthority(
+//                                                UserRole.USER.name(), UserRole.MEMBER.name(), UserRole.SUPERUSER.name())
+//                                        .anyRequest()
+//                                        .authenticated())
                 .exceptionHandling(
                         ex ->
                                 ex.accessDeniedHandler(this.accessDeniedHandler)
@@ -58,7 +60,7 @@ public class SecurityConfig {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -83,9 +85,9 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-    @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter() {
-        return new JWTAuthenticationFilter();
-    }
+//
+//    @Bean
+//    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+//        return new JWTAuthenticationFilter();
+//    }
 }
