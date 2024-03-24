@@ -178,7 +178,7 @@ On Local - https://localhost:3000/auth/github/login?redirectURL=https://staging-
 This will create a cookie in your browser `rds-session-v2-development`
 
 On Staging - https://staging-api.realdevsquad.com/auth/github/login?redirectURL=https://staging-status.realdevsquad.com/tasks?v2=true
-This will create a cookie in your browser `rds-session-v2-staging`
+This will create a cookie in your browser named `rds-session-v2-staging`
 
 
 ## Known Issues Faced by Other Developers
