@@ -1,6 +1,6 @@
 package com.RDS.skilltree.Exceptions;
 
-public class NoEntityException extends RuntimeException{
+public class NoEntityException extends RuntimeException {
 
     public NoEntityException(String message) {
         super(message);
