@@ -1,0 +1,45 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR Public
+        id: login-ecr
+        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URI }}
+
+      - name: Build Docker image
+        run: docker build -t skill-tree-backend -f skill-tree/Dockerfile .
+      - name: Tag Docker image
+        run: docker tag skill-tree-backend:latest ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+
+      - name: Push Docker image to ECR Public
+        run: docker push ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+
+  deploy: 
+    needs: build-and-push
+    runs-on: [skill-tree-ec2]
+    steps:
+      - name: Pull Image from docker hub
+        run: docker pull ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+      - name: Delete old container
+        run: docker rm -f skill-tree-backend
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name skill-tree-backend ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
+      
