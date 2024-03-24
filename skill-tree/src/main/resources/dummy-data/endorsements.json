@@ -1,0 +1,142 @@
+[
+  {
+    "id": "7f6cb5e8-2e22-4a33-a120-6a0f684fb1fc",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "status": "PENDING",
+    "created_at": "2024-02-18 17:34:47.504189",
+    "created_by": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9",
+    "updated_at": "2024-02-18 17:34:47.504189",
+    "updated_by": "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9"
+  },
+  {
+    "id": "c13a5db1-8df0-4b63-99fd-4e75f97d383c",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "4dcf2994-e5b4-45f3-8974-d2db0272a6cc",
+    "status": "APPROVED",
+    "created_at": "2024-02-18 17:34:47.504189",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-02-18 17:34:47.504189",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  },
+  {
+    "id": "d2a40739-53a3-4a47-8c14-5b64ee5eaa3d",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "1e7af93e-3de5-4a24-a4b7-9fc4ff48e37e",
+    "status": "PENDING",
+    "created_at": "2024-02-19 12:45:32.092461",
+    "created_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "updated_at": "2024-02-19 12:45:32.092461",
+    "updated_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261"
+  },
+  {
+    "id": "bd177123-0c50-458d-8d56-0d6f1a78f69c",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "f9d0cf6d-44b5-4c3e-867d-ee4a5ffad017",
+    "status": "APPROVED",
+    "created_at": "2024-02-20 09:21:18.735582",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-02-20 09:21:18.735582",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  },
+  {
+    "id": "56d27502-39c3-4744-822f-c1e0504d149d",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "b29d4941-ef22-4c39-86f9-b048554c1419",
+    "status": "PENDING",
+    "created_at": "2024-02-25 19:17:08.201468",
+    "created_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "updated_at": "2024-02-25 19:17:08.201468",
+    "updated_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261"
+  },
+  {
+    "id": "3a5c6a30-8c68-4d38-8b70-720a0e7a4a6b",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "7d6db19e-442e-4247-b5cf-87cf6db26bb2",
+    "status": "APPROVED",
+    "created_at": "2024-02-26 22:09:57.994362",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-02-26 22:09:57.994362",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  },
+  {
+    "id": "1a0c1baf-86c6-4f13-8fd5-c736a94c2c54",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "d30e4b2d-9c53-48d7-8920-8a225526d688",
+    "status": "PENDING",
+    "created_at": "2024-02-27 19:42:31.628175",
+    "created_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "updated_at": "2024-02-27 19:42:31.628175",
+    "updated_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261"
+  },
+  {
+    "id": "f4f4827d-5f22-4e01-9b97-d10889124578",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "0b37ef80-21d5-4960-995b-089221efc84f",
+    "status": "PENDING",
+    "created_at": "2024-02-28 14:51:22.941799",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-02-28 14:51:22.941799",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  },
+  {
+    "id": "b0bda1de-3cf4-4f90-961f-d928334abf5b",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "e11cd9d8-0649-4d33-b4e3-60f9f68b6c39",
+    "status": "APPROVED",
+    "created_at": "2024-02-29 08:11:45.202497",
+    "created_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "updated_at": "2024-02-29 08:11:45.202497",
+    "updated_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261"
+  },
+  {
+    "id": "c7e026b9-f184-4fb1-881f-625ccf937fd0",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "a94a7322-4f52-456d-850a-b2c03485be61",
+    "status": "PENDING",
+    "created_at": "2024-03-01 16:22:33.795328",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-03-01 16:22:33.795328",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  },
+  {
+    "id": "99f2035f-4a6a-4f8c-938f-5e51b04d6a8d",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "e3084315-0355-4644-ae89-5a84f16d91e6",
+    "status": "APPROVED",
+    "created_at": "2024-03-02 11:59:59.999999",
+    "created_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "updated_at": "2024-03-02 11:59:59.999999",
+    "updated_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261"
+  },
+  {
+    "id": "2513c590-78ff-4a56-90e4-5b3e06370b64",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "87490d7c-37a6-442d-8255-fd086555a35a",
+    "status": "PENDING",
+    "created_at": "2024-03-03 17:48:04.564729",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-03-03 17:48:04.564729",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  },
+  {
+    "id": "cf4d6fc5-79c0-49ed-8f5b-4cc9c0e0c7b0",
+    "user_id": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "skill_id": "2bb70a9b-31d2-4a9b-9751-efb3feae4cd9",
+    "status": "APPROVED",
+    "created_at": "2024-03-04 14:33:27.901382",
+    "created_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261",
+    "updated_at": "2024-03-04 14:33:27.901382",
+    "updated_by": "73e0b7c4-d128-4e53-9501-0e7f4ff5a261"
+  },
+  {
+    "id": "d1c947cb-ae6f-422e-ae67-bfd057f4177d",
+    "user_id": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "skill_id": "07a5b5c5-fd7f-4992-9fa7-5c4e41468b68",
+    "status": "PENDING",
+    "created_at": "2024-03-05 09:15:38.283750",
+    "created_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb",
+    "updated_at": "2024-03-05 09:15:38.283750",
+    "updated_by": "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb"
+  }
+]

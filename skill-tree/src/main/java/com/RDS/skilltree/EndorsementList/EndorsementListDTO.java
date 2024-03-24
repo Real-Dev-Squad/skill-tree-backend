@@ -1,11 +1,10 @@
 package com.RDS.skilltree.EndorsementList;
 
 import com.RDS.skilltree.User.UserModel;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.UUID;
 
 @Builder
 @Data
@@ -15,5 +14,4 @@ public class EndorsementListDTO {
     private String description;
     private UserModel endorser;
     private EndorsementType type;
-
 }

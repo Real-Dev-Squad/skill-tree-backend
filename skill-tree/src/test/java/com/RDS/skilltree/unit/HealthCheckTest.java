@@ -1,5 +1,8 @@
 package com.RDS.skilltree.unit;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.RDS.skilltree.Health.HealthCheckController;
 import com.RDS.skilltree.metrics.MetricService;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,13 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 class HealthCheckTest {
 
-    @Mock
-    private MetricService metricService;
+    @Mock private MetricService metricService;
 
     private HealthCheckController healthCheckController;
 

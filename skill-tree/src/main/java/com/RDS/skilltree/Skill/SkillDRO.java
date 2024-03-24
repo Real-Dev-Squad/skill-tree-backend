@@ -2,10 +2,9 @@ package com.RDS.skilltree.Skill;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.UUID;
 
 @Getter
 @Builder
@@ -19,7 +18,6 @@ public class SkillDRO {
 
     @NotNull(message = "Created by user Id cannot be null")
     private UUID createdBy;
-
 
     public static SkillModel toModel(SkillDRO skillDRO) {
         return SkillModel.builder()

@@ -5,11 +5,10 @@ import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -41,8 +40,8 @@ public class EndorsementListModel extends TrackedProperties {
     @Enumerated(value = EnumType.STRING)
     private EndorsementType type;
 
-    public EndorsementListModel(EndorsementModel endorsement, UserModel endorser, String description,
-                                EndorsementType type) {
+    public EndorsementListModel(
+            EndorsementModel endorsement, UserModel endorser, String description, EndorsementType type) {
         this.endorsement = endorsement;
         this.endorser = endorser;
         this.description = description;
