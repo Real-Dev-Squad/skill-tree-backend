@@ -160,7 +160,7 @@ Now you can connect to the mysql running in the docker container, also to connec
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                    -----END PUBLIC KEY-----"
    ```
-  > Note : Publickey in both backend and skilltree backend should be the same.
+  > Note : Publickey in both [RDS backend](https://github.com/Real-Dev-Squad/website-backend) and skilltree backend should be the same.
 3. Click "Edit Configurations" -> Create a new application.
 4. Give it a name instead of "Unnamed".
 5. In "Build and Run", select Java 17.
