@@ -1,4 +1,4 @@
-package com.RDS.skilltree;
+package com.RDS.skilltree.integration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
