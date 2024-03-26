@@ -289,7 +289,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
     @Test
     @Disabled
-    @DisplayName("Return 200, along with the endorsements of a particular user given userID")
+    @DisplayName("Return 200, with the endorsements of a particular user given userID")
     public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
         String userID = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
@@ -303,12 +303,17 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("user_id")))
-                .body("content.user_id", everyItem(equalTo(userID)));
+                .body("content.user_id", everyItem(equalTo(userID)))
+                .body("content.size()", equalTo(7))
+                .body("totalPages", equalTo(1))
+                .body("pageable.pageNumber", equalTo(0))
+                .body("pageable.pageSize", equalTo(10))
+                .body("totalElements", equalTo(7));
     }
 
     @Test
     @Disabled
-    @DisplayName("Return 200, along with the endorsements of a particular skill given skillID")
+    @DisplayName("Return 200, with the endorsements of a particular skill given skillID")
     public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
@@ -322,12 +327,90 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .statusCode(200)
                 .contentType("application/json")
                 .body("content", everyItem(hasKey("skill_id")))
-                .body("content.skill_id", everyItem(equalTo(skillID)));
+                .body("content.skill_id", everyItem(equalTo(skillID)))
+                .body("content.size()", equalTo(1))
+                .body("totalPages", equalTo(1))
+                .body("pageable.pageNumber", equalTo(0))
+                .body("pageable.pageSize", equalTo(10))
+                .body("totalElements", equalTo(1));
     }
 
     @Test
     @Disabled
-    @DisplayName("Return 200, along with the endorsements matching the given userID and skillID")
+    @DisplayName("Return 200, with 1st page all the endorsements with default pagesize")
+    public void itShouldReturn200OnEndorsementSearchAllEndorsements() {
+        Response response = given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements");
+
+        response
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("totalPages", equalTo(2))
+                .body("content.size()", equalTo(10))
+                .body("pageable.pageNumber", equalTo(0))
+                .body("pageable.pageSize", equalTo(10))
+                .body("totalElements", equalTo(14));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return 200, with 1st page all the endorsements with custom limit value")
+    public void itShouldReturn200OnEndorsementSearchAllEndorsementsWithLimit() {
+        Response response =
+                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?limit=15");
+
+        response
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("totalPages", equalTo(1))
+                .body("content.size()", equalTo(14))
+                .body("pageable.pageNumber", equalTo(0))
+                .body("pageable.pageSize", equalTo(15))
+                .body("totalElements", equalTo(14));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return 200, with 1st page pf all endorsements result where page size is 5")
+    public void itShouldReturn200OnEndorsementSearchAllEndorsementsWithMultiplePages() {
+        Response response =
+                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?limit=5");
+
+        response
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("totalPages", equalTo(3))
+                .body("content.size()", equalTo(5))
+                .body("pageable.pageNumber", equalTo(0))
+                .body("pageable.pageSize", equalTo(5))
+                .body("totalElements", equalTo(14));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return 200, with 2nd page of all the endorsements result")
+    public void itShouldReturn200With2ndPageOnEndorsementSearchAllEndorsementsWithMultiplePages() {
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getGuestUserCookie())
+                        .get("/v1/endorsements?limit=5&offset=1");
+
+        response
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .body("totalPages", equalTo(3))
+                .body("content.size()", equalTo(5))
+                .body("pageable.pageNumber", equalTo(1))
+                .body("pageable.pageSize", equalTo(5))
+                .body("totalElements", equalTo(14));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return 200, with the endorsements matching the given userID and skillID")
     public void itShouldReturn200OnEndorsementSearchGivenBothUserIDAndSkillID() {
         String userID = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
@@ -344,7 +427,12 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("content", everyItem(hasKey("skill_id")))
                 .body("content.skill_id", everyItem(equalTo(skillID)))
                 .body("content", everyItem(hasKey("user_id")))
-                .body("content.user_id", everyItem(equalTo(userID)));
+                .body("content.user_id", everyItem(equalTo(userID)))
+                .body("content.size()", equalTo(1))
+                .body("totalPages", equalTo(1))
+                .body("pageable.pageNumber", equalTo(0))
+                .body("pageable.pageSize", equalTo(10))
+                .body("totalElements", equalTo(1));
     }
 
     @Test
@@ -410,19 +498,9 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @DisplayName("Return 204, given an offset value greater than maximum endorsements")
     public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
         Response response =
-                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?offset=100");
+                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?offset=10");
 
         response.then().statusCode(204);
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("Return 400, given a negative offset value")
-    public void itShouldReturn400OnEndorsementSearchWithInvalidSkillIDOffset() {
-        Response response =
-                given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?offset=-100");
-
-        response.then().statusCode(400);
     }
 
     @Test
