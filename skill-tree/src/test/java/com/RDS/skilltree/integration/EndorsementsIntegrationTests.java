@@ -153,7 +153,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Return 200 on endorsements creation")
+    @DisplayName("Return 201 on endorsements creation")
     public void testAPIReturns201_OnEndorsementCreation() {
         UUID userId = user.getId();
         UUID skillId = skill.getId();
@@ -372,7 +372,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
     @Test
     @Disabled
-    @DisplayName("Return 200, with 1st page pf all endorsements result where page size is 5")
+    @DisplayName("Return 200, with 1st page of all endorsements result where page size is 5")
     public void itShouldReturn200OnEndorsementSearchAllEndorsementsWithMultiplePages() {
         Response response =
                 given().cookies(RestAPIHelper.getGuestUserCookie()).get("/v1/endorsements?limit=5");
