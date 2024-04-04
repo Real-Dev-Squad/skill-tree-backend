@@ -1,13 +1,12 @@
 package com.RDS.skilltree.User;
 
 import com.RDS.skilltree.Skill.SkillDTO;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.net.URL;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -39,11 +38,9 @@ public class UserDTO {
                 .build();
     }
 
-    public static UserDTO getUsersWithSkills(UserModel user){
-        Set<SkillDTO> skills = user.getSkills()
-                .stream()
-                .map(SkillDTO::toDto)
-                .collect(Collectors.toSet());
+    public static UserDTO getUsersWithSkills(UserModel user) {
+        Set<SkillDTO> skills =
+                user.getSkills().stream().map(SkillDTO::toDto).collect(Collectors.toSet());
 
         return UserDTO.builder()
                 .id(user.getId())
