@@ -28,7 +28,7 @@ public class RestAPIHelper {
         cookie.put(
                 "rds-session-v2",
                 "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZlFFbVgyRW85a3lhM3NHdlJMMiIsImlhdCI6MTcxMjI1MjkyOCwiZXhwIjoxNzE0ODQ0OTI4fQ.VOto6kmO5JNohlJ5NZ7dbdvpccOqbjMgPCh5i1DIvpEC3En1dwb1dIAOgUtN9GmRi00qh11VbciW_VDZiq0fsLsrvAIRmTl9DuKCRYj7T_lDm-6b0IjtooFz1oPaNM0KmUdNvfeh_D9vkKLoas52pP4O8VNmQxQ1-oPUeBIynZFukx_1FXWsAbeyh8nj-Vn22CkcaTsu4oiwuptao3i8VmvDAaEPyd0QHjyP8Xu3OAJEsjUL9cIOfVCypZhLm35B5yEUJEk3XKUDDsG70PbEXd3bzFdtPynoo5XnC_aY64DSw1iiDNGVydVhnfRm1NiTHzbL8akrl1qTqHSo6e2fRSucQZGuOtsTZm6qQo9B2gaJ5yigLoOWIvK4M7Z-UeaBB26Au7wTPWdvbVg4In1mKy3rm1K_C8_ISxqCPGPziK0iVqx5wKEvFjFddfEgtafI3DOm8Q6d0d2x-5clsnOS1c5xabAfZ-BEhsopfhlIyfBwaWKGynX1sxuSRA21HQdEhNRLgi9n57EYYQD1gGzACEaOXRtJIhQjL0RJH1Daf1iIoBrD316BbK58ftUv5TZXs1hnnmuWEuhoNJsBZLDwpjLj5_xO7qAnklr6Ceevu3daqGbAUsvaYXleirv4xS0dXZifg8-hGoicijCZDwwuvU-xcgmSB_zkATjy-07cd0s");
-                return cookie;
+        return cookie;
     }
 
     /**
