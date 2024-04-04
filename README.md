@@ -52,35 +52,59 @@ Then, we unzip it to the folder where we want Maven to live.
 
 2. You'll see skill-tree-backed (If the process is running)
 
-3. skill-tree-backend>skill-tree-backend-db-1>open in terminal
+3. skill-tree-backend > skill-tree-backend-db-1 > open in terminal
  
-to login to MySQL
-mysql -u root -p (in terminal)
-password : rootpassword
+To login to MySQL
+```
+mysql -u root -p
+```
+(in terminal)
+password : password
 
-Refrence Screenshots:
-If the project is started with docker compose up thise can be seen once you open Docker Desktop:
+Reference Screenshots:
+
+If the project is started with ```docker compose up```, this can be seen once you open Docker Desktop:
+
 <img width="1680" alt="Screenshot 2023-12-26 at 9 33 17 PM" src="https://github.com/ashifkhn/skill-tree-backend/assets/54736284/57b90473-ae22-45b2-8a19-3377bfbcf1b9">
 
 
+
 Terminal needs to be opened here:
+
 ![image](https://github.com/ashifkhn/skill-tree-backend/assets/54736284/d66166ae-b931-40ab-914f-f42615323a32)
 
 
 
-## Steps for Creating the Database
+## Steps for Creating the Database (To be executed in order)
 
-1. `create database skilltree;`(semicolon is important here)
-2. `show databases;`
-3. `create user 'testuser' identified by 'testpassword';` (Username: testuser, Password: testpassword)
-4. `grant all on skilltree.* to testuser;`
+Semicolon is important in the commands
 
-## Steps for Creating the Database
+Username: testuser
+Password: testpassword
+
+```
+CREATE DATABASE skilltree;
+SHOW DATABASES;
+CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpassword';
+GRANT ALL ON skilltree.* TO testuser;
+```
+
+## Steps for setting up skill-tree in Intellij
 
 1. After creating the database project needs to be compiled.
 2. Open skill-tree-backend in intellij.
 3. Java_Home path needs to be added here.
-4. You can either add the existing path and jdk 17 can be downloaded inside intellij.
+4. You can either add the existing path and JDK 17 can be downloaded inside intellij.
+5. If adding from the existing path, go to Settings > Project Structure > Choose the earlier installed Java 17 SDK.
+6. Install Lombok plug-in, if you see annotation errors
+
+
+## Creating Run/Debug Configuration
+1. Create a .env file inside the skill-tree folder with content mentioned in the Additional Configuration Steps below
+2. Click on "Edit Configurations" > Add new "Application" Configuration
+3. Choose "Java 17" and "skill-tree" folder in the dropdown
+4. Choose com.RDS.skilltree.SkillTreeApplication as the Main class
+5. Add the .env file you created in the first step for the environment variables and click "OK"
 
 
 (Below steps are not required as of now.)
@@ -160,7 +184,7 @@ Now you can connect to the mysql running in the docker container, also to connec
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                    -----END PUBLIC KEY-----"
    ```
-   Note : Publickey in both backend and skilltree backend should be the same.
+  > Note : Publickey in both [RDS backend](https://github.com/Real-Dev-Squad/website-backend) and skilltree backend should be the same.
 3. Click "Edit Configurations" -> Create a new application.
 4. Give it a name instead of "Unnamed".
 5. In "Build and Run", select Java 17.
@@ -171,6 +195,7 @@ Now you can connect to the mysql running in the docker container, also to connec
 10. Click the green "Run" button or "Shift + F10" to start the application
 11. After starting the Tomcat server on port `8080`, attempt to access the dummy route `http://localhost:8080/test` using the `GET` method in Postman or ThunderClient while providing the `bearer token`. If the terminal displays `test123`, it indicates that the setup has been successful.
 
+<<<<<<<<< Temporary merge branch 1
 ## Contributing
 ### Code Formatting
 
@@ -180,7 +205,7 @@ Please build using `mvn compile` in local or run `mvn spotless:apply` before pus
 To check if the codebase is formatted, you can explicitly use `mvn spotless:check`
 
 The Continuous Integration build for pushed commits may fail when a Pull Request is created if your code doesn't follow project's formatting guideline.
-
+=========
 ## To Authenticate Yourself
 
 Using [Website - backend](https://github.com/Real-Dev-Squad/website-backend)
@@ -190,6 +215,7 @@ This will create a cookie in your browser `rds-session-v2-development`
 On Staging - https://staging-api.realdevsquad.com/auth/github/login?redirectURL=https://staging-skilltree.realdevsquad.com/tasks?v2=true
 This will create a cookie in your browser named `rds-session-v2-staging`
 
+>>>>>>>>> Temporary merge branch 2
 
 ## Known Issues Faced by Other Developers
 1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)
