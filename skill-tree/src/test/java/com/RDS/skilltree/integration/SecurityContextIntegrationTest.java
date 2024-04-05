@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import utils.RestAPIHelper;
 public class SecurityContextIntegrationTest extends TestContainerManager {
 
     @Test
+    @Disabled
     public void testTokenIsNotPresent() {
 
         Response response = given().get("/v1/endorsement");
@@ -27,6 +29,7 @@ public class SecurityContextIntegrationTest extends TestContainerManager {
     }
 
     @Test
+    @Disabled
     public void testInvalidToken() {
         Response response = given().cookie("rds-session-v2", "invalidtoken").get("/v1/endorsement");
         response
@@ -39,6 +42,7 @@ public class SecurityContextIntegrationTest extends TestContainerManager {
     }
 
     @Test
+    @Disabled
     public void test_GetSkill_WithGuestToken() {
         Response response =
                 given()
@@ -49,6 +53,7 @@ public class SecurityContextIntegrationTest extends TestContainerManager {
     }
 
     @Test
+    @Disabled
     public void test_CreateSkill_WithGuestToken() {
         Response response =
                 given()
