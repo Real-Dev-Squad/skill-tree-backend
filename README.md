@@ -1,4 +1,3 @@
-
 # Skill Tree Backend
 
 ## Steps to Run the Service Locally
@@ -8,20 +7,21 @@
 - [Maven](https://maven.apache.org/download.cgi) version 3.9.6 or higher
 
 Installing Maven on macOS using Homebrew:
+
 1. Open your terminal.
 2. Type the following command and press Enter to install Homebrew (if not installed):
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 3. Once Homebrew is installed, run the following command to install Maven:
-brew install maven
+   brew install maven
 
 4. Wait for the installation process to complete.
 
 5. Verify the Maven installation by typing:
-mvn -version
-
+   mvn -version
 
 This should display information about the installed Maven version.
 
@@ -30,21 +30,19 @@ Installing Maven on Windows:
 1. To install Maven on Windows, we head over to the Apache Maven site to download the latest version and select the Maven zip file, for example, apache-maven-3.9.6-bin.zip.
 
 2. Adding Maven to the Environment Path
-We add both M2_HOME and MAVEN_HOME variables to the Windows environment using system properties and point them to our Maven folder.
+   We add both M2_HOME and MAVEN_HOME variables to the Windows environment using system properties and point them to our Maven folder.
 
 3. Verify the Maven installation by typing:
-mvn -version
+   mvn -version
 
 Then, we update the PATH variable by appending the Maven bin folder — %M2_HOME%\bin — so that we can run the Maven command everywhere.
 
 Then, we unzip it to the folder where we want Maven to live.
 
-
 - Java (version 17 or higher) [Link](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - Any text editor of your choice (Preferred - IntelliJ Community or Ultimate Edition).
 - Docker Desktop: [Installation steps](https://docs.docker.com/engine/install/)
-- MySQL Docker Image:  [Installation steps](https://hub.docker.com/_/mysql)
-
+- MySQL Docker Image: [Installation steps](https://hub.docker.com/_/mysql)
 
 ### Steps to Login to MySQL
 
@@ -53,27 +51,25 @@ Then, we unzip it to the folder where we want Maven to live.
 2. You'll see skill-tree-backed (If the process is running)
 
 3. skill-tree-backend > skill-tree-backend-db-1 > open in terminal
- 
+
 To login to MySQL
+
 ```
 mysql -u root -p
 ```
+
 (in terminal)
 password : password
 
 Reference Screenshots:
 
-If the project is started with ```docker compose up```, this can be seen once you open Docker Desktop:
+If the project is started with `docker compose up`, this can be seen once you open Docker Desktop:
 
 <img width="1680" alt="Screenshot 2023-12-26 at 9 33 17 PM" src="https://github.com/ashifkhn/skill-tree-backend/assets/54736284/57b90473-ae22-45b2-8a19-3377bfbcf1b9">
-
-
 
 Terminal needs to be opened here:
 
 ![image](https://github.com/ashifkhn/skill-tree-backend/assets/54736284/d66166ae-b931-40ab-914f-f42615323a32)
-
-
 
 ## Steps for Creating the Database (To be executed in order)
 
@@ -98,14 +94,13 @@ GRANT ALL ON skilltree.* TO testuser;
 5. If adding from the existing path, go to Settings > Project Structure > Choose the earlier installed Java 17 SDK.
 6. Install Lombok plug-in, if you see annotation errors
 
-
 ## Creating Run/Debug Configuration
+
 1. Create a .env file inside the skill-tree folder with content mentioned in the Additional Configuration Steps below
 2. Click on "Edit Configurations" > Add new "Application" Configuration
 3. Choose "Java 17" and "skill-tree" folder in the dropdown
 4. Choose com.RDS.skilltree.SkillTreeApplication as the Main class
 5. Add the .env file you created in the first step for the environment variables and click "OK"
-
 
 (Below steps are not required as of now.)
 
@@ -117,20 +112,21 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 2. After creating the database user, enter the credentials in the Skill Tree Spring Boot application.
 3. Attempt to connect to the database using the URL "jdbc:mysql://${MYSQL_HOST:localhost}:3306/${DB_NAME}".
 4. Create a simple API to test the database connection and data retrieval. For example, create a `/test` route in `skill-tree/src/main/java/com/RDS/skilltree/User/UserController.java`.
-    ```java
-    package com.RDS.skilltree.User;
 
-    import org.springframework.web.bind.annotation.GetMapping;
-    import org.springframework.web.bind.annotation.RestController;
+   ```java
+   package com.RDS.skilltree.User;
 
-    @RestController
-    public class UserController {
-        @GetMapping("/test")
-        public void test(){
-            System.out.println("test123");
-        }
-    }
-    ```
+   import org.springframework.web.bind.annotation.GetMapping;
+   import org.springframework.web.bind.annotation.RestController;
+
+   @RestController
+   public class UserController {
+       @GetMapping("/test")
+       public void test(){
+           System.out.println("test123");
+       }
+   }
+   ```
 
 ### Steps to Generate a JWT Token (Similar to [Website Backend Repo](https://github.com/Real-Dev-Squad/website-backend/issues))
 
@@ -144,13 +140,13 @@ Refer to this [link](https://find10archived.medium.com/how-to-connect-a-mysql-do
 6. Validate the token using [jwt.io](https://jwt.io/) by entering the public and private keys stored in the website backend.
 7. Use the public key in the Skill Tree repo to decrypt the JWT token passed for authentication.
 
-
 ## Steps for connecting mysql workbench to run mysql inside docker
 
 1. `docker exec -it skill-tree-db-1 bin/bash`
 2. bash-4.4# `mysql -u root -p -A`
 
 By default after deployment MySQL has following connection restrictions:
+
 ```
 mysql> select host, user from mysql.user;
 +-----------+---------------+
@@ -163,6 +159,7 @@ mysql> select host, user from mysql.user;
 +-----------+---------------+
 4 rows in set (0.00 sec)
 ```
+
 Apparently, for security purposes, you will not be able to connect to it from outside of the docker container. If you need to change that to allow root to connect from any host (say, for development purposes), do the following:
 
 3. update mysql.user set host='%' where user='root';
@@ -185,7 +182,7 @@ Now you can connect to the mysql running in the docker container, also to connec
                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                    -----END PUBLIC KEY-----"
    ```
-   Note : Publickey in both backend and skilltree backend should be the same.
+   > Note : Publickey in both [RDS backend](https://github.com/Real-Dev-Squad/website-backend) and skilltree backend should be the same.
 3. Click "Edit Configurations" -> Create a new application.
 4. Give it a name instead of "Unnamed".
 5. In "Build and Run", select Java 17.
@@ -196,7 +193,17 @@ Now you can connect to the mysql running in the docker container, also to connec
 10. Click the green "Run" button or "Shift + F10" to start the application
 11. After starting the Tomcat server on port `8080`, attempt to access the dummy route `http://localhost:8080/test` using the `GET` method in Postman or ThunderClient while providing the `bearer token`. If the terminal displays `test123`, it indicates that the setup has been successful.
 
+## To Authenticate Yourself
+
+Using [Website - backend](https://github.com/Real-Dev-Squad/website-backend)
+On Local - http://localhost:3000/auth/github/login?redirectURL=https://staging-skilltree.realdevsquad.com/tasks?v2=true
+This will create a cookie in your browser `rds-session-v2-development`
+
+On Staging - https://staging-api.realdevsquad.com/auth/github/login?redirectURL=https://staging-skilltree.realdevsquad.com/tasks?v2=true
+This will create a cookie in your browser named `rds-session-v2-staging`
+
 ## Contributing
+
 ### Code Formatting
 
 This repo uses https://github.com/diffplug/spotless/tree/main/plugin-maven#java for formatting files.
@@ -207,6 +214,7 @@ To check if the codebase is formatted, you can explicitly use `mvn spotless:chec
 The Continuous Integration build for pushed commits may fail when a Pull Request is created if your code doesn't follow project's formatting guideline.
 
 ## Known Issues Faced by Other Developers
+
 1. Port 8080 Conflict: Make sure there is no other process running on the 8080 port where we are going to run our server check this with lsof -p PID (PID - port id)
 2. Local MySQL Conflict: Make sure there is no local Mysql running on the local machine
 
