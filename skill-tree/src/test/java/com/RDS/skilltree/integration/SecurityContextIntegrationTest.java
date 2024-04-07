@@ -42,7 +42,6 @@ public class SecurityContextIntegrationTest extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     public void test_GetSkill_WithGuestToken() {
         Response response =
                 given()
@@ -53,7 +52,6 @@ public class SecurityContextIntegrationTest extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     public void test_CreateSkill_WithGuestToken() {
         Response response =
                 given()
