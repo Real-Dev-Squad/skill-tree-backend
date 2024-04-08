@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Endorsement;
 
+import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
@@ -7,13 +8,15 @@ import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 @Service
 @RequiredArgsConstructor
 public class EndorsementServiceImpl implements EndorsementService {
@@ -57,6 +60,37 @@ public class EndorsementServiceImpl implements EndorsementService {
             if (userOptional.isEmpty())
                 throw new NoEntityException("User with id:" + userId + " not found");
             throw new NoEntityException("Skill with id:" + skillId + " not found");
+        }
+    }
+
+    @Override
+    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(String id, String endorsementStatus) {
+        // TODO : Implement user role restrictions
+        if (!(Objects.equals(endorsementStatus, EndorsementStatus.APPROVED.name()) || Objects.equals(endorsementStatus, EndorsementStatus.REJECTED.name()))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericResponse<>(null, "Invalid Status"));
+        }
+        try {
+            UUID uuid = UUID.fromString(id);
+            Optional<EndorsementModel> optionalEndorsementModel = endorsementRepository.findById(uuid);
+            if (optionalEndorsementModel.isPresent()) {
+                EndorsementModel updatedEndorsementModel = EndorsementModel.builder()
+                        .id(optionalEndorsementModel.get().getId())
+                        .user(optionalEndorsementModel.get().getUser())
+                        .skill(optionalEndorsementModel.get().getSkill())
+                        .endorsersList(optionalEndorsementModel.get().getEndorsersList())
+                        .status(EndorsementStatus.valueOf(endorsementStatus))
+                        .build();
+                endorsementRepository.save(updatedEndorsementModel);
+                return ResponseEntity.ok().body(new GenericResponse<>(null, "Successfully updated endorsement status"));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericResponse<>(null, "Invalid UUID: " + id));
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericResponse<>(null, "Invalid UUID: " + id));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericResponse<>(null, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GenericResponse<>(null, "Something went wrong. Please contact admin."));
         }
     }
 }

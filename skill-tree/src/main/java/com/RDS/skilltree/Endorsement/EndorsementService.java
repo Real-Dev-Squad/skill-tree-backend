@@ -2,8 +2,11 @@ package com.RDS.skilltree.Endorsement;
 
 import java.io.IOException;
 import java.util.UUID;
+
+import com.RDS.skilltree.Common.Response.GenericResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 
 public interface EndorsementService {
     EndorsementDTO getEndorsementById(UUID id);
@@ -15,4 +18,6 @@ public interface EndorsementService {
             PageRequest pageRequest, String skillID, String userID) throws IOException;
 
     EndorsementModel createEndorsement(EndorsementDRO endorsementDRO);
+
+    ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(String id, String endorsementStatus);
 }

@@ -64,4 +64,9 @@ public class EndorsementController {
                 new GenericResponse<EndorsementDTO>(null, "Failed to create endorsement"),
                 HttpStatus.BAD_REQUEST);
     }
+
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(@PathVariable(value = "id", required = true) String id, @RequestBody(required = true) String endorsementStatus) {
+        return endorsementService.updateEndorsementStatus(id, endorsementStatus);
+    }
 }
