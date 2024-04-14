@@ -66,7 +66,8 @@ public class EndorsementController {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(@PathVariable(value = "id", required = true) String id, @RequestBody(required = true) String endorsementStatus) {
-        return endorsementService.updateEndorsementStatus(id, endorsementStatus);
+    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(
+            @PathVariable(value = "id") String id, @RequestParam String status) {
+        return endorsementService.updateEndorsementStatus(id, status);
     }
 }

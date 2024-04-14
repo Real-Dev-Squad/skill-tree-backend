@@ -6,6 +6,7 @@ import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.User.UserRole;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
@@ -16,7 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 @Service
 @RequiredArgsConstructor
 public class EndorsementServiceImpl implements EndorsementService {
@@ -64,33 +67,44 @@ public class EndorsementServiceImpl implements EndorsementService {
     }
 
     @Override
-    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(String id, String endorsementStatus) {
-        // TODO : Implement user role restrictions
-        if (!(Objects.equals(endorsementStatus, EndorsementStatus.APPROVED.name()) || Objects.equals(endorsementStatus, EndorsementStatus.REJECTED.name()))) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericResponse<>(null, "Invalid Status"));
+    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(String id, String status) {
+        UserModel user =
+                (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getRole().equals(UserRole.SUPERUSER))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new GenericResponse<>(null, "Unauthorized"));
+        if (!(Objects.equals(status, EndorsementStatus.APPROVED.name())
+                || Objects.equals(status, EndorsementStatus.REJECTED.name()))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new GenericResponse<>(null, "Invalid Status: " + status));
         }
         try {
             UUID uuid = UUID.fromString(id);
             Optional<EndorsementModel> optionalEndorsementModel = endorsementRepository.findById(uuid);
             if (optionalEndorsementModel.isPresent()) {
-                EndorsementModel updatedEndorsementModel = EndorsementModel.builder()
-                        .id(optionalEndorsementModel.get().getId())
-                        .user(optionalEndorsementModel.get().getUser())
-                        .skill(optionalEndorsementModel.get().getSkill())
-                        .endorsersList(optionalEndorsementModel.get().getEndorsersList())
-                        .status(EndorsementStatus.valueOf(endorsementStatus))
-                        .build();
+                EndorsementModel updatedEndorsementModel =
+                        EndorsementModel.builder()
+                                .id(optionalEndorsementModel.get().getId())
+                                .user(optionalEndorsementModel.get().getUser())
+                                .skill(optionalEndorsementModel.get().getSkill())
+                                .endorsersList(optionalEndorsementModel.get().getEndorsersList())
+                                .status(EndorsementStatus.valueOf(status))
+                                .build();
                 endorsementRepository.save(updatedEndorsementModel);
-                return ResponseEntity.ok().body(new GenericResponse<>(null, "Successfully updated endorsement status"));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericResponse<>(null, "Invalid UUID: " + id));
+                return ResponseEntity.ok()
+                        .body(new GenericResponse<>(null, "Successfully updated endorsement status"));
             }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new GenericResponse<>(null, "Invalid UUID: " + id));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GenericResponse<>(null, "Invalid UUID: " + id));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new GenericResponse<>(null, "Invalid UUID: " + id));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericResponse<>(null, e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new GenericResponse<>(null, e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GenericResponse<>(null, "Something went wrong. Please contact admin."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new GenericResponse<>(null, "Something went wrong. Please contact admin."));
         }
     }
 }
