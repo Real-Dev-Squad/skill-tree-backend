@@ -15,8 +15,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -67,20 +66,21 @@ public class EndorsementServiceImpl implements EndorsementService {
     }
 
     @Override
-    public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(String id, String status) {
+    public GenericResponse<Void> updateEndorsementStatus(String id, String status) {
         UserModel user =
                 (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!user.getRole().equals(UserRole.SUPERUSER))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new GenericResponse<>(null, "Unauthorized"));
+        if (!user.getRole().equals(UserRole.SUPERUSER)) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
         if (!(Objects.equals(status, EndorsementStatus.APPROVED.name())
                 || Objects.equals(status, EndorsementStatus.REJECTED.name()))) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new GenericResponse<>(null, "Invalid Status: " + status));
+            throw new IllegalArgumentException("Invalid endorsement status: " + status);
         }
+
         try {
-            UUID uuid = UUID.fromString(id);
-            Optional<EndorsementModel> optionalEndorsementModel = endorsementRepository.findById(uuid);
+            UUID endorsementId = UUID.fromString(id);
+            Optional<EndorsementModel> optionalEndorsementModel =
+                    endorsementRepository.findById(endorsementId);
             if (optionalEndorsementModel.isPresent()) {
                 EndorsementModel updatedEndorsementModel =
                         EndorsementModel.builder()
@@ -91,20 +91,11 @@ public class EndorsementServiceImpl implements EndorsementService {
                                 .status(EndorsementStatus.valueOf(status))
                                 .build();
                 endorsementRepository.save(updatedEndorsementModel);
-                return ResponseEntity.ok()
-                        .body(new GenericResponse<>(null, "Successfully updated endorsement status"));
+                return new GenericResponse<>(null, "Successfully updated endorsement status");
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new GenericResponse<>(null, "Invalid UUID: " + id));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new GenericResponse<>(null, "Invalid UUID: " + id));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new GenericResponse<>(null, e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new GenericResponse<>(null, "Something went wrong. Please contact admin."));
+            throw new NoEntityException("No endorsement with id " + id + " was found");
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid endorsement id: " + id);
         }
     }
 }
