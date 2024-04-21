@@ -1,4 +1,4 @@
-package com.RDS.skilltree;
+package com.RDS.skilltree.integration;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -24,6 +24,6 @@ abstract class TestContainerManager {
         registry.add(
                 "jwt.rds.public.key",
                 () ->
-                        "-----BEGIN PUBLIC KEY-----MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAym+XUpQxzEN3+YRiliQhj09avAD3fG80DXhMx8bbEHR/LXZ0zKwTZ0me6FHZfil/+P1rLCujRFTZuJhbGUa6fPMaj3rhcum8S2hcoKzLZCXsHLV0f2Eay0vASc1Wmz1JIJpWOZaIRjyDNzFOqgYM6QpjF9/8/Suk16zS58kxLQdMLOqXvA3ahXHvm0BtJH9NtMKra7xgmIjzepe6cfDtXMLvnFx7LaTb4e1CzY3U06cFaZCN+fNYV4q5Tz5aME1laq4ooXXQghWDG18jkuNcfliYECYmz3uZGqR/pWHkcT61TaF41fFAnKj+OE9uRB4c26+4FtnntIwyfzi5zNAgunHnvjgu9O2Sre0yBAgL/b6Jmbx0zsnzIT/RijRj2bZBKIsQvQW3/4FnCWzV2Jz+ G7mzw4A/LnF2VpY+51u0BfqAy4uCuIOmZiMqlbHYR9Kre3c1kO/vsiGjNYkBnFjQZgWGCa4se0hXyetiX4dwjXCJPaeV2zlkHEwgNSZx9peX3Dt+6w9mAztRvKUmds4mc9mn8NCryIvbFZK3ZtrMDMo3q8FwXv/CpRxOVbTuV6Zs2C2SqZAvGuY1KqtbbjjFr7h37nCBtCGZqtsS2BFe4ab/f+9DGdatAS2rqiyQhhpTmvZ4iWE9jgVwHlyVHGd+ LLwukDrVxsGQ2nL0UnYos6ECAwEAAQ==-----END PUBLIC KEY-----");
+                        "-----BEGIN PUBLIC KEY-----MIICITANBgkqhkiG9w0BAQEFAAOCAg4AMIICCQKCAgBpAet8sOf64PtzdnwtkZB4JEJTCtQT9ZQMuuWUDXZGTG0iO7x3WZw6GanBboKGblU4VZEgd8H7bKOOIaQF4AsiXsw/vUsOV5Ue73a9Jj5d57jyon7M8fFmjna3afZfb5SBru5Iv0ECePqIKUIhSmToML+y3bFKF2cbUTEe2qPK5xzBeH4AWq4Zb2N0gHNstinwrXL9LWawQPkJr23TohZZEFSzyZbeklWWwz67A6YnE01w42R/TLE3LmU8YKkrHkgFsAHtUMQO++JsH4q3F9J0e0VkLzj5sB5RgAYscs6YFKoFD5jKgtSRPIXz7O9GsC76dHtwGXOk47/NWxu7bUQ0VcD2hJYprR28PjdNk5KiRKO5Z83JkiM6ed9UAkiD/fIRI8LITaLayHdFfQvXM+d9v4ugPHEq+aVllFMH1lUu/2B1aJpk4D4w5JcIzIZ9og4cMz00EGU/1o+BX2S55/Ok 4MaxX6Zl3QYm1K0cPLOdisYoygPtnNEav32JLgM2yOXdyuhpYzmn66yyFFck2nnCkezG5Gvlf3MejMavRO+sfIz0gDIhXEwWu0EJDrG5nmNRwejrSXx42YxmYZGkK/c8 2fiwbOVqIuFgsI6lWGdyDayFRg9bjrk6KiQZFnP4KcmUXk4PhiSItDJAUEkNz0+4StHNoqFhNH5pnEj4VbmJqwIDAQAB -----END PUBLIC KEY-----");
     }
 }
