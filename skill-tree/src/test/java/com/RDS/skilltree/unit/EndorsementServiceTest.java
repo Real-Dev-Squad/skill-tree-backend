@@ -3,17 +3,14 @@ package com.RDS.skilltree.unit;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.RDS.skilltree.Endorsement.EndorsementDRO;
-import com.RDS.skilltree.Endorsement.EndorsementDTO;
-import com.RDS.skilltree.Endorsement.EndorsementModel;
-import com.RDS.skilltree.Endorsement.EndorsementModelFromJSON;
-import com.RDS.skilltree.Endorsement.EndorsementRepository;
-import com.RDS.skilltree.Endorsement.EndorsementServiceImpl;
+import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.Endorsement.*;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.User.UserRole;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,9 +19,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -34,6 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,10 +46,25 @@ public class EndorsementServiceTest {
 
     @InjectMocks @Autowired private EndorsementServiceImpl endorsementService;
 
+    @Mock private Authentication auth;
+
     @Disabled // Change to @BeforeEach while enabling endorsement search v1 related tests
     public void setUp() {
         ReflectionTestUtils.setField(
                 endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements.json");
+    }
+
+    @BeforeEach // add to 'setUp' when it's disabled
+    public void initSecurityContext() {
+        UserModel userModel = new UserModel();
+        userModel.setRole(UserRole.SUPERUSER);
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    @AfterEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
@@ -601,5 +614,99 @@ public class EndorsementServiceTest {
 
         // Verify that save method is not called
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return unauthorized given user is not a super user")
+    public void itShouldReturnUnauthorizedIfUserIsNotSuperUser() {
+        UserModel userModel = new UserModel();
+        userModel.setRole(UserRole.USER);
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        UUID endorsementId = UUID.randomUUID();
+        String status = EndorsementStatus.APPROVED.name();
+
+        AccessDeniedException exception =
+                assertThrows(
+                        AccessDeniedException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
+        assertEquals("Unauthorized access", exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return invalid status given status is not approved or rejected")
+    public void itShouldReturnInvalidStatusIfStatusIsNotApprovedOrRejected() {
+        UUID endorsementId = UUID.randomUUID();
+        String status = EndorsementStatus.PENDING.name();
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
+        assertEquals("Invalid endorsement status: " + status, exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return invalid id given a invalid endorsement id")
+    public void itShouldThrowIllegalArgumentExceptionIfInvalidEndorsementId() {
+        String invalidUUID = "jdsmjfdhfg6Bo6VdwW0ih....";
+        String status = EndorsementStatus.APPROVED.name();
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> endorsementService.updateEndorsementStatus(invalidUUID, status));
+        assertEquals("Invalid endorsement id: " + invalidUUID, exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return endorsement not found given an unknown endorsement id")
+    public void itShouldReturnEndorsementNotFoundGivenUnknownEndorsementId() {
+        UUID nonExistentEndorsementId = UUID.randomUUID();
+        String status = EndorsementStatus.APPROVED.name();
+
+        when(endorsementRepository.findById(nonExistentEndorsementId)).thenReturn(Optional.empty());
+
+        NoEntityException exception =
+                assertThrows(
+                        NoEntityException.class,
+                        () ->
+                                endorsementService.updateEndorsementStatus(
+                                        nonExistentEndorsementId.toString(), status));
+        assertEquals(
+                "No endorsement with id " + nonExistentEndorsementId + " was found",
+                exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName(
+            "Update endorsement status given a valid endorsement id and status is approved or rejected")
+    public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
+        UUID userId = UUID.randomUUID();
+        UUID skillId = UUID.randomUUID();
+        UUID endorsementId = UUID.randomUUID();
+        EndorsementStatus status = EndorsementStatus.APPROVED;
+
+        UserModel mockUser = UserModel.builder().id(userId).build();
+        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        EndorsementModel mockEndorsement =
+                EndorsementModel.builder().id(endorsementId).user(mockUser).skill(mockSkill).build();
+        mockEndorsement.setCreatedAt(Instant.now());
+        mockEndorsement.setUpdatedAt(Instant.now());
+        mockEndorsement.setCreatedBy(mockUser);
+        mockEndorsement.setUpdatedBy(mockUser);
+
+        when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
+
+        GenericResponse<Void> result =
+                endorsementService.updateEndorsementStatus(endorsementId.toString(), status.name());
+        assertEquals("Successfully updated endorsement status", result.getMessage());
+
+        verify(endorsementRepository, times(1)).save(any(EndorsementModel.class));
     }
 }
