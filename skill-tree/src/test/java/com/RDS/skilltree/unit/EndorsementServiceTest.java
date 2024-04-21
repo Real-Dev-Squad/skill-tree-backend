@@ -54,14 +54,6 @@ public class EndorsementServiceTest {
                 endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements.json");
     }
 
-    @BeforeEach // add to 'setUp' when it's disabled
-    public void initSecurityContext() {
-        UserModel userModel = new UserModel();
-        userModel.setRole(UserRole.SUPERUSER);
-        when(auth.getPrincipal()).thenReturn(userModel);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
-
     @AfterEach
     public void clearSecurityContext() {
         SecurityContextHolder.clearContext();
@@ -638,6 +630,11 @@ public class EndorsementServiceTest {
     @Test
     @DisplayName("Return invalid status given status is not approved or rejected")
     public void itShouldReturnInvalidStatusIfStatusIsNotApprovedOrRejected() {
+        UserModel userModel = new UserModel();
+        userModel.setRole(UserRole.SUPERUSER);
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.PENDING.name();
 
@@ -652,6 +649,11 @@ public class EndorsementServiceTest {
     @Test
     @DisplayName("Return invalid id given a invalid endorsement id")
     public void itShouldThrowIllegalArgumentExceptionIfInvalidEndorsementId() {
+        UserModel userModel = new UserModel();
+        userModel.setRole(UserRole.SUPERUSER);
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         String invalidUUID = "jdsmjfdhfg6Bo6VdwW0ih....";
         String status = EndorsementStatus.APPROVED.name();
 
@@ -666,6 +668,11 @@ public class EndorsementServiceTest {
     @Test
     @DisplayName("Return endorsement not found given an unknown endorsement id")
     public void itShouldReturnEndorsementNotFoundGivenUnknownEndorsementId() {
+        UserModel userModel = new UserModel();
+        userModel.setRole(UserRole.SUPERUSER);
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         UUID nonExistentEndorsementId = UUID.randomUUID();
         String status = EndorsementStatus.APPROVED.name();
 
@@ -687,6 +694,11 @@ public class EndorsementServiceTest {
     @DisplayName(
             "Update endorsement status given a valid endorsement id and status is approved or rejected")
     public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
+        UserModel userModel = new UserModel();
+        userModel.setRole(UserRole.SUPERUSER);
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         UUID endorsementId = UUID.randomUUID();
