@@ -79,4 +79,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new GenericResponse<>(null, "Something unexpected happened, please try again."));
     }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<GenericResponse<Object>> handleIllegalArgumentException(
+            IllegalArgumentException ex) {
+        log.error("IllegalArgumentException - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, ex.getMessage()));
+    }
 }
