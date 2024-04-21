@@ -624,7 +624,7 @@ public class EndorsementServiceTest {
                         InsufficientAuthenticationException.class,
                         () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
         assertEquals(
-                "The access token provided is expired, revoked, malformed, or invalid for other reasons.",
+                "Unauthorized access",
                 exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }

@@ -26,6 +26,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 	private UserDTO user;
 	private SkillDTO skill;
 	private EndorsementRepository endorsementRepository;
+	private EndorsementModel endorsementModel;
+	private EndorsementService endorsementService;
 
 	@Autowired
 	public EndorsementsIntegrationTests(
@@ -58,6 +60,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 		skill =
 				skillsService.createSkill(
 						SkillDRO.builder().name("Java").type(SkillType.ATOMIC).createdBy(user.getId()).build());
+
+		endorsementModel = endorsementService.createEndorsement(EndorsementDRO.builder()
+						.skillId(skill.getId())
+						.userId(user.getId()).build());
 	}
 
 	@AfterEach
@@ -321,4 +327,40 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 				.body("code", equalTo(404))
 				.body("message", equalTo("Endorsement not found"));
 	}
+
+	@Test
+	@DisplayName("Return 200 when update endorsement status")
+	public void testAPIReturn200_OnUpdateEndorsementStatus() {
+		UUID endorsementId = endorsementModel.getId();
+		Response response =
+				given()
+						.cookies(RestAPIHelper.getSuperUserCookie())
+						.pathParam("endorsementId", endorsementId.toString())
+						.queryParam("status", EndorsementStatus.APPROVED.name())
+						.patch("/v1/endorsements");
+
+		response
+				.then()
+				.statusCode(200)
+				.body("data", equalTo(null))
+				.body("message", equalTo("Successfully updated endorsement status"));
+	}
+
+	/*@Test
+	@DisplayName("Return 200 when update endorsement status")
+	public void testAPIReturn200_OnUpdateEndorsementStatus() {
+		UUID endorsementId = endorsementModel.getId();
+		Response response =
+				given()
+						.cookies(RestAPIHelper.getSuperUserCookie())
+						.pathParam("endorsementId", endorsementId.toString())
+						.queryParam("status", EndorsementStatus.APPROVED.name())
+						.patch("/v1/endorsements");
+
+		response
+				.then()
+				.statusCode(200)
+				.body("data", equalTo(null))
+				.body("message", equalTo("Successfully updated endorsement status"));
+	}*/
 }
