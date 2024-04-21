@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 
 public interface EndorsementService {
     EndorsementDTO getEndorsementById(UUID id);
@@ -18,5 +17,5 @@ public interface EndorsementService {
 
     EndorsementModel createEndorsement(EndorsementDRO endorsementDRO);
 
-    ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(String id, String status);
+    GenericResponse<Void> updateEndorsementStatus(String id, String status);
 }

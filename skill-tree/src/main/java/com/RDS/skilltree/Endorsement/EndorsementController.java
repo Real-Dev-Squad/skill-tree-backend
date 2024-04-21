@@ -68,6 +68,6 @@ public class EndorsementController {
     @PatchMapping(value = "/{id}")
     public ResponseEntity<GenericResponse<Void>> updateEndorsementStatus(
             @PathVariable(value = "id") String id, @RequestParam String status) {
-        return endorsementService.updateEndorsementStatus(id, status);
+        return ResponseEntity.ok().body(endorsementService.updateEndorsementStatus(id, status));
     }
 }
