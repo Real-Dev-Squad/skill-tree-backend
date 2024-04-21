@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -619,11 +619,13 @@ public class EndorsementServiceTest {
         UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.APPROVED.name();
 
-        AccessDeniedException exception =
+        InsufficientAuthenticationException exception =
                 assertThrows(
-                        AccessDeniedException.class,
+                        InsufficientAuthenticationException.class,
                         () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
-        assertEquals("Unauthorized access", exception.getMessage());
+        assertEquals(
+                "The access token provided is expired, revoked, malformed, or invalid for other reasons.",
+                exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
 
