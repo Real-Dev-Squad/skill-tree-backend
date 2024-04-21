@@ -44,6 +44,8 @@ public class SecurityConfig {
                         auth ->
                                 auth.requestMatchers("/v1/health")
                                         .permitAll()
+                                        .requestMatchers(HttpMethod.GET,"/v1/endorsements")
+                                        .permitAll()
                                         .requestMatchers(HttpMethod.GET, "/v1/**")
                                         .hasAnyAuthority(UserRole.getAllRoles()) // give read-only access to all
                                         .requestMatchers("/v1/**")
