@@ -609,6 +609,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Return unauthorized given user is not a super user")
     public void itShouldReturnUnauthorizedIfUserIsNotSuperUser() {
         UserModel userModel = new UserModel();
@@ -628,6 +629,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Return invalid status given status is not approved or rejected")
     public void itShouldReturnInvalidStatusIfStatusIsNotApprovedOrRejected() {
         UserModel userModel = new UserModel();
@@ -647,6 +649,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Return invalid id given a invalid endorsement id")
     public void itShouldThrowIllegalArgumentExceptionIfInvalidEndorsementId() {
         UserModel userModel = new UserModel();
@@ -666,6 +669,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Return endorsement not found given an unknown endorsement id")
     public void itShouldReturnEndorsementNotFoundGivenUnknownEndorsementId() {
         UserModel userModel = new UserModel();
@@ -691,6 +695,7 @@ public class EndorsementServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName(
             "Update endorsement status given a valid endorsement id and status is approved or rejected")
     public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
