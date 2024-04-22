@@ -65,7 +65,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
         endorsement =
                 endorsementService.createEndorsement(
-                        EndorsementDRO.builder().skillId(skill.getId()).userId(skill.getId()).build());
+                        EndorsementDRO.builder().skillId(skill.getId()).userId(user.getId()).build());
     }
 
     @AfterEach
