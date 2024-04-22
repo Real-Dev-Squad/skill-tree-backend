@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Endorsement;
 
+import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
@@ -58,5 +59,11 @@ public class EndorsementServiceImpl implements EndorsementService {
                 throw new NoEntityException("User with id:" + userId + " not found");
             throw new NoEntityException("Skill with id:" + skillId + " not found");
         }
+    }
+
+    @Override
+    public GenericResponse<Void> updateEndorsementStatus(String id, String status) {
+        //TODO: implementation in followup PR
+        return null;
     }
 }
