@@ -63,7 +63,7 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     @Override
     public GenericResponse<Void> updateEndorsementStatus(String id, String status) {
-        //TODO: implementation in followup PR
+        // TODO: implementation in followup PR
         return null;
     }
 }

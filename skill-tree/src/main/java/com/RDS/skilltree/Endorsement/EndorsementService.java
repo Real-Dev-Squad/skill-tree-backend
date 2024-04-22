@@ -1,9 +1,8 @@
 package com.RDS.skilltree.Endorsement;
 
+import com.RDS.skilltree.Common.Response.GenericResponse;
 import java.io.IOException;
 import java.util.UUID;
-
-import com.RDS.skilltree.Common.Response.GenericResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
