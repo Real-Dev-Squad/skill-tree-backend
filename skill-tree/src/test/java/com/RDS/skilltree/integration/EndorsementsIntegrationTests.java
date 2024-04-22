@@ -1,19 +1,20 @@
 package com.RDS.skilltree.integration;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
 import com.RDS.skilltree.Endorsement.*;
 import com.RDS.skilltree.Skill.*;
 import com.RDS.skilltree.User.*;
 import io.restassured.response.Response;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.UUID;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import utils.RestAPIHelper;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.UUID;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -26,6 +27,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     private UserDTO user;
     private SkillDTO skill;
     private EndorsementRepository endorsementRepository;
+    private EndorsementModel endorsement;
+    private EndorsementService endorsementService;
 
     @Autowired
     public EndorsementsIntegrationTests(
@@ -33,12 +36,14 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
             UserRepository userRepository,
             SkillsService skillsService,
             SkillRepository skillRepository,
-            EndorsementRepository endorsementRepository) {
+            EndorsementRepository endorsementRepository,
+            EndorsementService endorsementService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.skillsService = skillsService;
         this.skillRepository = skillRepository;
         this.endorsementRepository = endorsementRepository;
+        this.endorsementService = endorsementService;
     }
 
     @BeforeEach
@@ -58,6 +63,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         skill =
                 skillsService.createSkill(
                         SkillDRO.builder().name("Java").type(SkillType.ATOMIC).createdBy(user.getId()).build());
+
+        endorsement = endorsementService.createEndorsement(EndorsementDRO.builder().skillId(skill.getId()).userId(skill.getId()).build());
     }
 
     @AfterEach
@@ -489,5 +496,62 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                         "message",
                         equalTo(
                                 "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return 200, when request is made using super user cookie and status is APPROVED/REJECTED")
+    public void itShouldReturn200OnUpdateEndorsementStatusWithSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
+        UUID endorsementId = endorsement.getId();
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .pathParam("endorsementId", endorsementId.toString())
+                        .queryParam("status", EndorsementStatus.APPROVED.name())
+                        .patch("/v1/endorsements");
+
+        response
+                .then()
+                .statusCode(200)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Successfully updated endorsement status"));
+    }
+
+	@Test
+    @Disabled
+	@DisplayName("Return 401, when request is made without using super user cookie and status is APPROVED/REJECTED")
+	public void itShouldReturn401OnUpdateEndorsementStatusWithOutSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
+		UUID endorsementId = endorsement.getId();
+		Response response =
+				given()
+						.cookies(RestAPIHelper.getSuperUserCookie())
+						.pathParam("endorsementId", endorsementId.toString())
+						.queryParam("status", EndorsementStatus.APPROVED.name())
+						.patch("/v1/endorsements");
+
+		response
+				.then()
+				.statusCode(401)
+				.body("data", equalTo(null))
+				.body("message", equalTo("Unauthorized access"));
+	}
+
+    @Test
+    @Disabled
+    @DisplayName("Return 400, when request is made with using super user cookie and status is not APPROVED/REJECTED")
+    public void itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsNotAcceptOrReject() {
+        UUID endorsementId = endorsement.getId();
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .pathParam("endorsementId", endorsementId.toString())
+                        .queryParam("status", EndorsementStatus.PENDING.name())
+                        .patch("/v1/endorsements");
+
+        response
+                .then()
+                .statusCode(400)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Invalid endorsement status"));
     }
 }
