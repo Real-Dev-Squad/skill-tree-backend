@@ -59,6 +59,17 @@ public class EndorsementServiceTest {
         SecurityContextHolder.clearContext();
     }
 
+    private void setupUpdateEndorsementTests(Boolean useSuperUserRole) {
+        UserModel userModel = new UserModel();
+        if (useSuperUserRole) {
+            userModel.setRole(UserRole.SUPERUSER);
+        } else {
+            userModel.setRole(UserRole.USER);
+        }
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
     @Test
     public void itShouldGetEndorsementsById() {
         UUID endorsementId = UUID.randomUUID();
@@ -612,10 +623,7 @@ public class EndorsementServiceTest {
     @Disabled
     @DisplayName("Return unauthorized given user is not a super user")
     public void itShouldReturnUnauthorizedIfUserIsNotSuperUser() {
-        UserModel userModel = new UserModel();
-        userModel.setRole(UserRole.USER);
-        when(auth.getPrincipal()).thenReturn(userModel);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        setupUpdateEndorsementTests(false);
 
         UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.APPROVED.name();
@@ -632,10 +640,7 @@ public class EndorsementServiceTest {
     @Disabled
     @DisplayName("Return invalid status given status is not approved or rejected")
     public void itShouldReturnInvalidStatusIfStatusIsNotApprovedOrRejected() {
-        UserModel userModel = new UserModel();
-        userModel.setRole(UserRole.SUPERUSER);
-        when(auth.getPrincipal()).thenReturn(userModel);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        setupUpdateEndorsementTests(true);
 
         UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.PENDING.name();
@@ -652,10 +657,7 @@ public class EndorsementServiceTest {
     @Disabled
     @DisplayName("Return invalid id given a invalid endorsement id")
     public void itShouldThrowIllegalArgumentExceptionIfInvalidEndorsementId() {
-        UserModel userModel = new UserModel();
-        userModel.setRole(UserRole.SUPERUSER);
-        when(auth.getPrincipal()).thenReturn(userModel);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        setupUpdateEndorsementTests(true);
 
         String invalidUUID = "jdsmjfdhfg6Bo6VdwW0ih....";
         String status = EndorsementStatus.APPROVED.name();
@@ -672,10 +674,7 @@ public class EndorsementServiceTest {
     @Disabled
     @DisplayName("Return endorsement not found given an unknown endorsement id")
     public void itShouldReturnEndorsementNotFoundGivenUnknownEndorsementId() {
-        UserModel userModel = new UserModel();
-        userModel.setRole(UserRole.SUPERUSER);
-        when(auth.getPrincipal()).thenReturn(userModel);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        setupUpdateEndorsementTests(true);
 
         UUID nonExistentEndorsementId = UUID.randomUUID();
         String status = EndorsementStatus.APPROVED.name();
@@ -699,10 +698,7 @@ public class EndorsementServiceTest {
     @DisplayName(
             "Update endorsement status given a valid endorsement id and status is approved or rejected")
     public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
-        UserModel userModel = new UserModel();
-        userModel.setRole(UserRole.SUPERUSER);
-        when(auth.getPrincipal()).thenReturn(userModel);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        setupUpdateEndorsementTests(true);
 
         UUID userId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
