@@ -529,7 +529,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         UUID endorsementId = endorsement.getId();
         Response response =
                 given()
-                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .cookies(RestAPIHelper.getUserCookie())
                         .pathParam("endorsementId", endorsementId.toString())
                         .queryParam("status", EndorsementStatus.APPROVED.name())
                         .patch("/v1/endorsements");
