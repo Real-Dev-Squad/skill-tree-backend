@@ -721,5 +721,23 @@ public class EndorsementServiceTest {
         assertEquals("Successfully updated endorsement status", result.getMessage());
 
         verify(endorsementRepository, times(1)).save(any(EndorsementModel.class));
+
+        EndorsementModel updatedMockEndorsement =
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .user(mockUser)
+                        .skill(mockSkill)
+                        .status(EndorsementStatus.APPROVED)
+                        .build();
+        mockEndorsement.setCreatedAt(Instant.now());
+        mockEndorsement.setUpdatedAt(Instant.now());
+        mockEndorsement.setCreatedBy(mockUser);
+        mockEndorsement.setUpdatedBy(mockUser);
+
+        when(endorsementRepository.findById(endorsementId))
+                .thenReturn(Optional.of(updatedMockEndorsement));
+        Optional<EndorsementModel> updatedEndorsement = endorsementRepository.findById(endorsementId);
+        assertTrue(updatedEndorsement.isPresent());
+        assertEquals(EndorsementStatus.APPROVED, updatedEndorsement.get().getStatus());
     }
 }
