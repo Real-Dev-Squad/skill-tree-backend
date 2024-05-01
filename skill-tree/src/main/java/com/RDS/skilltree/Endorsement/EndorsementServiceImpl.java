@@ -70,7 +70,8 @@ public class EndorsementServiceImpl implements EndorsementService {
         UserModel user =
                 (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!user.getRole().equals(UserRole.SUPERUSER)) {
-            throw new InsufficientAuthenticationException("Unauthorized access");
+            throw new InsufficientAuthenticationException(
+                    "Unauthorized, Access is only available to super users");
         }
         if (!(Objects.equals(status, EndorsementStatus.APPROVED.name())
                 || Objects.equals(status, EndorsementStatus.REJECTED.name()))) {
