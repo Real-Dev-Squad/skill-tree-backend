@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,13 @@ public class EndorsementServiceImpl implements EndorsementService {
     private final EndorsementRepository endorsementRepository;
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
+
+    private boolean isValidUUID(String uuidString) {
+        Pattern UUID_REGEX =
+                Pattern.compile(
+                        "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        return UUID_REGEX.matcher(uuidString).matches();
+    }
 
     @Override
     public EndorsementDTO getEndorsementById(UUID id) throws IllegalStateException {
@@ -76,6 +84,10 @@ public class EndorsementServiceImpl implements EndorsementService {
         if (!(Objects.equals(status, EndorsementStatus.APPROVED.name())
                 || Objects.equals(status, EndorsementStatus.REJECTED.name()))) {
             throw new IllegalArgumentException("Invalid endorsement status: " + status);
+        }
+        // remove this validation and use 'UUIDValidationInterceptor'
+        if (!isValidUUID(id)) {
+            throw new IllegalArgumentException("Invalid endorsement id: " + id);
         }
 
         try {
