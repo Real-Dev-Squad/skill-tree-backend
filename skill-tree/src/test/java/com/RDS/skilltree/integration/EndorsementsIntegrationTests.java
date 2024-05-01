@@ -554,7 +554,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                 .statusCode(401)
                 .body("data", equalTo(null))
-                .body("message", equalTo("Unauthorized access"));
+                .body("message", equalTo("Unauthorized, Access is only available to super users"));
     }
 
     @Test

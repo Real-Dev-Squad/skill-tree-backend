@@ -632,7 +632,7 @@ public class EndorsementServiceTest {
                 assertThrows(
                         InsufficientAuthenticationException.class,
                         () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
-        assertEquals("Unauthorized access", exception.getMessage());
+        assertEquals("Unauthorized, Access is only available to super users", exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
 
