@@ -15,7 +15,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +70,7 @@ public class EndorsementServiceImpl implements EndorsementService {
         UserModel user =
                 (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!user.getRole().equals(UserRole.SUPERUSER)) {
-            throw new AccessDeniedException("Unauthorized access");
+            throw new InsufficientAuthenticationException("Unauthorized access");
         }
         if (!(Objects.equals(status, EndorsementStatus.APPROVED.name())
                 || Objects.equals(status, EndorsementStatus.REJECTED.name()))) {
