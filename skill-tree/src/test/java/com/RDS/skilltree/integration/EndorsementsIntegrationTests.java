@@ -79,7 +79,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         Map<String, String> cookie;
         if (isSuperUser) {
             cookie = RestAPIHelper.getSuperUserCookie();
-        } else  {
+        } else {
             cookie = RestAPIHelper.getUserCookie();
         }
 
