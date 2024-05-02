@@ -9,7 +9,6 @@ import com.RDS.skilltree.User.UserRepository;
 import com.RDS.skilltree.User.UserRole;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -81,8 +80,8 @@ public class EndorsementServiceImpl implements EndorsementService {
             throw new InsufficientAuthenticationException(
                     "Unauthorized, Access is only available to super users");
         }
-        if (!(Objects.equals(status, EndorsementStatus.APPROVED.name())
-                || Objects.equals(status, EndorsementStatus.REJECTED.name()))) {
+        if (!(status.equals(EndorsementStatus.APPROVED.name())
+                || status.equals(EndorsementStatus.REJECTED.name()))) {
             throw new IllegalArgumentException("Invalid endorsement status: " + status);
         }
         // remove this validation and use 'UUIDValidationInterceptor'
