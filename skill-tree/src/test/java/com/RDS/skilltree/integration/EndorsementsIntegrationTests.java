@@ -292,7 +292,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn200OnEndorsementSearchByUserIDPresentInList() {
         String userID = "f13ac7a0-76ab-4215-8bfc-2dd5d9f8ebeb";
 
-        Response response = given().get("/v1/endorsements?userID=" + userID);
+        Response response = given().get("/v1/endorsements?dummyData=true&userID=" + userID);
 
         response
                 .then()
@@ -312,7 +312,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn200OnEndorsementSearchBySkillIDPresentInList() {
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
-        Response response = given().get("/v1/endorsements?skillID=" + skillID);
+        Response response = given().get("/v1/endorsements?dummyData=true&skillID=" + skillID);
 
         response
                 .then()
@@ -330,7 +330,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 200, with 1st page all the endorsements with default pagesize")
     public void itShouldReturn200OnEndorsementSearchAllEndorsements() {
-        Response response = given().get("/v1/endorsements");
+        Response response = given().get("/v1/endorsements?dummyData=true");
 
         response
                 .then()
@@ -346,7 +346,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 200, with 1st page all the endorsements with custom limit value")
     public void itShouldReturn200OnEndorsementSearchAllEndorsementsWithLimit() {
-        Response response = given().get("/v1/endorsements?limit=15");
+        Response response = given().get("/v1/endorsements?dummyData=true&limit=15");
 
         response
                 .then()
@@ -362,7 +362,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 200, with 1st page of all endorsements result where page size is 5")
     public void itShouldReturn200OnEndorsementSearchAllEndorsementsWithMultiplePages() {
-        Response response = given().get("/v1/endorsements?limit=5");
+        Response response = given().get("/v1/endorsements?dummyData=true&limit=5");
 
         response
                 .then()
@@ -378,7 +378,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 200, with 2nd page of all the endorsements result")
     public void itShouldReturn200With2ndPageOnEndorsementSearchAllEndorsementsWithMultiplePages() {
-        Response response = given().get("/v1/endorsements?limit=5&offset=1");
+        Response response = given().get("/v1/endorsements?dummyData=true&limit=5&offset=1");
 
         response
                 .then()
@@ -397,7 +397,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String userID = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
-        Response response = given().get("/v1/endorsements?skillID=" + skillID + "&userID=" + userID);
+        Response response = given().get("/v1/endorsements?dummyData=true&skillID=" + skillID + "&userID=" + userID);
 
         response
                 .then()
@@ -420,7 +420,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn204OnEndorsementSearchWithValidUserIDButNotPresentInList() {
         String userID = UUID.randomUUID().toString();
 
-        Response response = given().get("/v1/endorsements?userID=" + userID);
+        Response response = given().get("/v1/endorsements?dummyData=true&userID=" + userID);
 
         response.then().statusCode(204);
     }
@@ -431,7 +431,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn204OnEndorsementSearchWithValidSkillIDButNotPresentInList() {
         String skillID = UUID.randomUUID().toString();
 
-        Response response = given().get("/v1/endorsements?skillID=" + skillID);
+        Response response = given().get("/v1/endorsements?dummyData=true&skillID=" + skillID);
 
         response.then().statusCode(204);
     }
@@ -441,7 +441,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn400OnEndorsementSearchWithInvalidUserID() {
         String userID = "invalid-user-id";
 
-        Response response = given().get("/v1/endorsements?userID=" + userID);
+        Response response = given().get("/v1/endorsements?dummyData=true&userID=" + userID);
 
         response.then().statusCode(400);
     }
@@ -451,7 +451,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     public void itShouldReturn400OnEndorsementSearchWithInvalidSkillID() {
         String skillID = "invalid-skill-id";
 
-        Response response = given().get("/v1/endorsements?skillID=" + skillID);
+        Response response = given().get("/v1/endorsements?dummyData=true&skillID=" + skillID);
 
         response.then().statusCode(400);
     }
@@ -459,7 +459,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 204, given an offset value greater than maximum endorsements")
     public void itShouldReturn204OnEndorsementSearchWithOffsetGreaterThanMaximumEndorsements() {
-        Response response = given().get("/v1/endorsements?offset=10");
+        Response response = given().get("/v1/endorsements?dummyData=true&offset=10");
 
         response.then().statusCode(204);
     }

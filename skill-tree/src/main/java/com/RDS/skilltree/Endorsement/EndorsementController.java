@@ -23,20 +23,27 @@ public class EndorsementController {
     private final EndorsementService endorsementService;
 
     @GetMapping(value = "")
-    public ResponseEntity<Page<EndorsementModelFromJSON>> getAllEndorsements(
+    public ResponseEntity<Page<?>> getAllEndorsements(
             @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
             @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
             @RequestParam(name = "skillID", required = false) String skillID,
-            @RequestParam(name = "userID", required = false) String userID)
+            @RequestParam(name = "userID", required = false) String userID,
+            @RequestParam(name = "dummyData", required = false) boolean dummyData
+    )
             throws IOException {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        Page<EndorsementModelFromJSON> pagedEndorsements =
-                endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
-        if (pagedEndorsements.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(pagedEndorsements);
+        if(dummyData){
+            Page<EndorsementModelFromJSON> pagedEndorsements =
+                    endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
+            if (pagedEndorsements.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.ok(pagedEndorsements);
+            }
+        } else{
+            return ResponseEntity.ok(endorsementService.getEndorsements(pageRequest));
         }
+
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
