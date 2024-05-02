@@ -621,7 +621,8 @@ public class EndorsementServiceTest {
 
     @Test
     @Disabled
-    @DisplayName("Return unauthorized given user is not a super user")
+    @DisplayName(
+            "Return unauthorized access, given user is not a super user to update endorsement status")
     public void itShouldReturnUnauthorizedIfUserIsNotSuperUser() {
         setupUpdateEndorsementTests(false);
 

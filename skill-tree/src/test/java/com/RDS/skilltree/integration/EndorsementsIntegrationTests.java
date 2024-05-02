@@ -567,7 +567,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         Response response =
                 given()
                         .cookies(RestAPIHelper.getSuperUserCookie())
-                        .pathParam("endorsementId", endorsementId)
                         .queryParam("status", EndorsementStatus.PENDING.name())
                         .patch("/v1/endorsements/{id}", endorsementId);
 
@@ -575,6 +574,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                 .statusCode(400)
                 .body("data", equalTo(null))
-                .body("message", equalTo("Invalid endorsement status"));
+                .body("message", equalTo("Invalid endorsement status: PENDING"));
     }
 }
