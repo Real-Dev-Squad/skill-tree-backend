@@ -28,11 +28,10 @@ public class EndorsementController {
             @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
             @RequestParam(name = "skillID", required = false) String skillID,
             @RequestParam(name = "userID", required = false) String userID,
-            @RequestParam(name = "dummyData", required = false) boolean dummyData
-    )
+            @RequestParam(name = "dummyData", required = false) boolean dummyData)
             throws IOException {
         PageRequest pageRequest = PageRequest.of(offset, limit);
-        if(dummyData){
+        if (dummyData) {
             Page<EndorsementModelFromJSON> pagedEndorsements =
                     endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
             if (pagedEndorsements.isEmpty()) {
@@ -40,10 +39,9 @@ public class EndorsementController {
             } else {
                 return ResponseEntity.ok(pagedEndorsements);
             }
-        } else{
+        } else {
             return ResponseEntity.ok(endorsementService.getEndorsements(pageRequest));
         }
-
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

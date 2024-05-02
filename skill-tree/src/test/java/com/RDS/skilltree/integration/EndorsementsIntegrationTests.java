@@ -397,7 +397,8 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         String userID = "73e0b7c4-d128-4e53-9501-0e7f4ff5a261";
         String skillID = "7a6b8876-44e3-4b18-8579-79e9d4a5f0c9";
 
-        Response response = given().get("/v1/endorsements?dummyData=true&skillID=" + skillID + "&userID=" + userID);
+        Response response =
+                given().get("/v1/endorsements?dummyData=true&skillID=" + skillID + "&userID=" + userID);
 
         response
                 .then()
