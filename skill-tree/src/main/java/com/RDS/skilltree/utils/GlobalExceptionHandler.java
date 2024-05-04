@@ -2,7 +2,9 @@ package com.RDS.skilltree.utils;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
@@ -80,10 +82,16 @@ public class GlobalExceptionHandler {
                 .body(new GenericResponse<>(null, "Something unexpected happened, please try again."));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<GenericResponse<Object>> handleIllegalArgumentException(
-            IllegalArgumentException ex) {
-        log.error("IllegalArgumentException - Error : {}", ex.getMessage(), ex);
+    @ExceptionHandler({InvalidParameterException.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(InvalidParameterException ex) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new GenericResponse<>(null, ex.getMessage()));
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<GenericResponse<Object>> handleException(ConstraintViolationException ex) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new GenericResponse<>(null, ex.getMessage()));
     }
