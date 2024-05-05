@@ -155,11 +155,11 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 201 on endorsements creation")
     public void testAPIReturns201_OnEndorsementCreation() {
-        UUID userId = user.getId();
+        UUID endorserId = user.getId();
         UUID skillId = skill.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+        endorsementDRO.setEndorserId(endorserId);
         endorsementDRO.setSkillId(skillId);
         Response response =
                 given()
@@ -203,10 +203,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 400 on endorsements skillid null")
     public void testAPIReturns400_OnEndorsementCreationSkillIdNull() {
-        UUID userId = user.getId();
+        UUID endorserId = user.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+        endorsementDRO.setEndorserId(endorserId);
 
         Response response =
                 given()
