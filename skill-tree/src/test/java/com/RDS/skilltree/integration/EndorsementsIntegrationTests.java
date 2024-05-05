@@ -172,7 +172,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                 .statusCode(201)
                 .contentType("application/json")
-                .body("data.user.firstName", equalTo("John"))
+                .body("data.endorserId", equalTo(endorserId.toString()))
                 .body("data.skill.name", equalTo("Java"));
     }
 

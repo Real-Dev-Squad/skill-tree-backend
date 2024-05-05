@@ -3,7 +3,6 @@ package com.RDS.skilltree.Endorsement;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
-import com.RDS.skilltree.User.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EndorsementServiceImpl implements EndorsementService {
     private final EndorsementRepository endorsementRepository;
-    private final UserRepository userRepository;
     private final SkillRepository skillRepository;
 
     private final ObjectMapper objectMapper;
