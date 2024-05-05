@@ -3,7 +3,6 @@ package com.RDS.skilltree.Endorsement;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
-import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -46,16 +45,15 @@ public class EndorsementServiceImpl implements EndorsementService {
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
         UUID userId = endorsementDRO.getUserId();
         UUID skillId = endorsementDRO.getSkillId();
-        Optional<UserModel> userOptional = userRepository.findById(userId);
+
         Optional<SkillModel> skillOptional = skillRepository.findById(skillId);
-        if (userOptional.isPresent() && skillOptional.isPresent()) {
+        if (skillOptional.isPresent()) {
             EndorsementModel endorsementModel =
-                    EndorsementModel.builder().user(userOptional.get()).skill(skillOptional.get()).build();
+                    EndorsementModel.builder().endorserId(userId).skill(skillOptional.get()).build();
 
             return endorsementRepository.save(endorsementModel);
         } else {
-            if (userOptional.isEmpty())
-                throw new NoEntityException("User with id:" + userId + " not found");
+
             throw new NoEntityException("Skill with id:" + skillId + " not found");
         }
     }

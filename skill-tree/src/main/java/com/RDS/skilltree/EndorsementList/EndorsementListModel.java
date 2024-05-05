@@ -1,7 +1,6 @@
 package com.RDS.skilltree.EndorsementList;
 
 import com.RDS.skilltree.Endorsement.EndorsementModel;
-import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -26,9 +25,8 @@ public class EndorsementListModel extends TrackedProperties {
     @JsonBackReference
     private EndorsementModel endorsement;
 
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @OneToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL)
-    private UserModel endorser;
+    @Column(name = "endorser_id")
+    private UUID endorserId;
 
     @Column(name = "description")
     private String description;
@@ -41,9 +39,9 @@ public class EndorsementListModel extends TrackedProperties {
     private EndorsementType type;
 
     public EndorsementListModel(
-            EndorsementModel endorsement, UserModel endorser, String description, EndorsementType type) {
+            EndorsementModel endorsement, UUID endorserId, String description, EndorsementType type) {
         this.endorsement = endorsement;
-        this.endorser = endorser;
+        this.endorserId = endorserId;
         this.description = description;
         this.type = type;
         this.deleted = false;

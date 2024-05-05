@@ -30,11 +30,11 @@ public class EndorsementListService {
 
         UUID endorserId = endorsementListDRO.getEndorserId();
         UUID endorsementId = endorsementListDRO.getEndorsementId();
-        Optional<UserModel> endorserOptional = userRepository.findById(endorserId);
-        Optional<EndorsementModel> endorsementOptional = endorsementRepository.findById(endorsementId);
-        if (endorserOptional.isPresent() && endorsementOptional.isPresent()) {
 
-            endorsementListEntry.setEndorser(endorserOptional.get());
+        Optional<EndorsementModel> endorsementOptional = endorsementRepository.findById(endorsementId);
+        if ( endorsementOptional.isPresent()) {
+
+            endorsementListEntry.setEndorserId(endorserId);
             endorsementListEntry.setEndorsement(endorsementOptional.get());
             endorsementListEntry.setDescription(endorsementListDRO.getDescription());
             endorsementListEntry.setType(endorsementListDRO.getType());
@@ -42,8 +42,8 @@ public class EndorsementListService {
             return endorsementListEntry;
 
         } else {
-            if (endorserOptional.isEmpty())
-                throw new NoEntityException("User with id:" + endorserId + " not found");
+//            if (endorserOptional.isEmpty())
+//                throw new NoEntityException("User with id:" + endorserId + " not found");
             throw new NoEntityException("Endorsement with id:" + endorsementId + " not found");
         }
     }
