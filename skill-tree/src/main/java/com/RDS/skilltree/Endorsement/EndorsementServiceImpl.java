@@ -43,7 +43,7 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     @Override
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
-        UUID userId = endorsementDRO.getUserId();
+        UUID userId = endorsementDRO.getEndorserId();
         UUID skillId = endorsementDRO.getSkillId();
 
         Optional<SkillModel> skillOptional = skillRepository.findById(skillId);

@@ -61,32 +61,10 @@ class EndorsementListServiceTest {
 
         // Assertions
         assertNotNull(result);
-        assertEquals(endorserId, result.getEndorser().getId());
+        assertEquals(endorserId, result.getEndorserId());
         assertEquals(endorsementId, result.getEndorsement().getId());
         assertEquals("Test Description", result.getDescription());
         assertEquals(EndorsementType.POSITIVE, result.getType());
-    }
-
-    @Test
-    void testCreateEndorsementListEntryWithInvalidUser() {
-        UUID endorserId = UUID.randomUUID();
-        UUID endorsementId = UUID.randomUUID();
-        EndorsementListDRO endorsementListDRO = new EndorsementListDRO();
-        endorsementListDRO.setEndorserId(endorserId);
-        endorsementListDRO.setEndorsementId(endorsementId);
-
-        // Mock the repository behavior for an invalid user
-        when(userRepository.findById(endorserId)).thenReturn(Optional.empty());
-
-        // Assert that a NoEntityException is thrown
-        NoEntityException exception =
-                assertThrows(
-                        NoEntityException.class,
-                        () -> endorsementListService.createEndorsementListEntry(endorsementListDRO));
-        assertEquals("User with id:" + endorserId + " not found", exception.getMessage());
-
-        // Verify that save method is not called
-        verify(endorsementListRepository, never()).save(any(EndorsementListModel.class));
     }
 
     @Test

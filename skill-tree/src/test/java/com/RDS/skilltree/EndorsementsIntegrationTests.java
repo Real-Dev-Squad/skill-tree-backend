@@ -178,7 +178,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 		UUID skillId = skill.getId();
 
 		EndorsementDRO endorsementDRO = new EndorsementDRO();
-		endorsementDRO.setUserId(userId);
+		endorsementDRO.setEndorserId(userId);
 		endorsementDRO.setSkillId(skillId);
 		Response response =
 				given()
@@ -225,7 +225,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 		UUID userId = user.getId();
 
 		EndorsementDRO endorsementDRO = new EndorsementDRO();
-		endorsementDRO.setUserId(userId);
+		endorsementDRO.setEndorserId(userId);
 
 		Response response =
 				given()

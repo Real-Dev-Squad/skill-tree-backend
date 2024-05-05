@@ -1,11 +1,11 @@
 package com.RDS.skilltree.utils;
 
-import com.RDS.skilltree.User.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
+import java.util.UUID;
 import lombok.Data;
 
 @Data
@@ -13,11 +13,11 @@ import lombok.Data;
 public abstract class TrackedProperties {
     @ManyToOne
     @JoinColumn(name = "created_by")
-    private UserModel createdBy;
+    private UUID createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private UserModel updatedBy;
+    private UUID updatedBy;
 
     @Column(name = "created_at")
     private Instant createdAt;

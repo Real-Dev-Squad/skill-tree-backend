@@ -12,7 +12,6 @@ import com.RDS.skilltree.Endorsement.EndorsementServiceImpl;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
-import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,17 +56,20 @@ public class EndorsementServiceTest {
     @Test
     public void itShouldGetEndorsementsById() {
         UUID endorsementId = UUID.randomUUID();
-        UUID userId = UUID.randomUUID();
+        UUID endorserId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
 
-        UserModel userModel = UserModel.builder().id(userId).build();
         SkillModel skillModel = SkillModel.builder().id(skillId).build();
         EndorsementModel endorsementModel =
-                EndorsementModel.builder().id(endorsementId).user(userModel).skill(skillModel).build();
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .endorserId(endorserId)
+                        .skill(skillModel)
+                        .build();
         endorsementModel.setCreatedAt(Instant.now());
         endorsementModel.setUpdatedAt(Instant.now());
-        endorsementModel.setCreatedBy(userModel);
-        endorsementModel.setUpdatedBy(userModel);
+        endorsementModel.setCreatedBy(endorsementId);
+        endorsementModel.setUpdatedBy(endorsementId);
 
         when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(endorsementModel));
 
@@ -524,24 +526,26 @@ public class EndorsementServiceTest {
     @Test
     void testCreateEndorsement() {
         // Mock data
-        UUID userId = UUID.randomUUID();
+        UUID endorserId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         UUID endorsementId = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+        endorsementDRO.setEndorserId(endorserId);
         endorsementDRO.setSkillId(skillId);
 
-        UserModel mockUser = UserModel.builder().id(userId).build();
         SkillModel mockSkill = SkillModel.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
-                EndorsementModel.builder().id(endorsementId).user(mockUser).skill(mockSkill).build();
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .endorserId(endorserId)
+                        .skill(mockSkill)
+                        .build();
         mockEndorsement.setCreatedAt(Instant.now());
         mockEndorsement.setUpdatedAt(Instant.now());
-        mockEndorsement.setCreatedBy(mockUser);
-        mockEndorsement.setUpdatedBy(mockUser);
+        mockEndorsement.setCreatedBy(endorserId);
+        mockEndorsement.setUpdatedBy(endorserId);
 
         // Mock the repository behavior
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         when(skillRepository.findById(skillId)).thenReturn(Optional.of(mockSkill));
         when(endorsementRepository.save(any(EndorsementModel.class))).thenReturn(mockEndorsement);
 
@@ -553,44 +557,19 @@ public class EndorsementServiceTest {
 
         // Assertions
         assertNotNull(result);
-        assertEquals(userId, result.getUser().getId());
+        assertEquals(endorserId, result.getEndorserId());
         assertEquals(skillId, result.getSkill().getId());
     }
 
     @Test
-    void testCreateEndorsementWithInvalidUser() {
-        UUID userId = UUID.randomUUID();
-        UUID skillId = UUID.randomUUID();
-        EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
-        endorsementDRO.setSkillId(skillId);
-
-        // Mock the repository behavior for an invalid user
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        // Assert that a NoEntityException is thrown
-        NoEntityException exception =
-                assertThrows(
-                        NoEntityException.class, () -> endorsementService.createEndorsement(endorsementDRO));
-        assertEquals("User with id:" + userId + " not found", exception.getMessage());
-
-        // Verify that save method is not called
-        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
-    }
-
-    @Test
     void testCreateEndorsementWithInvalidSkill() {
-        UUID userId = UUID.randomUUID();
+        UUID endorserId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+        endorsementDRO.setEndorserId(endorserId);
         endorsementDRO.setSkillId(skillId);
-
-        UserModel mockUser = new UserModel();
-        mockUser.setId(userId);
 
         // Mock the repository behavior for an invalid skill
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         when(skillRepository.findById(skillId)).thenReturn(Optional.empty());
 
         // Assert that a NoEntityException is thrown
