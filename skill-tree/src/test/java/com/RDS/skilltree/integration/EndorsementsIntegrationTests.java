@@ -563,6 +563,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                 .statusCode(400)
                 .body("data", equalTo(null))
-                .body("message", equalTo("Invalid endorsement status: PENDING"));
+                .body("message", equalTo("Invalid parameter endorsement status: PENDING"));
     }
 }

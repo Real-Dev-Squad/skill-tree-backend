@@ -639,7 +639,7 @@ public class EndorsementServiceTest {
                 assertThrows(
                         IllegalArgumentException.class,
                         () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
-        assertEquals("Invalid endorsement status: " + status, exception.getMessage());
+        assertEquals("Invalid parameter endorsement status: " + status, exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
 
@@ -656,7 +656,7 @@ public class EndorsementServiceTest {
                 assertThrows(
                         IllegalArgumentException.class,
                         () -> endorsementService.updateEndorsementStatus(invalidUUID, status));
-        assertEquals("Invalid endorsement id: " + invalidUUID, exception.getMessage());
+        assertEquals("Invalid parameter endorsement id: " + invalidUUID, exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
 
