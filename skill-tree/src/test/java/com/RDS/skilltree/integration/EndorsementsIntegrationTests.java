@@ -529,9 +529,9 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @Disabled
     @DisplayName(
-            "Return 401, when request is made without using super user cookie and status is APPROVED/REJECTED")
+            "Return 403, when request is made without using super user cookie and status is APPROVED/REJECTED")
     public void
-            itShouldReturn401OnUpdateEndorsementStatusWithOutSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
+            itShouldReturn403OnUpdateEndorsementStatusWithOutSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
         String endorsementId = createEndorsementModel(false);
         Response response =
                 given()
@@ -541,7 +541,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
         response
                 .then()
-                .statusCode(401)
+                .statusCode(403)
                 .body("data", equalTo(null))
                 .body("message", equalTo("Unauthorized, Access is only available to super users"));
     }

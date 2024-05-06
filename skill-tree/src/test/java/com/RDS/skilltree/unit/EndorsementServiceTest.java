@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Endorsement.*;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
@@ -32,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -618,9 +619,9 @@ public class EndorsementServiceTest {
         UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.APPROVED.name();
 
-        InsufficientAuthenticationException exception =
+        AccessDeniedException exception =
                 assertThrows(
-                        InsufficientAuthenticationException.class,
+                        AccessDeniedException.class,
                         () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
         assertEquals("Unauthorized, Access is only available to super users", exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
@@ -635,9 +636,9 @@ public class EndorsementServiceTest {
         UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.PENDING.name();
 
-        IllegalArgumentException exception =
+        InvalidParameterException exception =
                 assertThrows(
-                        IllegalArgumentException.class,
+                        InvalidParameterException.class,
                         () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
         assertEquals("Invalid parameter endorsement status: " + status, exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
@@ -652,9 +653,9 @@ public class EndorsementServiceTest {
         String invalidUUID = "jdsmjfdhfg6Bo6VdwW0ih....";
         String status = EndorsementStatus.APPROVED.name();
 
-        IllegalArgumentException exception =
+        InvalidParameterException exception =
                 assertThrows(
-                        IllegalArgumentException.class,
+                        InvalidParameterException.class,
                         () -> endorsementService.updateEndorsementStatus(invalidUUID, status));
         assertEquals("Invalid parameter endorsement id: " + invalidUUID, exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
