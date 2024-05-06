@@ -3,6 +3,7 @@ package com.RDS.skilltree.Endorsement;
 import static com.RDS.skilltree.utils.UUIDValidationInterceptor.isValidUUID;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
@@ -145,10 +146,10 @@ public class EndorsementServiceImpl implements EndorsementService {
         }
         if (!(status.equals(EndorsementStatus.APPROVED.name())
                 || status.equals(EndorsementStatus.REJECTED.name()))) {
-            throw new IllegalArgumentException("Invalid endorsement status: " + status);
+            throw new InvalidParameterException("endorsement status", status);
         }
         if (!isValidUUID(id)) {
-            throw new IllegalArgumentException("Invalid endorsement id: " + id);
+            throw new InvalidParameterException("endorsement id", id);
         }
 
         try {
@@ -168,8 +169,9 @@ public class EndorsementServiceImpl implements EndorsementService {
                 return new GenericResponse<>(null, "Successfully updated endorsement status");
             }
             throw new NoEntityException("No endorsement with id " + id + " was found");
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Invalid endorsement id: " + id);
+        } catch (Exception ex) {
+            logger.error("Error updating endorsement stats: {}", ex.getMessage());
+            throw new RuntimeException();
         }
     }
 }

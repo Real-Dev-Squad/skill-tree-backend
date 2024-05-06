@@ -29,11 +29,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
     public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(Exception ex) {
+        String message;
+        if (ex.getMessage() != null && !ex.getMessage().trim().isEmpty()) {
+            message = ex.getMessage();
+        } else {
+            message =
+                    "The access token provided is expired, revoked, malformed, or invalid for other reasons.";
+        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(
-                        new GenericResponse<>(
-                                null,
-                                "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+                .body(new GenericResponse<>(null, message));
     }
 
     @ExceptionHandler({AccessDeniedException.class})
