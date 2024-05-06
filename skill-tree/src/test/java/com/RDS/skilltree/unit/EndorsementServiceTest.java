@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +48,7 @@ public class EndorsementServiceTest {
 
     @InjectMocks @Autowired private EndorsementServiceImpl endorsementService;
 
-    @Disabled // Change to @BeforeEach while enabling endorsement search v1 related tests
+    @BeforeEach
     public void setUp() {
         ReflectionTestUtils.setField(
                 endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements.json");
@@ -82,7 +82,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Get endorsements given a valid skillID")
-    @Disabled
     public void itShouldReturnEndorsementsGivenSkillID() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -113,7 +112,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Get endorsements given a valid userID")
-    @Disabled
     void itShouldGetEndorsementsGivenUserID() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -144,7 +142,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Get endorsements given an invalid userID")
-    @Disabled
     public void itShouldThrowErrorIfInvalidUserIDIsGiven() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -175,7 +172,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Get endorsements given an invalid skillID")
-    @Disabled
     public void itShouldThrowIllegalArgumentExceptionIfInvalidSkillIDIsGiven() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -206,7 +202,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Get endorsements given a valid userID and invalid skillID")
-    @Disabled
     public void itShouldThrowIllegalArgumentExceptionIfInvalidUserIDIsGiven() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -239,7 +234,6 @@ public class EndorsementServiceTest {
     @Test
     @DisplayName(
             "Return paginated result having 2 pages when number of endorsements with a given userID is 15")
-    @Disabled
     public void itShouldReturnPaginatedResultOnSearch() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String userID = UUID.randomUUID().toString();
@@ -271,7 +265,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return empty page when accessing out of bound page in paginated result")
-    @Disabled
     public void itShouldReturnEmptyPaginatedResultOnSearch() throws IOException {
         PageRequest pageRequest = PageRequest.of(10, 10);
         String userID = UUID.randomUUID().toString();
@@ -303,7 +296,6 @@ public class EndorsementServiceTest {
     @Test
     @DisplayName(
             "Return empty endorsement list given a valid userID but skillID which is not present")
-    @Disabled
     public void itShouldReturnEmptyDataGivenUserIDAndSkillIDNotPresent() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -336,7 +328,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return empty page when no endorsements are present in dummy data")
-    @Disabled
     public void itShouldReturnEmptyDataWhenNoEndorsementsArePresent() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -357,7 +348,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return empty endorsement list given a userID which is not present")
-    @Disabled
     public void itShouldReturnEmptyDataGivenUserIDNotPresent() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -391,7 +381,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return empty endorsement list given empty userID and skillID")
-    @Disabled
     public void itShouldReturnEmptyDataGivenEmptyUserIDAndSkillID() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -422,7 +411,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return empty endorsement list given a skillID which is not present")
-    @Disabled
     public void itShouldReturnEmptyDataGivenSkillIDNotPresent() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -456,7 +444,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return empty endorsement list given a skillID and userID which is not present")
-    @Disabled
     public void itShouldReturnEmptyDataGivenSkillIDAndUserIDNotPresent() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = UUID.randomUUID().toString();
@@ -490,7 +477,6 @@ public class EndorsementServiceTest {
 
     @Test
     @DisplayName("Return IO exception on error reading data")
-    @Disabled
     void itShouldReturnIOExceptionIfErrorReadingData() throws IOException {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String skillID = null;
