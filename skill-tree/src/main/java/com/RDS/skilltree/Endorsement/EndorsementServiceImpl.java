@@ -1,7 +1,5 @@
 package com.RDS.skilltree.Endorsement;
 
-import static com.RDS.skilltree.utils.UUIDValidationInterceptor.isValidUUID;
-
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
@@ -10,6 +8,7 @@ import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import com.RDS.skilltree.User.UserRole;
+import com.RDS.skilltree.utils.CommonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -147,7 +146,7 @@ public class EndorsementServiceImpl implements EndorsementService {
                 || status.equals(EndorsementStatus.REJECTED.name()))) {
             throw new InvalidParameterException("endorsement status", status);
         }
-        if (!isValidUUID(id)) {
+        if (!CommonUtils.isValidUUID(id)) {
             throw new InvalidParameterException("endorsement id", id);
         }
 
