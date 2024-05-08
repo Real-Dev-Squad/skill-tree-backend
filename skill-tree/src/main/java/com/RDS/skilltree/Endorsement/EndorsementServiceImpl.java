@@ -150,26 +150,21 @@ public class EndorsementServiceImpl implements EndorsementService {
             throw new InvalidParameterException("endorsement id", id);
         }
 
-        try {
-            UUID endorsementId = UUID.fromString(id);
-            Optional<EndorsementModel> optionalEndorsementModel =
-                    endorsementRepository.findById(endorsementId);
-            if (optionalEndorsementModel.isPresent()) {
-                EndorsementModel updatedEndorsementModel =
-                        EndorsementModel.builder()
-                                .id(optionalEndorsementModel.get().getId())
-                                .user(optionalEndorsementModel.get().getUser())
-                                .skill(optionalEndorsementModel.get().getSkill())
-                                .endorsersList(optionalEndorsementModel.get().getEndorsersList())
-                                .status(EndorsementStatus.valueOf(status))
-                                .build();
-                endorsementRepository.save(updatedEndorsementModel);
-                return new GenericResponse<>(null, "Successfully updated endorsement status");
-            }
-            throw new NoEntityException("No endorsement with id " + id + " was found");
-        } catch (Exception ex) {
-            logger.error("Error updating endorsement stats: {}", ex.getMessage());
-            throw new RuntimeException();
+        UUID endorsementId = UUID.fromString(id);
+        Optional<EndorsementModel> optionalEndorsementModel =
+                endorsementRepository.findById(endorsementId);
+        if (optionalEndorsementModel.isPresent()) {
+            EndorsementModel updatedEndorsementModel =
+                    EndorsementModel.builder()
+                            .id(optionalEndorsementModel.get().getId())
+                            .user(optionalEndorsementModel.get().getUser())
+                            .skill(optionalEndorsementModel.get().getSkill())
+                            .endorsersList(optionalEndorsementModel.get().getEndorsersList())
+                            .status(EndorsementStatus.valueOf(status))
+                            .build();
+            endorsementRepository.save(updatedEndorsementModel);
+            return new GenericResponse<>(null, "Successfully updated endorsement status");
         }
+        throw new NoEntityException("No endorsement with id " + id + " was found");
     }
 }
