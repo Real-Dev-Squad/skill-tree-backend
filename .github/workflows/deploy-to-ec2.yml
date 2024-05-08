@@ -34,12 +34,17 @@ jobs:
 
   deploy: 
     needs: build-and-push
-    runs-on: [skill-tree-ec2]
+    runs-on: ubuntu-latest
     steps:
-      - name: Pull Image from docker hub
-        run: docker pull ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
-      - name: Delete old container
-        run: docker rm -f skill-tree-backend
-      - name: Run docker container
-        run: docker run -d -p 8080:8080 --name skill-tree-backend ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
+          script: |
+            docker pull ${{ secrets.AWS_ECR_URI }}/skill-tree-backend:latest
+            docker stop skill-tree-backend || true
+            docker rm skill-tree-backend || true
+            docker run -d -p 8080:8080 --name skill-tree-backend ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
       
