@@ -47,5 +47,5 @@ jobs:
       - name: Delete old container
         run: docker rm -f skill-tree-backend
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name skill-tree-backend -e RDS_PUBLIC_KEY=${{secrets.RDS_PUBLIC_KEY}} -e API_V1_PREFIX=/api/v1 -e SPRING_DATASOURCE_VERSION=8.1.0 ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
+        run: docker run -d -p 8080:8080 --name skill-tree-backend -e RDS_PUBLIC_KEY=${{secrets.RDS_PUBLIC_KEY}} -e API_V1_PREFIX=/api/v1 ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
       
