@@ -47,5 +47,5 @@ jobs:
       - name: Delete old container
         run: docker rm -f skill-tree-backend
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name skill-tree-backend -e RDS_PUBLIC_KEY=${{secrets.RDS_PUBLIC_KEY}}  ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
+        run: docker run -d -p 8080:8080 --name skill-tree-backend -e RDS_PUBLIC_KEY=${{secrets.RDS_PUBLIC_KEY}} ${{ secrets.AWS_ECR_URI }}/skill-tree-backend
       
