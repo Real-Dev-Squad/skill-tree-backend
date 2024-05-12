@@ -22,8 +22,8 @@ public class EndorsementModel extends TrackedProperties {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "endorser_id")
-    private UUID endorserId;
+    @Column(name = "endorsee_id")
+    private UUID endorseeId;
 
     @ManyToOne(targetEntity = SkillModel.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "skill_id", referencedColumnName = "id")

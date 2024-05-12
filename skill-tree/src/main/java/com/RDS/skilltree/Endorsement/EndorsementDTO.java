@@ -13,7 +13,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EndorsementDTO extends TrackedProperties {
     private UUID id;
-    private UUID endorserId;
+    private UUID endorseeId;
     private SkillDTO skill;
     private EndorsementStatus status;
     private List<EndorsementListModel> endorsersList;
@@ -22,7 +22,7 @@ public class EndorsementDTO extends TrackedProperties {
         EndorsementDTO endorsementDTO =
                 EndorsementDTO.builder()
                         .id(endorsementModel.getId())
-                        .endorserId(endorsementModel.getEndorserId())
+                        .endorseeId(endorsementModel.getEndorseeId())
                         .skill(SkillDTO.toDto(endorsementModel.getSkill()))
                         .status(endorsementModel.getStatus())
                         .endorsersList(endorsementModel.getEndorsersList())

@@ -63,7 +63,7 @@ public class EndorsementServiceTest {
         EndorsementModel endorsementModel =
                 EndorsementModel.builder()
                         .id(endorsementId)
-                        .endorserId(endorserId)
+                        .endorseeId(endorserId)
                         .skill(skillModel)
                         .build();
         endorsementModel.setCreatedAt(Instant.now());
@@ -516,14 +516,14 @@ public class EndorsementServiceTest {
         UUID skillId = UUID.randomUUID();
         UUID endorsementId = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setEndorserId(endorserId);
+        endorsementDRO.setEndorseeId(endorserId);
         endorsementDRO.setSkillId(skillId);
 
         SkillModel mockSkill = SkillModel.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)
-                        .endorserId(endorserId)
+                        .endorseeId(endorserId)
                         .skill(mockSkill)
                         .build();
         mockEndorsement.setCreatedAt(Instant.now());
@@ -543,7 +543,7 @@ public class EndorsementServiceTest {
 
         // Assertions
         assertNotNull(result);
-        assertEquals(endorserId, result.getEndorserId());
+        assertEquals(endorserId, result.getEndorseeId());
         assertEquals(skillId, result.getSkill().getId());
     }
 
@@ -552,7 +552,7 @@ public class EndorsementServiceTest {
         UUID endorserId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setEndorserId(endorserId);
+        endorsementDRO.setEndorseeId(endorserId);
         endorsementDRO.setSkillId(skillId);
 
         // Mock the repository behavior for an invalid skill

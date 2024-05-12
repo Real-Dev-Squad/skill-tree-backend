@@ -110,13 +110,13 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     @Override
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
-        UUID userId = endorsementDRO.getEndorserId();
+        UUID userId = endorsementDRO.getEndorseeId();
         UUID skillId = endorsementDRO.getSkillId();
 
         Optional<SkillModel> skillOptional = skillRepository.findById(skillId);
         if (skillOptional.isPresent()) {
             EndorsementModel endorsementModel =
-                    EndorsementModel.builder().endorserId(userId).skill(skillOptional.get()).build();
+                    EndorsementModel.builder().endorseeId(userId).skill(skillOptional.get()).build();
 
             return endorsementRepository.save(endorsementModel);
         } else {
