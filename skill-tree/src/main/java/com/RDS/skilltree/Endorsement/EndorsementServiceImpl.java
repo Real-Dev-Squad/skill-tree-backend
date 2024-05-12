@@ -136,7 +136,7 @@ public class EndorsementServiceImpl implements EndorsementService {
     }
 
     @Override
-    public GenericResponse<Void> updateEndorsementStatus(String id, String status) {
+    public GenericResponse<Void> updateEndorsementStatus(UUID id, String status) {
         UserModel user =
                 (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!user.getRole().equals(UserRole.SUPERUSER)) {
@@ -146,13 +146,11 @@ public class EndorsementServiceImpl implements EndorsementService {
                 || status.equals(EndorsementStatus.REJECTED.name()))) {
             throw new InvalidParameterException("endorsement status", status);
         }
-        if (!CommonUtils.isValidUUID(id)) {
-            throw new InvalidParameterException("endorsement id", id);
+        if (!CommonUtils.isValidUUID(id.toString())) {
+            throw new InvalidParameterException("endorsement id", id.toString());
         }
 
-        UUID endorsementId = UUID.fromString(id);
-        Optional<EndorsementModel> optionalEndorsementModel =
-                endorsementRepository.findById(endorsementId);
+        Optional<EndorsementModel> optionalEndorsementModel = endorsementRepository.findById(id);
         if (optionalEndorsementModel.isPresent()) {
             EndorsementModel updatedEndorsementModel =
                     EndorsementModel.builder()

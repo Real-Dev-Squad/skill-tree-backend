@@ -17,5 +17,5 @@ public interface EndorsementService {
 
     EndorsementModel createEndorsement(EndorsementDRO endorsementDRO);
 
-    GenericResponse<Void> updateEndorsementStatus(String id, String status);
+    GenericResponse<Void> updateEndorsementStatus(UUID id, String status);
 }
