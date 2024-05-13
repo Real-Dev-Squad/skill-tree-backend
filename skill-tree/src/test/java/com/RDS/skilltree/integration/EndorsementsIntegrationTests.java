@@ -83,7 +83,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data[0].status", anyOf(equalTo("APPROVED"), equalTo("REJECTED"), equalTo("PENDING")))
                 .body("data[0].endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
                 .body("data[0].endorsersList", hasSize(1))
-                .body("data[0].endorserList[0].endorserId", equalTo("user-2"))
+                .body("data[0].endorserList[0].endorseeId", equalTo("user-2"))
                 .body("data[0].endorserList[0].description", isA(String.class))
                 .body(
                         "data[0].endorserList[0].userType",
@@ -110,7 +110,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data[0].status", equalTo("PENDING"))
                 .body("data[0].endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
                 .body("data[0].endorsersList", hasSize(1))
-                .body("data[0].endorserList[0].endorserId", equalTo("user-2"))
+                .body("data[0].endorserList[0].endorseeId", equalTo("user-2"))
                 .body("data[0].endorserList[0].description", isA(String.class))
                 .body(
                         "data[0].endorserList[0].userType",
@@ -155,11 +155,11 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 201 on endorsements creation")
     public void testAPIReturns201_OnEndorsementCreation() {
-        UUID endorserId = user.getId();
+        UUID endorseeId = user.getId();
         UUID skillId = skill.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setEndorseeId(endorserId);
+        endorsementDRO.setEndorseeId(endorseeId);
         endorsementDRO.setSkillId(skillId);
         Response response =
                 given()
@@ -172,7 +172,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                 .statusCode(201)
                 .contentType("application/json")
-                .body("data.endorserId", equalTo(endorserId.toString()))
+                .body("data.endorseeId", equalTo(endorseeId.toString()))
                 .body("data.skill.name", equalTo("Java"));
     }
 
@@ -203,10 +203,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 400 on endorsements skillid null")
     public void testAPIReturns400_OnEndorsementCreationSkillIdNull() {
-        UUID endorserId = user.getId();
+        UUID endorseeId = user.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setEndorseeId(endorserId);
+        endorsementDRO.setEndorseeId(endorseeId);
 
         Response response =
                 given()
@@ -244,7 +244,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data.status", anyOf(equalTo("APPROVED"), equalTo("PENDING"), equalTo("REJECTED")))
                 .body("data.endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
                 .body("data.endorsersList", hasSize(1))
-                .body("data.endorsersList[0].endorserId", equalTo("user-2"))
+                .body("data.endorsersList[0].endorseeId", equalTo("user-2"))
                 .body("data.endorsersList[0].description", isA(String.class))
                 .body(
                         "data.endorsersList[0].userType",
