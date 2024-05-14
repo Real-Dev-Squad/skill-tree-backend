@@ -1,6 +1,7 @@
 package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
@@ -142,16 +143,21 @@ public class EndorsementServiceImpl implements EndorsementService {
         if (!user.getRole().equals(UserRole.SUPERUSER)) {
             throw new AccessDeniedException("Unauthorized, Access is only available to super users");
         }
-        if (!(status.equals(EndorsementStatus.APPROVED.name())
-                || status.equals(EndorsementStatus.REJECTED.name()))) {
-            throw new InvalidParameterException("endorsement status", status);
-        }
         if (!CommonUtils.isValidUUID(id.toString())) {
             throw new InvalidParameterException("endorsement id", id.toString());
         }
 
+        EndorsementStatus endorsementStatus = EndorsementStatus.fromString(status);
+        if (!(endorsementStatus.equals(EndorsementStatus.APPROVED)
+                || endorsementStatus.equals(EndorsementStatus.REJECTED))) {
+            throw new InvalidParameterException("endorsement status", status);
+        }
         Optional<EndorsementModel> optionalEndorsementModel = endorsementRepository.findById(id);
         if (optionalEndorsementModel.isPresent()) {
+            if (optionalEndorsementModel.get().getStatus() != EndorsementStatus.PENDING) {
+                throw new EntityAlreadyExistsException(
+                        "Endorsement is already updated. Cannot modify status");
+            }
             EndorsementModel updatedEndorsementModel =
                     EndorsementModel.builder()
                             .id(optionalEndorsementModel.get().getId())

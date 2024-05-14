@@ -274,6 +274,14 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+        
+        '400':
+          description: Updating the status of an endorsement that has been accepted/rejected
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureEndorsementUpdateResponse'
 
         '403':
           description: Unauthorized access, user is not a super user
@@ -619,3 +627,14 @@ components:
         message:
           type: string  
           example: Unauthorized, Access is only available to super users
+    
+    ApiResponseFailureEndorsementUpdateResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 403
+        message:
+          type: string  
+          example: Endorsement is already updated. Cannot modify status
