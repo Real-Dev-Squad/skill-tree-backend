@@ -9,7 +9,6 @@ import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import com.RDS.skilltree.User.UserRole;
-import com.RDS.skilltree.utils.CommonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -142,9 +141,6 @@ public class EndorsementServiceImpl implements EndorsementService {
                 (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!user.getRole().equals(UserRole.SUPERUSER)) {
             throw new AccessDeniedException("Unauthorized, Access is only available to super users");
-        }
-        if (!CommonUtils.isValidUUID(id.toString())) {
-            throw new InvalidParameterException("endorsement id", id.toString());
         }
 
         EndorsementStatus endorsementStatus = EndorsementStatus.fromString(status);
