@@ -275,7 +275,7 @@ paths:
                 type: object
                 $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
         
-        '400':
+        '409':
           description: Updating the status of an endorsement that has been accepted/rejected
           content:
             application/json:
@@ -634,7 +634,7 @@ components:
         code:
           type: integer
           format: int32
-          example: 403
+          example: 409
         message:
           type: string  
-          example: Endorsement is already updated. Cannot modify status
+          example: Endorsement is already updated, Cannot modify status
