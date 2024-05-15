@@ -144,8 +144,7 @@ public class EndorsementServiceImpl implements EndorsementService {
         }
 
         EndorsementStatus endorsementStatus = EndorsementStatus.fromString(status);
-        if (!(endorsementStatus.equals(EndorsementStatus.APPROVED)
-                || endorsementStatus.equals(EndorsementStatus.REJECTED))) {
+        if (endorsementStatus.equals(EndorsementStatus.PENDING)) {
             throw new InvalidParameterException("endorsement status", status);
         }
         Optional<EndorsementModel> optionalEndorsementModel = endorsementRepository.findById(id);
