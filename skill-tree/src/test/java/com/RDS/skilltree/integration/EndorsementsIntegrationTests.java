@@ -68,7 +68,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         userRepository.deleteAll();
     }
 
-    private String createEndorsementModel(Boolean isSuperUser) {
+    private UUID createEndorsementModel(Boolean isSuperUser) {
         UUID userId = user.getId();
         UUID skillId = skill.getId();
 
@@ -89,8 +89,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body(endorsementDRO)
                 .post("/v1/endorsements");
 
-        UUID endorsementId = endorsementRepository.findByUserId(userId).get(0).getId();
-        return endorsementId.toString();
+        return endorsementRepository.findByUserId(userId).get(0).getId();
     }
 
     @Test
@@ -512,7 +511,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
             "Return 200, when request is made using super user cookie and status is APPROVED/REJECTED")
     public void
             itShouldReturn200OnUpdateEndorsementStatusWithSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
-        String endorsementId = createEndorsementModel(true);
+        UUID endorsementId = createEndorsementModel(true);
         Response response =
                 given()
                         .cookies(RestAPIHelper.getSuperUserCookie())
@@ -532,7 +531,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
             "Return 403, when request is made without using super user cookie and status is APPROVED/REJECTED")
     public void
             itShouldReturn403OnUpdateEndorsementStatusWithOutSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
-        String endorsementId = createEndorsementModel(false);
+        UUID endorsementId = createEndorsementModel(false);
         Response response =
                 given()
                         .cookies(RestAPIHelper.getUserCookie())
@@ -552,7 +551,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
             "Return 400, when request is made with using super user cookie and status is not APPROVED/REJECTED")
     public void
             itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsNotAcceptOrReject() {
-        String endorsementId = createEndorsementModel(true);
+        UUID endorsementId = createEndorsementModel(true);
         Response response =
                 given()
                         .cookies(RestAPIHelper.getSuperUserCookie())

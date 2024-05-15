@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Endorsement.*;
+import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
@@ -622,7 +623,7 @@ public class EndorsementServiceTest {
         AccessDeniedException exception =
                 assertThrows(
                         AccessDeniedException.class,
-                        () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
         assertEquals("Unauthorized, Access is only available to super users", exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
@@ -639,25 +640,25 @@ public class EndorsementServiceTest {
         InvalidParameterException exception =
                 assertThrows(
                         InvalidParameterException.class,
-                        () -> endorsementService.updateEndorsementStatus(endorsementId.toString(), status));
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
         assertEquals("Invalid parameter endorsement status: " + status, exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
 
     @Test
     @Disabled
-    @DisplayName("Return invalid id given a invalid endorsement id")
+    @DisplayName("Return cannot modify status given status is already updated")
     public void itShouldThrowIllegalArgumentExceptionIfInvalidEndorsementId() {
         setupUpdateEndorsementTests(true);
 
-        String invalidUUID = "jdsmjfdhfg6Bo6VdwW0ih....";
+        UUID endorsementId = UUID.randomUUID();
         String status = EndorsementStatus.APPROVED.name();
 
-        InvalidParameterException exception =
+        EntityAlreadyExistsException exception =
                 assertThrows(
-                        InvalidParameterException.class,
-                        () -> endorsementService.updateEndorsementStatus(invalidUUID, status));
-        assertEquals("Invalid parameter endorsement id: " + invalidUUID, exception.getMessage());
+                        EntityAlreadyExistsException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
+        assertEquals("Endorsement is already updated. Cannot modify status", exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
 
@@ -677,7 +678,7 @@ public class EndorsementServiceTest {
                         NoEntityException.class,
                         () ->
                                 endorsementService.updateEndorsementStatus(
-                                        nonExistentEndorsementId.toString(), status));
+                                        nonExistentEndorsementId, status));
         assertEquals(
                 "No endorsement with id " + nonExistentEndorsementId + " was found",
                 exception.getMessage());
@@ -708,7 +709,7 @@ public class EndorsementServiceTest {
         when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
 
         GenericResponse<Void> result =
-                endorsementService.updateEndorsementStatus(endorsementId.toString(), status.name());
+                endorsementService.updateEndorsementStatus(endorsementId, status.name());
         assertEquals("Successfully updated endorsement status", result.getMessage());
 
         verify(endorsementRepository, times(1)).save(any(EndorsementModel.class));
