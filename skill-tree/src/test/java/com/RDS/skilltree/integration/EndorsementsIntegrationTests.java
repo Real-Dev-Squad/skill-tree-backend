@@ -9,7 +9,6 @@ import com.RDS.skilltree.User.*;
 import io.restassured.response.Response;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,28 +67,16 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         userRepository.deleteAll();
     }
 
-    private UUID createEndorsementModel(Boolean isSuperUser) {
-        UUID userId = user.getId();
-        UUID skillId = skill.getId();
-
-        EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
-        endorsementDRO.setSkillId(skillId);
-
-        Map<String, String> cookie;
-        if (isSuperUser) {
-            cookie = RestAPIHelper.getSuperUserCookie();
+    private UUID createEndorsementModel(Boolean isStatusPending) {
+        EndorsementStatus endorsementStatus;
+        if(isStatusPending){
+            endorsementStatus = EndorsementStatus.PENDING;
         } else {
-            cookie = RestAPIHelper.getUserCookie();
+            endorsementStatus = EndorsementStatus.APPROVED;
         }
-
-        given()
-                .cookies(cookie)
-                .contentType("application/json")
-                .body(endorsementDRO)
-                .post("/v1/endorsements");
-
-        return endorsementRepository.findByUserId(userId).get(0).getId();
+        EndorsementModel endorsementModel =
+                EndorsementModel.builder().status(endorsementStatus).build();
+        return endorsementRepository.save(endorsementModel).getId();
     }
 
     @Test
@@ -531,7 +518,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
             "Return 403, when request is made without using super user cookie and status is APPROVED/REJECTED")
     public void
             itShouldReturn403OnUpdateEndorsementStatusWithOutSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
-        UUID endorsementId = createEndorsementModel(false);
+        UUID endorsementId = createEndorsementModel(true);
         Response response =
                 given()
                         .cookies(RestAPIHelper.getUserCookie())
@@ -548,9 +535,29 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @Disabled
     @DisplayName(
-            "Return 400, when request is made with using super user cookie and status is not APPROVED/REJECTED")
+            "Return 400, when request is made with using super user cookie and status is invalid")
     public void
-            itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsNotAcceptOrReject() {
+            itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsInvalid() {
+        UUID endorsementId = createEndorsementModel(true);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .queryParam("status", "invalid-status")
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(400)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Invalid parameter endorsement status: invalid-status"));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName(
+            "Return 400, when request is made with using super user cookie and status is PENDING")
+    public void
+            itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsPending() {
         UUID endorsementId = createEndorsementModel(true);
         Response response =
                 given()
@@ -563,5 +570,25 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .statusCode(400)
                 .body("data", equalTo(null))
                 .body("message", equalTo("Invalid parameter endorsement status: PENDING"));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName(
+            "Return 409, when request is made with using super user cookie and endorsement is already updated")
+    public void
+            itShouldReturn409OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementAlreadyUpdated() {
+        UUID endorsementId = createEndorsementModel(false);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .queryParam("status", EndorsementStatus.APPROVED.name())
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(409)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Endorsement is already updated. Cannot modify status"));
     }
 }

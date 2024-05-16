@@ -614,7 +614,7 @@ public class EndorsementServiceTest {
     @Disabled
     @DisplayName(
             "Return unauthorized access, given user is not a super user to update endorsement status")
-    public void itShouldReturnUnauthorizedIfUserIsNotSuperUser() {
+    public void itShouldReturnUnauthorizedGivenUserIsNotSuperUser() {
         setupUpdateEndorsementTests(false);
 
         UUID endorsementId = UUID.randomUUID();
@@ -630,8 +630,8 @@ public class EndorsementServiceTest {
 
     @Test
     @Disabled
-    @DisplayName("Return invalid status given status is not approved or rejected")
-    public void itShouldReturnInvalidStatusIfStatusIsNotApprovedOrRejected() {
+    @DisplayName("Return invalid status given status is pending")
+    public void itShouldReturnInvalidStatusGivenEndorsementStatusIsPending() {
         setupUpdateEndorsementTests(true);
 
         UUID endorsementId = UUID.randomUUID();
@@ -647,17 +647,53 @@ public class EndorsementServiceTest {
 
     @Test
     @Disabled
-    @DisplayName("Return cannot modify status given status is already updated")
-    public void itShouldThrowIllegalArgumentExceptionIfInvalidEndorsementId() {
+    @DisplayName("Return invalid status given status is invalid")
+    public void itShouldReturnInvalidStatusGivenInvalidEndorsementStatus() {
         setupUpdateEndorsementTests(true);
 
         UUID endorsementId = UUID.randomUUID();
-        String status = EndorsementStatus.APPROVED.name();
+        String status = "invalid-status";
+
+        InvalidParameterException exception =
+                assertThrows(
+                        InvalidParameterException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
+        assertEquals("Invalid parameter endorsement status: " + status, exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @Disabled
+    @DisplayName("Return cannot modify status given status is already updated")
+    public void itShouldThrowEntityAlreadyExistsExceptionGivenEndorsementIsUpdated() {
+        setupUpdateEndorsementTests(true);
+
+        UUID userId = UUID.randomUUID();
+        UUID skillId = UUID.randomUUID();
+        UUID endorsementId = UUID.randomUUID();
+
+        UserModel mockUser = UserModel.builder().id(userId).build();
+        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        EndorsementModel mockEndorsement =
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .status(EndorsementStatus.APPROVED)
+                        .user(mockUser)
+                        .skill(mockSkill)
+                        .build();
+        mockEndorsement.setCreatedAt(Instant.now());
+        mockEndorsement.setUpdatedAt(Instant.now());
+        mockEndorsement.setCreatedBy(mockUser);
+        mockEndorsement.setUpdatedBy(mockUser);
+
+        when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
 
         EntityAlreadyExistsException exception =
                 assertThrows(
                         EntityAlreadyExistsException.class,
-                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
+                        () ->
+                                endorsementService.updateEndorsementStatus(
+                                        endorsementId, EndorsementStatus.APPROVED.name()));
         assertEquals("Endorsement is already updated. Cannot modify status", exception.getMessage());
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
     }
@@ -676,9 +712,7 @@ public class EndorsementServiceTest {
         NoEntityException exception =
                 assertThrows(
                         NoEntityException.class,
-                        () ->
-                                endorsementService.updateEndorsementStatus(
-                                        nonExistentEndorsementId, status));
+                        () -> endorsementService.updateEndorsementStatus(nonExistentEndorsementId, status));
         assertEquals(
                 "No endorsement with id " + nonExistentEndorsementId + " was found",
                 exception.getMessage());
@@ -700,7 +734,12 @@ public class EndorsementServiceTest {
         UserModel mockUser = UserModel.builder().id(userId).build();
         SkillModel mockSkill = SkillModel.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
-                EndorsementModel.builder().id(endorsementId).user(mockUser).skill(mockSkill).build();
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .status(EndorsementStatus.PENDING)
+                        .user(mockUser)
+                        .skill(mockSkill)
+                        .build();
         mockEndorsement.setCreatedAt(Instant.now());
         mockEndorsement.setUpdatedAt(Instant.now());
         mockEndorsement.setCreatedBy(mockUser);
