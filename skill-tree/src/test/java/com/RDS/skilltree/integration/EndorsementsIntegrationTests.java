@@ -493,7 +493,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Return 200, when request is made using super user cookie and status is APPROVED/REJECTED")
     public void
@@ -513,7 +512,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Return 403, when request is made without using super user cookie and status is APPROVED/REJECTED")
     public void
@@ -533,7 +531,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Return 400, when request is made with using super user cookie and status is invalid")
     public void
@@ -553,7 +550,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Return 400, when request is made with using super user cookie and status is PENDING")
     public void
@@ -573,7 +569,6 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Return 409, when request is made with using super user cookie and endorsement is already updated")
     public void

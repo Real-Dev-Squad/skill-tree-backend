@@ -611,7 +611,6 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Return unauthorized access, given user is not a super user to update endorsement status")
     public void itShouldReturnUnauthorizedGivenUserIsNotSuperUser() {
@@ -629,7 +628,6 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Return invalid status given status is pending")
     public void itShouldReturnInvalidStatusGivenEndorsementStatusIsPending() {
         setupUpdateEndorsementTests(true);
@@ -646,7 +644,6 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Return invalid status given status is invalid")
     public void itShouldReturnInvalidStatusGivenInvalidEndorsementStatus() {
         setupUpdateEndorsementTests(true);
@@ -663,7 +660,6 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Return cannot modify status given status is already updated")
     public void itShouldThrowEntityAlreadyExistsExceptionGivenEndorsementIsUpdated() {
         setupUpdateEndorsementTests(true);
@@ -699,7 +695,6 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Return endorsement not found given an unknown endorsement id")
     public void itShouldReturnEndorsementNotFoundGivenUnknownEndorsementId() {
         setupUpdateEndorsementTests(true);
@@ -720,7 +715,6 @@ public class EndorsementServiceTest {
     }
 
     @Test
-    @Disabled
     @DisplayName(
             "Update endorsement status given a valid endorsement id and status is approved or rejected")
     public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
