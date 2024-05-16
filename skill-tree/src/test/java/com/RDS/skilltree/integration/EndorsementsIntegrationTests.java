@@ -69,7 +69,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
 
     private UUID createEndorsementModel(Boolean isStatusPending) {
         EndorsementStatus endorsementStatus;
-        if(isStatusPending){
+        if (isStatusPending) {
             endorsementStatus = EndorsementStatus.PENDING;
         } else {
             endorsementStatus = EndorsementStatus.APPROVED;
