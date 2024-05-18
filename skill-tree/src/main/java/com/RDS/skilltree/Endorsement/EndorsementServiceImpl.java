@@ -1,10 +1,11 @@
 package com.RDS.skilltree.Endorsement;
-
+import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.User.UserRepository;
 import com.RDS.skilltree.User.UserRole;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -151,7 +152,7 @@ public class EndorsementServiceImpl implements EndorsementService {
             EndorsementModel updatedEndorsementModel =
                     EndorsementModel.builder()
                             .id(optionalEndorsementModel.get().getId())
-                            .user(optionalEndorsementModel.get().getUser())
+                            .endorseeId(optionalEndorsementModel.get().getEndorseeId())
                             .skill(optionalEndorsementModel.get().getSkill())
                             .endorsersList(optionalEndorsementModel.get().getEndorsersList())
                             .status(EndorsementStatus.valueOf(status))
