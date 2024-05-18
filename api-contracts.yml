@@ -227,24 +227,25 @@ paths:
 
 
 
-  /endorsements/{endorsementId}:
+  /endorsements/{id}?status={EndorsementStatus}:
     patch:
       tags:
         - endorsements
       parameters:
-        - name: endorsementId
+        - name: id
           schema:
             type: string
+            format: UUID
           in: path
           description: EndorsementId which has to be modified
           required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              $ref: '#/components/schemas/endorsementUpdate'
+        - name: status
+          schema:
+            type: string,
+            format: EndorsementStatus,
+          in: query       
+          description: New endorsement status which has to be updated
+          required: true   
       summary: Update endorsement status given endorsementId
       description: Update endorsement status given endorsement id, **this can be only used by Super User for now**
       operationId: updateEndorsementStatusGivenId
@@ -256,8 +257,7 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/endorsementResponse'
-
+                $ref: '#/components/schemas/UpdateEndorsementResponse'
 
         '400':
           description: Invalid endorsement Id value
@@ -266,6 +266,30 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+
+        '400':
+          description: Invalid endorsement status
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureInvalidParameter'
+        
+        '409':
+          description: Updating the status of an endorsement that has been accepted/rejected
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureEndorsementUpdateResponse'
+
+        '403':
+          description: Unauthorized access, user is not a super user
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ApiResponseFailureUnauthorized'
 
         '503':
           description: Service Unavailable
@@ -581,3 +605,36 @@ components:
       type: array
       items:  
         $ref: '#/components/schemas/skillUsersResponse'
+
+    UpdateEndorsementResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 200
+        message:
+          type: string  
+          example: Successfully updated endorsement status
+
+    ApiResponseFailureUnauthorized:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 403
+        message:
+          type: string  
+          example: Unauthorized, Access is only available to super users
+    
+    ApiResponseFailureEndorsementUpdateResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 409
+        message:
+          type: string  
+          example: Endorsement is already updated, Cannot modify status

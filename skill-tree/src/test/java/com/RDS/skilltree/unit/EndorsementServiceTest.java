@@ -3,16 +3,15 @@ package com.RDS.skilltree.unit;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.RDS.skilltree.Endorsement.EndorsementDRO;
-import com.RDS.skilltree.Endorsement.EndorsementDTO;
-import com.RDS.skilltree.Endorsement.EndorsementModel;
-import com.RDS.skilltree.Endorsement.EndorsementModelFromJSON;
-import com.RDS.skilltree.Endorsement.EndorsementRepository;
-import com.RDS.skilltree.Endorsement.EndorsementServiceImpl;
+import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.Endorsement.*;
+import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
+import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.User.UserRole;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +20,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,10 +50,28 @@ public class EndorsementServiceTest {
 
     @InjectMocks @Autowired private EndorsementServiceImpl endorsementService;
 
+    @Mock private Authentication auth;
+
     @BeforeEach
     public void setUp() {
         ReflectionTestUtils.setField(
                 endorsementService, "dummyEndorsementDataPath", "dummy-data/endorsements.json");
+    }
+
+    @AfterEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
+    private void setupUpdateEndorsementTests(Boolean useSuperUserRole) {
+        UserModel userModel = new UserModel();
+        if (useSuperUserRole) {
+            userModel.setRole(UserRole.SUPERUSER);
+        } else {
+            userModel.setRole(UserRole.USER);
+        }
+        when(auth.getPrincipal()).thenReturn(userModel);
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     @Test
@@ -566,5 +587,161 @@ public class EndorsementServiceTest {
 
         // Verify that save method is not called
         verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName(
+            "Return unauthorized access, given user is not a super user to update endorsement status")
+    public void itShouldReturnUnauthorizedGivenUserIsNotSuperUser() {
+        setupUpdateEndorsementTests(false);
+
+        UUID endorsementId = UUID.randomUUID();
+        String status = EndorsementStatus.APPROVED.name();
+
+        AccessDeniedException exception =
+                assertThrows(
+                        AccessDeniedException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
+        assertEquals("Unauthorized, Access is only available to super users", exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return invalid status given status is pending")
+    public void itShouldReturnInvalidStatusGivenEndorsementStatusIsPending() {
+        setupUpdateEndorsementTests(true);
+
+        UUID endorsementId = UUID.randomUUID();
+        String status = EndorsementStatus.PENDING.name();
+
+        InvalidParameterException exception =
+                assertThrows(
+                        InvalidParameterException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
+        assertEquals("Invalid parameter endorsement status: " + status, exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return invalid status given status is invalid")
+    public void itShouldReturnInvalidStatusGivenInvalidEndorsementStatus() {
+        setupUpdateEndorsementTests(true);
+
+        UUID endorsementId = UUID.randomUUID();
+        String status = "invalid-status";
+
+        InvalidParameterException exception =
+                assertThrows(
+                        InvalidParameterException.class,
+                        () -> endorsementService.updateEndorsementStatus(endorsementId, status));
+        assertEquals("Invalid parameter endorsement status: " + status, exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return cannot modify status given status is already updated")
+    public void itShouldThrowEntityAlreadyExistsExceptionGivenEndorsementIsUpdated() {
+        setupUpdateEndorsementTests(true);
+
+        UUID userId = UUID.randomUUID();
+        UUID skillId = UUID.randomUUID();
+        UUID endorsementId = UUID.randomUUID();
+
+        UserModel mockUser = UserModel.builder().id(userId).build();
+        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        EndorsementModel mockEndorsement =
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .status(EndorsementStatus.APPROVED)
+                        .user(mockUser)
+                        .skill(mockSkill)
+                        .build();
+        mockEndorsement.setCreatedAt(Instant.now());
+        mockEndorsement.setUpdatedAt(Instant.now());
+        mockEndorsement.setCreatedBy(mockUser);
+        mockEndorsement.setUpdatedBy(mockUser);
+
+        when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
+
+        EntityAlreadyExistsException exception =
+                assertThrows(
+                        EntityAlreadyExistsException.class,
+                        () ->
+                                endorsementService.updateEndorsementStatus(
+                                        endorsementId, EndorsementStatus.APPROVED.name()));
+        assertEquals("Endorsement is already updated. Cannot modify status", exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName("Return endorsement not found given an unknown endorsement id")
+    public void itShouldReturnEndorsementNotFoundGivenUnknownEndorsementId() {
+        setupUpdateEndorsementTests(true);
+
+        UUID nonExistentEndorsementId = UUID.randomUUID();
+        String status = EndorsementStatus.APPROVED.name();
+
+        when(endorsementRepository.findById(nonExistentEndorsementId)).thenReturn(Optional.empty());
+
+        NoEntityException exception =
+                assertThrows(
+                        NoEntityException.class,
+                        () -> endorsementService.updateEndorsementStatus(nonExistentEndorsementId, status));
+        assertEquals(
+                "No endorsement with id " + nonExistentEndorsementId + " was found",
+                exception.getMessage());
+        verify(endorsementRepository, never()).save(any(EndorsementModel.class));
+    }
+
+    @Test
+    @DisplayName(
+            "Update endorsement status given a valid endorsement id and status is approved or rejected")
+    public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
+        setupUpdateEndorsementTests(true);
+
+        UUID userId = UUID.randomUUID();
+        UUID skillId = UUID.randomUUID();
+        UUID endorsementId = UUID.randomUUID();
+        EndorsementStatus status = EndorsementStatus.APPROVED;
+
+        UserModel mockUser = UserModel.builder().id(userId).build();
+        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        EndorsementModel mockEndorsement =
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .status(EndorsementStatus.PENDING)
+                        .user(mockUser)
+                        .skill(mockSkill)
+                        .build();
+        mockEndorsement.setCreatedAt(Instant.now());
+        mockEndorsement.setUpdatedAt(Instant.now());
+        mockEndorsement.setCreatedBy(mockUser);
+        mockEndorsement.setUpdatedBy(mockUser);
+
+        when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
+
+        GenericResponse<Void> result =
+                endorsementService.updateEndorsementStatus(endorsementId, status.name());
+        assertEquals("Successfully updated endorsement status", result.getMessage());
+
+        verify(endorsementRepository, times(1)).save(any(EndorsementModel.class));
+
+        EndorsementModel updatedMockEndorsement =
+                EndorsementModel.builder()
+                        .id(endorsementId)
+                        .user(mockUser)
+                        .skill(mockSkill)
+                        .status(EndorsementStatus.APPROVED)
+                        .build();
+        mockEndorsement.setCreatedAt(Instant.now());
+        mockEndorsement.setUpdatedAt(Instant.now());
+        mockEndorsement.setCreatedBy(mockUser);
+        mockEndorsement.setUpdatedBy(mockUser);
+
+        when(endorsementRepository.findById(endorsementId))
+                .thenReturn(Optional.of(updatedMockEndorsement));
+        Optional<EndorsementModel> updatedEndorsement = endorsementRepository.findById(endorsementId);
+        assertTrue(updatedEndorsement.isPresent());
+        assertEquals(EndorsementStatus.APPROVED, updatedEndorsement.get().getStatus());
     }
 }
