@@ -10,6 +10,7 @@ import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
+import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import com.RDS.skilltree.User.UserRole;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -643,23 +644,22 @@ public class EndorsementServiceTest {
     public void itShouldThrowEntityAlreadyExistsExceptionGivenEndorsementIsUpdated() {
         setupUpdateEndorsementTests(true);
 
-        UUID userId = UUID.randomUUID();
+        UUID endorseeId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         UUID endorsementId = UUID.randomUUID();
 
-        UserModel mockUser = UserModel.builder().id(userId).build();
         SkillModel mockSkill = SkillModel.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)
                         .status(EndorsementStatus.APPROVED)
-                        .user(mockUser)
+                        .endorseeId(endorseeId)
                         .skill(mockSkill)
                         .build();
         mockEndorsement.setCreatedAt(Instant.now());
         mockEndorsement.setUpdatedAt(Instant.now());
-        mockEndorsement.setCreatedBy(mockUser);
-        mockEndorsement.setUpdatedBy(mockUser);
+        mockEndorsement.setCreatedBy(endorseeId);
+        mockEndorsement.setUpdatedBy(endorseeId);
 
         when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
 
@@ -699,24 +699,23 @@ public class EndorsementServiceTest {
     public void itShouldUpdateEndorsementStatusGivenEndorsementIdAndStatusApprovedOrRejected() {
         setupUpdateEndorsementTests(true);
 
-        UUID userId = UUID.randomUUID();
+        UUID endorseeId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
         UUID endorsementId = UUID.randomUUID();
         EndorsementStatus status = EndorsementStatus.APPROVED;
 
-        UserModel mockUser = UserModel.builder().id(userId).build();
         SkillModel mockSkill = SkillModel.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)
                         .status(EndorsementStatus.PENDING)
-                        .user(mockUser)
+                        .endorseeId(endorseeId)
                         .skill(mockSkill)
                         .build();
         mockEndorsement.setCreatedAt(Instant.now());
         mockEndorsement.setUpdatedAt(Instant.now());
-        mockEndorsement.setCreatedBy(mockUser);
-        mockEndorsement.setUpdatedBy(mockUser);
+        mockEndorsement.setCreatedBy(endorseeId);
+        mockEndorsement.setUpdatedBy(endorseeId);
 
         when(endorsementRepository.findById(endorsementId)).thenReturn(Optional.of(mockEndorsement));
 
@@ -729,14 +728,14 @@ public class EndorsementServiceTest {
         EndorsementModel updatedMockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)
-                        .user(mockUser)
+                        .endorseeId(endorseeId)
                         .skill(mockSkill)
                         .status(EndorsementStatus.APPROVED)
                         .build();
         mockEndorsement.setCreatedAt(Instant.now());
         mockEndorsement.setUpdatedAt(Instant.now());
-        mockEndorsement.setCreatedBy(mockUser);
-        mockEndorsement.setUpdatedBy(mockUser);
+        mockEndorsement.setCreatedBy(endorseeId);
+        mockEndorsement.setUpdatedBy(endorseeId);
 
         when(endorsementRepository.findById(endorsementId))
                 .thenReturn(Optional.of(updatedMockEndorsement));
