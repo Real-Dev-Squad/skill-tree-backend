@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EndorsementRepository extends JpaRepository<EndorsementModel, UUID> {
-    List<EndorsementModel> findByUserId(UUID userId);
+    List<EndorsementModel> findByEndorseeId(UUID userId);
 
     List<EndorsementModel> findBySkillId(UUID skillId);
 }

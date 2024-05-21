@@ -2,7 +2,6 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.EndorsementList.EndorsementListModel;
 import com.RDS.skilltree.Skill.SkillDTO;
-import com.RDS.skilltree.User.UserDTO;
 import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
@@ -14,7 +13,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EndorsementDTO extends TrackedProperties {
     private UUID id;
-    private UserDTO user;
+    private UUID endorseeId;
     private SkillDTO skill;
     private EndorsementStatus status;
     private List<EndorsementListModel> endorsersList;
@@ -23,7 +22,7 @@ public class EndorsementDTO extends TrackedProperties {
         EndorsementDTO endorsementDTO =
                 EndorsementDTO.builder()
                         .id(endorsementModel.getId())
-                        .user(UserDTO.toDTO(endorsementModel.getUser()))
+                        .endorseeId(endorsementModel.getEndorseeId())
                         .skill(SkillDTO.toDto(endorsementModel.getSkill()))
                         .status(endorsementModel.getStatus())
                         .endorsersList(endorsementModel.getEndorsersList())

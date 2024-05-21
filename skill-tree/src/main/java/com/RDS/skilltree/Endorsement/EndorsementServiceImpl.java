@@ -7,7 +7,6 @@ import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.SkillModel;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.User.UserRepository;
 import com.RDS.skilltree.User.UserRole;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +32,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EndorsementServiceImpl implements EndorsementService {
     private final EndorsementRepository endorsementRepository;
-    private final UserRepository userRepository;
     private final SkillRepository skillRepository;
 
     private final ObjectMapper objectMapper;
@@ -119,18 +117,17 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     @Override
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
-        UUID userId = endorsementDRO.getUserId();
+        UUID userId = endorsementDRO.getEndorseeId();
         UUID skillId = endorsementDRO.getSkillId();
-        Optional<UserModel> userOptional = userRepository.findById(userId);
+
         Optional<SkillModel> skillOptional = skillRepository.findById(skillId);
-        if (userOptional.isPresent() && skillOptional.isPresent()) {
+        if (skillOptional.isPresent()) {
             EndorsementModel endorsementModel =
-                    EndorsementModel.builder().user(userOptional.get()).skill(skillOptional.get()).build();
+                    EndorsementModel.builder().endorseeId(userId).skill(skillOptional.get()).build();
 
             return endorsementRepository.save(endorsementModel);
         } else {
-            if (userOptional.isEmpty())
-                throw new NoEntityException("User with id:" + userId + " not found");
+
             throw new NoEntityException("Skill with id:" + skillId + " not found");
         }
     }
@@ -156,7 +153,7 @@ public class EndorsementServiceImpl implements EndorsementService {
             EndorsementModel updatedEndorsementModel =
                     EndorsementModel.builder()
                             .id(optionalEndorsementModel.get().getId())
-                            .user(optionalEndorsementModel.get().getUser())
+                            .endorseeId(optionalEndorsementModel.get().getEndorseeId())
                             .skill(optionalEndorsementModel.get().getSkill())
                             .endorsersList(optionalEndorsementModel.get().getEndorsersList())
                             .status(EndorsementStatus.valueOf(status))
