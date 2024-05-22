@@ -51,6 +51,6 @@ jobs:
             docker run -d -p ${{vars.PORT}}:8080 \
               --name ${{ github.event.repository.name }}-${{vars.ENV}} \
               --network=${{vars.DOCKER_NETWORK}} \
-              -e API_V1_PREFIX=/api/v1 \
-              -e RDS_PUBLIC_KEY=${{secrets.RDS_PUBLIC_KEY}} \ 
+              -e API_V1_PREFIX="/api/v1" \
+              -e RDS_PUBLIC_KEY="${{secrets.RDS_PUBLIC_KEY}}" \ 
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
