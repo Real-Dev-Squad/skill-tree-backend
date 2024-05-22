@@ -59,7 +59,6 @@ public class UserDRO {
             user.setRole(user.getRole());
         }
         user.setUpdatedAt(Instant.now());
-        user.setUpdatedBy(user);
         return user;
     }
 }

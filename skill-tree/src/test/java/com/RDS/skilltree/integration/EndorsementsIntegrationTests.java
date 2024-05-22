@@ -67,6 +67,18 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         userRepository.deleteAll();
     }
 
+    private UUID createEndorsementModel(Boolean isStatusPending) {
+        EndorsementStatus endorsementStatus;
+        if (isStatusPending) {
+            endorsementStatus = EndorsementStatus.PENDING;
+        } else {
+            endorsementStatus = EndorsementStatus.APPROVED;
+        }
+        EndorsementModel endorsementModel =
+                EndorsementModel.builder().status(endorsementStatus).build();
+        return endorsementRepository.save(endorsementModel).getId();
+    }
+
     @Test
     @Disabled
     @DisplayName("Fetch all the endorsements")
@@ -83,7 +95,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data[0].status", anyOf(equalTo("APPROVED"), equalTo("REJECTED"), equalTo("PENDING")))
                 .body("data[0].endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
                 .body("data[0].endorsersList", hasSize(1))
-                .body("data[0].endorserList[0].endorserId", equalTo("user-2"))
+                .body("data[0].endorserList[0].endorseeId", equalTo("user-2"))
                 .body("data[0].endorserList[0].description", isA(String.class))
                 .body(
                         "data[0].endorserList[0].userType",
@@ -110,7 +122,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data[0].status", equalTo("PENDING"))
                 .body("data[0].endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
                 .body("data[0].endorsersList", hasSize(1))
-                .body("data[0].endorserList[0].endorserId", equalTo("user-2"))
+                .body("data[0].endorserList[0].endorseeId", equalTo("user-2"))
                 .body("data[0].endorserList[0].description", isA(String.class))
                 .body(
                         "data[0].endorserList[0].userType",
@@ -155,11 +167,11 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 201 on endorsements creation")
     public void testAPIReturns201_OnEndorsementCreation() {
-        UUID userId = user.getId();
+        UUID endorseeId = user.getId();
         UUID skillId = skill.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+        endorsementDRO.setEndorseeId(endorseeId);
         endorsementDRO.setSkillId(skillId);
         Response response =
                 given()
@@ -172,7 +184,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .then()
                 .statusCode(201)
                 .contentType("application/json")
-                .body("data.user.firstName", equalTo("John"))
+                .body("data.endorseeId", equalTo(endorseeId.toString()))
                 .body("data.skill.name", equalTo("Java"));
     }
 
@@ -203,10 +215,10 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 400 on endorsements skillid null")
     public void testAPIReturns400_OnEndorsementCreationSkillIdNull() {
-        UUID userId = user.getId();
+        UUID endorseeId = user.getId();
 
         EndorsementDRO endorsementDRO = new EndorsementDRO();
-        endorsementDRO.setUserId(userId);
+        endorsementDRO.setEndorseeId(endorseeId);
 
         Response response =
                 given()
@@ -244,7 +256,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                 .body("data.status", anyOf(equalTo("APPROVED"), equalTo("PENDING"), equalTo("REJECTED")))
                 .body("data.endorsementType", anyOf(equalTo("POSITIVE"), equalTo("NEGATIVE")))
                 .body("data.endorsersList", hasSize(1))
-                .body("data.endorsersList[0].endorserId", equalTo("user-2"))
+                .body("data.endorsersList[0].endorseeId", equalTo("user-2"))
                 .body("data.endorsersList[0].description", isA(String.class))
                 .body(
                         "data.endorsersList[0].userType",
@@ -478,5 +490,100 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
                         "message",
                         equalTo(
                                 "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+    }
+
+    @Test
+    @DisplayName(
+            "Return 200, when request is made using super user cookie and status is APPROVED/REJECTED")
+    public void
+            itShouldReturn200OnUpdateEndorsementStatusWithSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
+        UUID endorsementId = createEndorsementModel(true);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .queryParam("status", EndorsementStatus.APPROVED.name())
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(200)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Successfully updated endorsement status"));
+    }
+
+    @Test
+    @DisplayName(
+            "Return 403, when request is made without using super user cookie and status is APPROVED/REJECTED")
+    public void
+            itShouldReturn403OnUpdateEndorsementStatusWithOutSuperUserCookieAndAcceptOrRejectEndorsementStatus() {
+        UUID endorsementId = createEndorsementModel(true);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getUserCookie())
+                        .queryParam("status", EndorsementStatus.APPROVED.name())
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(403)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Unauthorized, Access is only available to super users"));
+    }
+
+    @Test
+    @DisplayName(
+            "Return 400, when request is made with using super user cookie and status is invalid")
+    public void
+            itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsInvalid() {
+        UUID endorsementId = createEndorsementModel(true);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .queryParam("status", "invalid-status")
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(400)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Invalid parameter endorsement status: invalid-status"));
+    }
+
+    @Test
+    @DisplayName(
+            "Return 400, when request is made with using super user cookie and status is PENDING")
+    public void
+            itShouldReturn400OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementStatusIsPending() {
+        UUID endorsementId = createEndorsementModel(true);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .queryParam("status", EndorsementStatus.PENDING.name())
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(400)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Invalid parameter endorsement status: PENDING"));
+    }
+
+    @Test
+    @DisplayName(
+            "Return 409, when request is made with using super user cookie and endorsement is already updated")
+    public void
+            itShouldReturn409OnUpdateEndorsementStatusWithSuperUserCookieAndEndorsementAlreadyUpdated() {
+        UUID endorsementId = createEndorsementModel(false);
+        Response response =
+                given()
+                        .cookies(RestAPIHelper.getSuperUserCookie())
+                        .queryParam("status", EndorsementStatus.APPROVED.name())
+                        .patch("/v1/endorsements/{id}", endorsementId);
+
+        response
+                .then()
+                .statusCode(409)
+                .body("data", equalTo(null))
+                .body("message", equalTo("Endorsement is already updated. Cannot modify status"));
     }
 }

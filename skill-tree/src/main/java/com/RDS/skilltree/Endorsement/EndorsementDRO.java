@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EndorsementDRO {
     @NotNull(message = "user id cannot be null")
-    private UUID userId;
+    private UUID endorseeId;
 
     @NotNull(message = "skill id cannot be null")
     private UUID skillId;
