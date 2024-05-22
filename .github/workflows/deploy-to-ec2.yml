@@ -40,6 +40,9 @@ jobs:
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
+        env:
+          RDS_PUBLIC_KEY: ${{secrets.RDS_PUBLIC_KEY}}
+          ENVR: ${{vars.ENV}}
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
@@ -48,10 +51,11 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker stop ${{ github.event.repository.name }}-${{vars.ENV}} || true
             docker rm ${{ github.event.repository.name }}-${{vars.ENV}} || true
-            export RDS_PUBLIC_KEY="${{secrets.RDS_PUBLIC_KEY}}"
             docker run -d -p ${{vars.PORT}}:8080 \
               --name ${{ github.event.repository.name }}-${{vars.ENV}} \
               --network=${{vars.DOCKER_NETWORK}} \
               -e RDS_PUBLIC_KEY=${RDS_PUBLIC_KEY} \ 
               -e API_V1_PREFIX=/api/v1 \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+            echo $ENVR
+            ehho ${ENVR}
