@@ -2,8 +2,6 @@ version: "3.7"
 services:
   db:
     image: mysql
-    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
-    # (this is just an example, not intended to be a production configuration)
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - 3306:3306
@@ -13,9 +11,33 @@ services:
       MYSQL_PASSWORD: testpassword
       MYSQL_ROOT_PASSWORD: password
     volumes:
-      - ./skilltree-database-script.sql:/docker-entrypoint-initdb.d/skilltree-database-script.sql
+      - mysql-data:/var/lib/mysql
 
   adminer:
     image: adminer
     ports:
       - 9000:8080
+
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/skilltree
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      MYSQL_HOST: db
+      DB_NAME: skilltree
+      MYSQL_DB_USERNAME: testuser
+      MYSQL_DB_PASSWORD: testpassword
+      DB_DDL_POLICY: update
+      API_V1_PREFIX: /api/v1
+      SPRING_DATASOURCE_VERSION: 8.1.0
+
+volumes:
+  mysql-data:
