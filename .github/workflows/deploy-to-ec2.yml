@@ -48,6 +48,8 @@ jobs:
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
           script: |
+            echo $ENVR
+            ehho ${ENVR}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker stop ${{ github.event.repository.name }}-${{vars.ENV}} || true
             docker rm ${{ github.event.repository.name }}-${{vars.ENV}} || true
@@ -57,5 +59,3 @@ jobs:
               -e RDS_PUBLIC_KEY=${RDS_PUBLIC_KEY} \ 
               -e API_V1_PREFIX=/api/v1 \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
-            echo $ENVR
-            ehho ${ENVR}
