@@ -48,7 +48,7 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker stop ${{ github.event.repository.name }}-${{vars.ENV}} || true
             docker rm ${{ github.event.repository.name }}-${{vars.ENV}} || true
-            export RDS_PUBLIC_KEY=${{secrets.RDS_PUBLIC_KEY}}
+            export RDS_PUBLIC_KEY="${{secrets.RDS_PUBLIC_KEY}}"
             docker run -d -p ${{vars.PORT}}:8080 \
               --name ${{ github.event.repository.name }}-${{vars.ENV}} \
               --network=${{vars.DOCKER_NETWORK}} \
