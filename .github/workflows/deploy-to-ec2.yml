@@ -40,13 +40,10 @@ jobs:
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
-        env:
-          RDS_PUBLIC_KEY: ${{secrets.RDS_PUBLIC_KEY}}
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
-          envs: RDS_PUBLIC_KEY
+          key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}          
           script: |
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker stop ${{ github.event.repository.name }}-${{ vars.ENV }} || true
