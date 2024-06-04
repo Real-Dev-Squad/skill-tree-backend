@@ -3,6 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
+      - main
       - develop
       - feat/aws-deploy # Remove before merting this PR to dev
 
@@ -10,7 +11,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: staging
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
     steps:
       - name: Checkout Repository
@@ -43,7 +44,7 @@ jobs:
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}          
+          key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
           script: |
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker stop ${{ github.event.repository.name }}-${{ vars.ENV }} || true
