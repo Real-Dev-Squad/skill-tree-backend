@@ -1,3 +1,6 @@
+copy-env:
+	cp .env.sample .env
+
 # Setup MySql Database
 docker-run:
 	@if command -v docker > /dev/null; then \
@@ -20,6 +23,9 @@ docker-down:
 setup:
 	@echo "--- Setting up docker ---"
 	@make docker-run
+
+	@echo "--- Copying env ---"
+	@make copy-env
 
 	@echo "\n"
 	@echo "Setup complete!"
