@@ -41,6 +41,11 @@
 #### NOTE: 
 - If you do not have `make` installed, run the `docker-run` and  `copy-env` commands from the `Makefile` manually. 
 
+### Install EnvFile Plugin in IntelliJ
+- To read the values from your `.env` you will need install the `EnvFile` plugin.
+- To Install the plugin to go `settings` > `Plugins` > `Marketplace` > EnvFile.
+   ![img.png](public/highlight-env-file-plugin.png)
+
 ### Create a configuration in IntelliJ
 - Press the Edit configurations button on the top right of your screen
     ![img.png](public/highlight-edit-config.png)
