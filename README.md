@@ -65,6 +65,14 @@
 - Press the `Run` button on the top right of your screen to run the application.
     ![img.png](public/highlight-run-application.png)
 
+## Steps to authenticate a user during development
+- Run RDS backend on your local machine
+- Copy the `public key` from `local.js` (if not in `local.js` copy it from `development.js`) and add it in your `.env` file.
+- Run skill tree frontend, click on `signin with github` button
+    - Once authenticated you will be redirected to `localhost:4000` (skill tree frontend homepage) and a `rds-session-v2-development` cookie will be set in the browser which will be used for authentication when making API calls.
+    - NOTE:
+        - make sure that `incompleteUserDetails` is false for the user in firestore, else the redirect will not work as intended.
+
 
 ## To Authenticate Yourself
 
