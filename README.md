@@ -65,6 +65,14 @@
 - Press the `Run` button on the top right of your screen to run the application.
     ![img.png](public/highlight-run-application.png)
 
+## Steps to run authenticate a user locally
+- Run RDS backend on your local machine
+- Copy the `public key` from `local.js` (if not in `local.js` copy it from `development.js`) and add it in your `.env` file.
+- Run skill tree frontend, click on `signin with github` button
+    - Once authenticated you will be redirected to `localhost:4000` (skill tree frontend dashboard) and a `rds-session-v2-development` cookie will be set in the browser which you can when making API calls locally.
+    - NOTE:
+        - make sure that `incomeUserDetails` for your user is set to false else the redirect will not work correctly
+
 
 ## To Authenticate Yourself
 
