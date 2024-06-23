@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Getter
-@Table(name = "Skill")
+@Table(name = "skills")
 public class SkillModel extends TrackedProperties {
     @Id
     @GeneratedValue
@@ -32,10 +32,5 @@ public class SkillModel extends TrackedProperties {
     private SkillType type = SkillType.ATOMIC;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean deleted;
-
-    @JsonBackReference
-    @JsonIgnore
-    @ManyToMany(mappedBy = "skills", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserModel> users;
+    private boolean isDeleted;
 }

@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
             UserModel userModel = userOptional.get();
             SkillModel skillModel = skillOptional.get();
 
-            userModel.getSkills().add(skillModel);
-            skillModel.getUsers().add(userModel);
+//            userModel.getSkills().add(skillModel);
+//            skillModel.getUsers().add(userModel);
 
             userRepository.save(userModel);
             skillRepository.save(skillModel);

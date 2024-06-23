@@ -31,24 +31,18 @@ public class UserDTO {
         return UserDTO.builder()
                 .id(user.getId())
                 .rdsUserId(user.getRdsUserId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .imageUrl(user.getImageUrl())
                 .role(user.getRole())
                 .build();
     }
 
     public static UserDTO getUsersWithSkills(UserModel user) {
-        Set<SkillDTO> skills =
-                user.getSkills().stream().map(SkillDTO::toDto).collect(Collectors.toSet());
+//        Set<SkillDTO> skills = []
+//                user.getSkills().stream().map(SkillDTO::toDto).collect(Collectors.toSet());
 
         return UserDTO.builder()
                 .id(user.getId())
                 .rdsUserId(user.getRdsUserId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .imageUrl(user.getImageUrl())
-                .skills(skills)
+//                .skills(skills)
                 .role(user.getRole())
                 .build();
     }

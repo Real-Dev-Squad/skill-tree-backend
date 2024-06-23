@@ -28,9 +28,9 @@ public class SkillDTO {
 
     public static SkillDTO getSkillsWithUsers(SkillModel skillModel) {
         Set<UserDTO> users = new HashSet<>();
-        if (skillModel.getUsers() != null) {
-            users = skillModel.getUsers().stream().map(UserDTO::toDTO).collect(Collectors.toSet());
-        }
+//        if (skillModel.getUsers() != null) {
+//            users = skillModel.getUsers().stream().map(UserDTO::toDTO).collect(Collectors.toSet());
+//        }
         return SkillDTO.builder()
                 .id(skillModel.getId())
                 .name(skillModel.getName())

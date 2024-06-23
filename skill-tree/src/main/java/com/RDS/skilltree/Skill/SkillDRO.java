@@ -23,7 +23,7 @@ public class SkillDRO {
         return SkillModel.builder()
                 .name(skillDRO.getName())
                 .type(skillDRO.getType())
-                .deleted(false)
+                .isDeleted(false)
                 .build();
     }
 }
