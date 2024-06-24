@@ -31,6 +31,7 @@ public class SkillsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    // TODO : Return only the valid fields by using a DTO.
     public GenericResponse<Skill> createSkill(Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
         JwtUserModel userDetails = (JwtUserModel) authentication.getPrincipal();
 
