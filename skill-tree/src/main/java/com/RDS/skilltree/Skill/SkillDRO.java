@@ -3,8 +3,6 @@ package com.RDS.skilltree.Skill;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
-
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,5 +14,5 @@ public class SkillDRO {
     private String name;
 
     @NotNull(message = "SkillType cannot be null")
-    private SkillType type;
+    private SkillTypeEnum type;
 }

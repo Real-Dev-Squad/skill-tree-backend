@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import lombok.Getter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SkillDTO {
     private Integer id;
-    private SkillType type;
+    private SkillTypeEnum type;
     private String name;
     private Set<UserDTO> users;
 

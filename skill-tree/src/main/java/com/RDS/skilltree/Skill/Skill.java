@@ -27,7 +27,7 @@ public class Skill extends TrackedProperties {
 
     @Column(name = "skill_type", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private SkillType type = SkillType.ATOMIC;
+    private SkillTypeEnum type = SkillTypeEnum.ATOMIC;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;

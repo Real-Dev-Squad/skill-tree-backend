@@ -1,5 +1,5 @@
 package com.RDS.skilltree.Skill;
 
-public enum SkillType {
+public enum SkillTypeEnum {
     ATOMIC,
 }
