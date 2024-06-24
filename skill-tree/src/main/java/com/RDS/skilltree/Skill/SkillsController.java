@@ -78,6 +78,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,24 +98,18 @@ public class SkillsController {
     }
 
     @GetMapping
-    public GenericResponse<List<Skill>> getAllSkills(@RequestParam(required = false) String name) {
-        if (name != null && !name.isEmpty()) {
-            List<Skill> skills = repository.findBy()
-                    .map(Collections::singletonList)
-                    .orElseGet(Collections::emptyList);
-
-            ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase("name");
-            Example<Skill> skills1 = Example.of(skills, matcher);
-            
-            return new GenericResponse<>(skills, null);
-        }
+    public GenericResponse<List<Skill>> getAllSkills() {
         return new GenericResponse<>(repository.findAll(), null);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Skill createSkill(Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
+    public GenericResponse<Skill> createSkill(Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
         JwtUserModel userDetails = (JwtUserModel) authentication.getPrincipal();
+
+       if (repository.findByName(skill.getName()).isPresent()){
+           return new GenericResponse<>(null, String.format("Skill with name %s already exists", skill.getName()));
+       }
 
         Skill newSkill = Skill.builder()
                 .name(skill.getName())
@@ -125,13 +120,12 @@ public class SkillsController {
                 .build();
 
         newSkill.setCreatedAt(Instant.now());
-        newSkill.setUpdatedAt(Instant.now());
 
         try {
-            return repository.save(newSkill);
+            return new GenericResponse<>(repository.save(newSkill), "Skill created");
         } catch (DataIntegrityViolationException error) {
             log.error("Error saving skill {}, error: {}", skill.getName(), error.getMessage());
-            throw error;
+            return new GenericResponse<>(null, "Something went wrong please try again");
         }
     }
 }

@@ -37,7 +37,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     }
 
     @BeforeEach
-    private void addData() throws MalformedURLException {
+    public void addData() throws MalformedURLException {
         user =
                 userService.createUser(
                         UserDRO.builder()
@@ -56,7 +56,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     }
 
     @AfterEach
-    private void cleanUp() {
+    public void cleanUp() {
         skillRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -109,7 +109,7 @@ public class SkillsIntegrationTests extends TestContainerManager {
     @Test
     @DisplayName("Return 200, on skill found given skillId")
     public void testAPIReturns200_OnSkillFoundById() {
-        UUID skillId = skill.getId();
+        Integer skillId = skill.getId();
 
         Response response =
                 given()
