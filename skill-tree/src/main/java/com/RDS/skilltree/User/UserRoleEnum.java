@@ -2,7 +2,7 @@ package com.RDS.skilltree.User;
 
 import java.util.Arrays;
 
-public enum UserRole {
+public enum UserRoleEnum {
     USER("user"),
     MEMBER("member"),
     SUPERUSER("super_user"),
@@ -10,20 +10,20 @@ public enum UserRole {
 
     public final String label;
 
-    UserRole(String label) {
+    UserRoleEnum(String label) {
         this.label = label;
     }
 
-    public static UserRole fromString(String text) {
-        for (UserRole role : UserRole.values()) {
+    public static UserRoleEnum fromString(String text) {
+        for (UserRoleEnum role : UserRoleEnum.values()) {
             if (role.label.equalsIgnoreCase(text)) {
                 return role;
             }
         }
-        return UserRole.GUEST;
+        return UserRoleEnum.GUEST;
     }
 
     public static String[] getAllRoles() {
-        return Arrays.stream(UserRole.values()).map(UserRole::name).toArray(String[]::new);
+        return Arrays.stream(UserRoleEnum.values()).map(UserRoleEnum::name).toArray(String[]::new);
     }
 }

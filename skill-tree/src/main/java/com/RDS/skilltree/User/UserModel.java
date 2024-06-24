@@ -23,8 +23,4 @@ public class UserModel extends TrackedProperties {
 
     @Column(name = "rds_user_id", unique = true)
     private String rdsUserId;
-
-    @Column(name = "user_role", nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private UserRole role = UserRole.USER;
 }

@@ -1,7 +1,7 @@
 package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.EndorsementList.EndorsementListModel;
-import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -25,9 +25,9 @@ public class EndorsementModel extends TrackedProperties {
     @Column(name = "endorsee_id")
     private UUID endorseeId;
 
-    @ManyToOne(targetEntity = SkillModel.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Skill.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "skill_id", referencedColumnName = "id")
-    private SkillModel skill;
+    private Skill skill;
 
     @OneToMany(mappedBy = "endorsement")
     @JsonManagedReference

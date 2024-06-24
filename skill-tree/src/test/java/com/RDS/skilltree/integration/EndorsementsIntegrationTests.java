@@ -46,7 +46,7 @@ public class EndorsementsIntegrationTests extends TestContainerManager {
         user =
                 userService.createUser(
                         UserDRO.builder()
-                                .role(UserRole.MEMBER)
+                                .role(UserRoleEnum.MEMBER)
                                 .rdsUserId("p6Bo61VEClhtVdwW0ihg")
                                 .lastName("Doe")
                                 .firstName("John")

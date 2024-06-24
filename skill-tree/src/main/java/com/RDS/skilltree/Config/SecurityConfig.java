@@ -3,7 +3,7 @@ package com.RDS.skilltree.Config;
 import com.RDS.skilltree.Authentication.AuthEntryPoint;
 import com.RDS.skilltree.Authentication.CustomAccessDeniedHandler;
 import com.RDS.skilltree.Filters.JWTAuthenticationFilter;
-import com.RDS.skilltree.User.UserRole;
+import com.RDS.skilltree.User.UserRoleEnum;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
@@ -50,10 +50,10 @@ public class SecurityConfig {
                                                                 && request.getQueryString().contains("dummyData=true"))
                                         .permitAll()
                                         .requestMatchers(HttpMethod.GET, "/v1/**")
-                                        .hasAnyAuthority(UserRole.getAllRoles()) // give read-only access to all
+                                        .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
                                         .requestMatchers("/v1/**")
                                         .hasAnyAuthority(
-                                                UserRole.USER.name(), UserRole.MEMBER.name(), UserRole.SUPERUSER.name())
+                                                UserRoleEnum.USER.name(), UserRoleEnum.MEMBER.name(), UserRoleEnum.SUPERUSER.name())
                                         .anyRequest()
                                         .authenticated())
                 .exceptionHandling(

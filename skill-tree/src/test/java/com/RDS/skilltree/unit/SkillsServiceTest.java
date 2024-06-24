@@ -6,13 +6,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.RDS.skilltree.Skill.SkillDTO;
-import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.Skill.SkillsServiceImpl;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,16 +26,19 @@ import org.springframework.data.domain.Pageable;
 @ExtendWith(MockitoExtension.class)
 public class SkillsServiceTest {
 
-    @Mock private SkillRepository skillRepository;
+    @Mock
+    private SkillRepository skillRepository;
 
-    @InjectMocks @Autowired private SkillsServiceImpl skillService;
+    @InjectMocks
+    @Autowired
+    private SkillsServiceImpl skillService;
 
     @Test
     public void testGetSkillById() {
-        UUID skillId = UUID.randomUUID();
-        SkillModel skillModel = SkillModel.builder().id(skillId).build();
+        Integer skillId = new Random().nextInt();
+        Skill skill = Skill.builder().id(skillId).build();
 
-        when(skillRepository.findById(skillId)).thenReturn(Optional.of(skillModel));
+        when(skillRepository.findById(skillId)).thenReturn(Optional.of(skill));
 
         SkillDTO result = skillService.getSkillById(skillId);
         assertNotNull(result);
@@ -46,9 +48,9 @@ public class SkillsServiceTest {
     @Test
     public void testGetSkillsByName() {
         String skillName = "Java";
-        SkillModel skillModel = SkillModel.builder().name("Java").build();
+        Skill skill = Skill.builder().name("Java").build();
 
-        when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skillModel));
+        when(skillRepository.findByName(skillName)).thenReturn(Optional.of(skill));
 
         SkillDTO result = skillService.getSkillByName("Java");
         assertNotNull(result);
@@ -58,24 +60,24 @@ public class SkillsServiceTest {
 
     @Test
     public void testGetAllSkills() {
-        SkillModel skillJava = SkillModel.builder().name("Java").build();
+        Skill skillJava = Skill.builder().name("Java").build();
 
-        SkillModel skillGo = SkillModel.builder().name("Go").build();
+        Skill skillGo = Skill.builder().name("Go").build();
 
-        List<SkillModel> skillModelList = Arrays.asList(skillJava, skillGo);
+        List<Skill> skillList = Arrays.asList(skillJava, skillGo);
 
         when(skillRepository.findAll((Pageable) any(Pageable.class)))
-                .thenReturn(new PageImpl<>(skillModelList));
+                .thenReturn(new PageImpl<>(skillList));
 
         Pageable pageable = PageRequest.of(2, 1);
         Page<SkillDTO> resultPage = skillService.getAllSkills(pageable);
         assertNotNull(resultPage);
         assertEquals(
-                skillModelList.size(),
+                skillList.size(),
                 resultPage.getTotalElements(),
                 "The number of elements returned is not equal to the expected size");
         assertEquals(
-                skillModelList.size(),
+                skillList.size(),
                 resultPage.getContent().size(),
                 "The content returned is not equal to the expected content");
         assertEquals(

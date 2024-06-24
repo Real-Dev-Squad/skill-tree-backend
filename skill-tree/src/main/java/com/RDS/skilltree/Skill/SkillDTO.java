@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,28 +13,28 @@ import lombok.Getter;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SkillDTO {
-    private UUID id;
+    private Integer id;
     private SkillType type;
     private String name;
     private Set<UserDTO> users;
 
-    public static SkillDTO toDto(SkillModel skillModel) {
+    public static SkillDTO toDto(Skill skill) {
         return SkillDTO.builder()
-                .id(skillModel.getId())
-                .name(skillModel.getName())
-                .type(skillModel.getType())
+                .id(skill.getId())
+                .name(skill.getName())
+                .type(skill.getType())
                 .build();
     }
 
-    public static SkillDTO getSkillsWithUsers(SkillModel skillModel) {
+    public static SkillDTO getSkillsWithUsers(Skill skill) {
         Set<UserDTO> users = new HashSet<>();
 //        if (skillModel.getUsers() != null) {
 //            users = skillModel.getUsers().stream().map(UserDTO::toDTO).collect(Collectors.toSet());
 //        }
         return SkillDTO.builder()
-                .id(skillModel.getId())
-                .name(skillModel.getName())
-                .type(skillModel.getType())
+                .id(skill.getId())
+                .name(skill.getName())
+                .type(skill.getType())
                 .users(users)
                 .build();
     }

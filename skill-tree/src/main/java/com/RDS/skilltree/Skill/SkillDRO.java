@@ -16,11 +16,8 @@ public class SkillDRO {
     @NotNull(message = "SkillType cannot be null")
     private SkillType type;
 
-    @NotNull(message = "Created by user Id cannot be null")
-    private UUID createdBy;
-
-    public static SkillModel toModel(SkillDRO skillDRO) {
-        return SkillModel.builder()
+    public static Skill toModel(SkillDRO skillDRO) {
+        return Skill.builder()
                 .name(skillDRO.getName())
                 .type(skillDRO.getType())
                 .isDeleted(false)

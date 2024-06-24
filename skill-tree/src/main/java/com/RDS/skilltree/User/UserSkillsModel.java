@@ -1,6 +1,6 @@
 package com.RDS.skilltree.User;
 
-import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.Skill;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
@@ -29,7 +29,7 @@ public class UserSkillsModel {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "skill_id", nullable = false)
-    private SkillModel skill;
+    private Skill skill;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

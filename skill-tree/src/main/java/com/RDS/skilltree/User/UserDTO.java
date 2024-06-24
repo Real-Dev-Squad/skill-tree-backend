@@ -4,7 +4,7 @@ import com.RDS.skilltree.Skill.SkillDTO;
 import java.net.URL;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,7 +22,7 @@ public class UserDTO {
 
     private URL imageUrl;
 
-    private UserRole role;
+    private UserRoleEnum role;
 
     private Set<SkillDTO> skills;
 
@@ -31,7 +31,6 @@ public class UserDTO {
         return UserDTO.builder()
                 .id(user.getId())
                 .rdsUserId(user.getRdsUserId())
-                .role(user.getRole())
                 .build();
     }
 
@@ -43,7 +42,7 @@ public class UserDTO {
                 .id(user.getId())
                 .rdsUserId(user.getRdsUserId())
 //                .skills(skills)
-                .role(user.getRole())
+//                .role(user.getRole())
                 .build();
     }
 }

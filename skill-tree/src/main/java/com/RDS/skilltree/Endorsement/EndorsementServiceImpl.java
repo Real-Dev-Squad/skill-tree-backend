@@ -4,18 +4,20 @@ import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
-import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.Skill.SkillRepository;
-import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.User.UserRole;
+import com.RDS.skilltree.User.JwtUserModel;
+import com.RDS.skilltree.User.UserRoleEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +80,8 @@ public class EndorsementServiceImpl implements EndorsementService {
     private List<EndorsementModelFromJSON> readEndorsementsFromJSON() throws IOException {
         ClassPathResource resource = new ClassPathResource(dummyEndorsementDataPath);
         return objectMapper.readValue(
-                resource.getInputStream(), new TypeReference<List<EndorsementModelFromJSON>>() {});
+                resource.getInputStream(), new TypeReference<List<EndorsementModelFromJSON>>() {
+                });
     }
 
     private List<EndorsementModelFromJSON> filterEndorsements(
@@ -118,9 +121,9 @@ public class EndorsementServiceImpl implements EndorsementService {
     @Override
     public EndorsementModel createEndorsement(EndorsementDRO endorsementDRO) {
         UUID userId = endorsementDRO.getEndorseeId();
-        UUID skillId = endorsementDRO.getSkillId();
+        Integer skillId = endorsementDRO.getSkillId();
 
-        Optional<SkillModel> skillOptional = skillRepository.findById(skillId);
+        Optional<Skill> skillOptional = skillRepository.findById(skillId);
         if (skillOptional.isPresent()) {
             EndorsementModel endorsementModel =
                     EndorsementModel.builder().endorseeId(userId).skill(skillOptional.get()).build();
@@ -134,9 +137,9 @@ public class EndorsementServiceImpl implements EndorsementService {
 
     @Override
     public GenericResponse<Void> updateEndorsementStatus(UUID id, String status) {
-        UserModel user =
-                (UserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!user.getRole().equals(UserRole.SUPERUSER)) {
+        JwtUserModel user =
+                (JwtUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getRole().equals(UserRoleEnum.SUPERUSER)) {
             throw new AccessDeniedException("Unauthorized, Access is only available to super users");
         }
 

@@ -12,5 +12,5 @@ public interface UserService {
 
     List<UserDTO> getAllUsers();
 
-    void addSkill(UUID skill, UUID userId);
+    void addSkill(Integer skill, UUID userId);
 }

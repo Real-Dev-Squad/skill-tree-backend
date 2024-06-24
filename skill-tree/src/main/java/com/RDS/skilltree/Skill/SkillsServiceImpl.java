@@ -1,9 +1,11 @@
 package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserRepository;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,28 +21,28 @@ public class SkillsServiceImpl implements SkillsService {
     private final UserRepository userRepository;
 
     @Override
-    public SkillDTO getSkillById(UUID id) {
-        Optional<SkillModel> skillModel = skillRepository.findById(id);
+    public SkillDTO getSkillById(Integer id) {
+        Optional<Skill> skillModel = skillRepository.findById(id);
         return skillModel.map(SkillDTO::getSkillsWithUsers).orElse(null);
     }
 
     @Override
     public SkillDTO getSkillByName(String skillName) {
-        Optional<SkillModel> skillModel = skillRepository.findByName(skillName);
+        Optional<Skill> skillModel = skillRepository.findByName(skillName);
         return skillModel.map(SkillDTO::getSkillsWithUsers).orElse(null);
     }
 
     @Override
     public Page<SkillDTO> getAllSkills(Pageable pageable) {
-        Page<SkillModel> skillModels = skillRepository.findAll(pageable);
+        Page<Skill> skillModels = skillRepository.findAll(pageable);
         return skillModels.map(SkillDTO::getSkillsWithUsers);
     }
 
     @Override
     public SkillDTO createSkill(SkillDRO skillDRO) {
-        SkillModel newSkill = SkillDRO.toModel(skillDRO);
-        newSkill.setCreatedAt(Instant.now());
-        newSkill.setUpdatedAt(Instant.now());
+        Skill newSkill = SkillDRO.toModel(skillDRO);
+//        newSkill.setCreatedAt(Instant.now());
+//        newSkill.setUpdatedAt(Instant.now());
 
         try {
             skillRepository.save(newSkill);

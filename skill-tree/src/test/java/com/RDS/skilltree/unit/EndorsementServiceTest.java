@@ -8,19 +8,21 @@ import com.RDS.skilltree.Endorsement.*;
 import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
 import com.RDS.skilltree.Exceptions.InvalidParameterException;
 import com.RDS.skilltree.Exceptions.NoEntityException;
-import com.RDS.skilltree.Skill.SkillModel;
+import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
-import com.RDS.skilltree.User.UserRole;
+import com.RDS.skilltree.User.UserRoleEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,17 +43,24 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class EndorsementServiceTest {
-    @Mock private EndorsementRepository endorsementRepository;
+    @Mock
+    private EndorsementRepository endorsementRepository;
 
-    @Mock private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-    @Mock private SkillRepository skillRepository;
+    @Mock
+    private SkillRepository skillRepository;
 
-    @Mock private ObjectMapper objectMapper;
+    @Mock
+    private ObjectMapper objectMapper;
 
-    @InjectMocks @Autowired private EndorsementServiceImpl endorsementService;
+    @InjectMocks
+    @Autowired
+    private EndorsementServiceImpl endorsementService;
 
-    @Mock private Authentication auth;
+    @Mock
+    private Authentication auth;
 
     @BeforeEach
     public void setUp() {
@@ -67,9 +76,9 @@ public class EndorsementServiceTest {
     private void setupUpdateEndorsementTests(Boolean useSuperUserRole) {
         UserModel userModel = new UserModel();
         if (useSuperUserRole) {
-            userModel.setRole(UserRole.SUPERUSER);
+            userModel.setRole(UserRoleEnum.SUPERUSER);
         } else {
-            userModel.setRole(UserRole.USER);
+            userModel.setRole(UserRoleEnum.USER);
         }
         when(auth.getPrincipal()).thenReturn(userModel);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -81,12 +90,12 @@ public class EndorsementServiceTest {
         UUID endorserId = UUID.randomUUID();
         UUID skillId = UUID.randomUUID();
 
-        SkillModel skillModel = SkillModel.builder().id(skillId).build();
+        Skill skill = Skill.builder().id(skillId).build();
         EndorsementModel endorsementModel =
                 EndorsementModel.builder()
                         .id(endorsementId)
                         .endorseeId(endorserId)
-                        .skill(skillModel)
+                        .skill(skill)
                         .build();
         endorsementModel.setCreatedAt(Instant.now());
         endorsementModel.setUpdatedAt(Instant.now());
@@ -124,8 +133,8 @@ public class EndorsementServiceTest {
                         UUID.randomUUID()));
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, null);
@@ -154,8 +163,8 @@ public class EndorsementServiceTest {
                         UUID.randomUUID()));
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, null, userID);
@@ -184,8 +193,8 @@ public class EndorsementServiceTest {
                         UUID.randomUUID()));
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
 
         assertThrows(
@@ -214,8 +223,8 @@ public class EndorsementServiceTest {
                         UUID.randomUUID()));
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
 
         assertThrows(
@@ -244,8 +253,8 @@ public class EndorsementServiceTest {
                         UUID.randomUUID()));
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
 
         assertThrows(
@@ -277,8 +286,8 @@ public class EndorsementServiceTest {
         }
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, null, userID);
@@ -308,8 +317,8 @@ public class EndorsementServiceTest {
         }
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, null, userID);
@@ -339,8 +348,8 @@ public class EndorsementServiceTest {
         List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
@@ -360,8 +369,8 @@ public class EndorsementServiceTest {
         List<EndorsementModelFromJSON> dummyEndorsements = new ArrayList<>();
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
@@ -391,8 +400,8 @@ public class EndorsementServiceTest {
         List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(
@@ -423,8 +432,8 @@ public class EndorsementServiceTest {
                         UUID.randomUUID()));
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(pageRequest, "", "");
@@ -454,8 +463,8 @@ public class EndorsementServiceTest {
         List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(
@@ -487,8 +496,8 @@ public class EndorsementServiceTest {
         List<EndorsementModelFromJSON> endorsementsResult = new ArrayList<>();
 
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenReturn(dummyEndorsements);
         Page<EndorsementModelFromJSON> result =
                 endorsementService.getEndorsementsFromDummyData(
@@ -506,8 +515,8 @@ public class EndorsementServiceTest {
         String skillID = null;
         String userID = null;
         when(objectMapper.readValue(
-                        ArgumentMatchers.<InputStream>any(),
-                        ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
+                ArgumentMatchers.<InputStream>any(),
+                ArgumentMatchers.<TypeReference<List<EndorsementModelFromJSON>>>any()))
                 .thenThrow(new IOException("Error reading data"));
 
         assertThrows(
@@ -541,7 +550,7 @@ public class EndorsementServiceTest {
         endorsementDRO.setEndorseeId(endorserId);
         endorsementDRO.setSkillId(skillId);
 
-        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        Skill mockSkill = Skill.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)
@@ -648,7 +657,7 @@ public class EndorsementServiceTest {
         UUID skillId = UUID.randomUUID();
         UUID endorsementId = UUID.randomUUID();
 
-        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        Skill mockSkill = Skill.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)
@@ -704,7 +713,7 @@ public class EndorsementServiceTest {
         UUID endorsementId = UUID.randomUUID();
         EndorsementStatus status = EndorsementStatus.APPROVED;
 
-        SkillModel mockSkill = SkillModel.builder().id(skillId).build();
+        Skill mockSkill = Skill.builder().id(skillId).build();
         EndorsementModel mockEndorsement =
                 EndorsementModel.builder()
                         .id(endorsementId)

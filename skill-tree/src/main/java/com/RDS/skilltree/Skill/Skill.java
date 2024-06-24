@@ -1,16 +1,14 @@
 package com.RDS.skilltree.Skill;
 
-import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.util.Set;
-import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,11 +16,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @Table(name = "skills")
-public class SkillModel extends TrackedProperties {
+public class Skill extends TrackedProperties {
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(name = "id")
+    private Integer id;
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
@@ -33,4 +31,11 @@ public class SkillModel extends TrackedProperties {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    // TODO : Confirm the type of this column from tejas
+    @Column(name = "created_by", nullable = false)
+    private UUID createdBy;
+
+    @Column(name = "updated_by")
+    private UUID updatedBy;
 }

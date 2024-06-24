@@ -1,7 +1,7 @@
 package com.RDS.skilltree.Authentication;
 
-import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.User.UserRole;
+import com.RDS.skilltree.User.JwtUserModel;
+import com.RDS.skilltree.User.UserRoleEnum;
 import java.util.List;
 import javax.security.auth.Subject;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -9,11 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final UserModel user;
+    private final JwtUserModel user;
 
     public UserAuthenticationToken(String role, String rdsUserId) {
-        super(List.of(new SimpleGrantedAuthority(UserRole.fromString(role).name())));
-        this.user = UserModel.builder().rdsUserId(rdsUserId).role(UserRole.fromString(role)).build();
+        super(List.of(new SimpleGrantedAuthority(UserRoleEnum.fromString(role).name())));
+
+        this.user = new JwtUserModel(rdsUserId, UserRoleEnum.fromString(role));
         setAuthenticated(true);
     }
 
@@ -23,7 +24,7 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public UserModel getPrincipal() {
+    public JwtUserModel getPrincipal() {
         return user;
     }
 

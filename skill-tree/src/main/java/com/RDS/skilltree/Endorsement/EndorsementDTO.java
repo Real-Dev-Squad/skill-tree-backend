@@ -29,8 +29,6 @@ public class EndorsementDTO extends TrackedProperties {
                         .build();
         endorsementDTO.setCreatedAt(endorsementModel.getCreatedAt());
         endorsementDTO.setUpdatedAt(endorsementModel.getUpdatedAt());
-        endorsementDTO.setCreatedBy(endorsementModel.getCreatedBy());
-        endorsementDTO.setUpdatedBy(endorsementModel.getUpdatedBy());
         return endorsementDTO;
     }
 }
