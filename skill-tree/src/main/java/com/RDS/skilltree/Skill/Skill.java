@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,11 +28,11 @@ public class Skill extends TrackedProperties {
     @Enumerated(value = EnumType.STRING)
     private SkillTypeEnum type = SkillTypeEnum.ATOMIC;
 
-    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private String createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserModel createdBy;
 
-    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private String updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private UserModel updatedBy;
 }

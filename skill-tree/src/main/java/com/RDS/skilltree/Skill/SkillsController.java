@@ -3,6 +3,8 @@ package com.RDS.skilltree.Skill;
 import com.RDS.skilltree.Common.Response.GenericResponse;
 import com.RDS.skilltree.Endorsement.EndorsementRepository;
 import com.RDS.skilltree.User.JwtUserModel;
+import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.User.UserRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
@@ -14,26 +16,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequestMapping("/v1/skills")
 public class SkillsController {
-    private final SkillRepository repository;
+    private final UserRepository userRepository;
+    private final SkillRepository skillRepository;
     private final EndorsementRepository endorsementRepository;
 
-    public SkillsController(SkillRepository repository, EndorsementRepository endorsementRepository) {
-        this.repository = repository;
+    public SkillsController(UserRepository userRepository, SkillRepository skillRepository, EndorsementRepository endorsementRepository) {
+        this.userRepository = userRepository;
+        this.skillRepository = skillRepository;
         this.endorsementRepository = endorsementRepository;
     }
 
     @GetMapping
     public GenericResponse<List<Skill>> getAllSkills(@RequestParam(required = false) String name) {
-        repository.findByName(name);
-        return new GenericResponse<>(repository.findAll(), null);
+        skillRepository.findByName(name);
+        return new GenericResponse<>(skillRepository.findAll(), null);
     }
 
     @PostMapping
@@ -42,23 +45,27 @@ public class SkillsController {
     public GenericResponse<Skill> createSkill(Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
         JwtUserModel userDetails = (JwtUserModel) authentication.getPrincipal();
 
+        String userId = "ae7a6673c5574140838f209de4c644fc";
+        Optional<UserModel> user = userRepository.findById(userId);
+
         // TODO : return a correct http status instead of 201
-        if (repository.findByName(skill.getName()).isPresent()) {
+        if (skillRepository.findByName(skill.getName()).isPresent()) {
             return new GenericResponse<>(null, String.format("Skill with name %s already exists", skill.getName()));
+        }
+
+        // TODO : return a correct http status instead of 201
+        if (user.isEmpty()) {
+            return new GenericResponse<>(null, "User not found");
         }
 
         Skill newSkill = Skill.builder()
                 .name(skill.getName())
                 .type(skill.getType())
-                // TODO : use the id from userDetails once login is implemented
-                .createdBy("ae7a6673c5574140838f209de4c644fc")
-//                .isDeleted(false)
+                .createdBy(user.get())
                 .build();
 
-//        newSkill.setCreatedAt(Instant.now());
-
         try {
-            return new GenericResponse<>(repository.save(newSkill), "Skill created");
+            return new GenericResponse<>(skillRepository.save(newSkill), "Skill created");
         } catch (DataIntegrityViolationException error) {
             log.error("Error saving skill {}, error: {}", skill.getName(), error.getMessage());
             // TODO : return a correct http status instead of 201

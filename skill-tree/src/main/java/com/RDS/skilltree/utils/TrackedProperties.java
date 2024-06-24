@@ -6,17 +6,19 @@ import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
 
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @MappedSuperclass
 public abstract class TrackedProperties {
-    @CreatedDate
+    @CreationTimestamp(source = SourceType.DB)
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @LastModifiedDate
+
+    @UpdateTimestamp(source = SourceType.DB)
     @Column(name = "updated_at")
     private Instant updatedAt;
 

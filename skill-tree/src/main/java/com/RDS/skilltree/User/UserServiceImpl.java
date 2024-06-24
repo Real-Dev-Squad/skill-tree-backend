@@ -7,7 +7,6 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -29,11 +28,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UUID id, UserDRO user) {
+    public void updateUser(String id, UserDRO user) {
     }
 
     @Override
-    public UserDTO getUserById(UUID id) {
+    public UserDTO getUserById(String id) {
         Optional<UserModel> userModel = userRepository.findById(id);
         return userModel.map(UserDTO::getUsersWithSkills).orElse(null);
     }
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void addSkill(Integer skillId, UUID userId) {
+    public void addSkill(Integer skillId, String userId) {
         Optional<UserModel> userOptional = userRepository.findById(userId);
         Optional<Skill> skillOptional = skillRepository.findById(skillId);
 
