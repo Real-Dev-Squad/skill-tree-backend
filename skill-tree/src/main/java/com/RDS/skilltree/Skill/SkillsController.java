@@ -35,6 +35,7 @@ public class SkillsController {
     public GenericResponse<Skill> createSkill(Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
         JwtUserModel userDetails = (JwtUserModel) authentication.getPrincipal();
 
+        // TODO : return a correct http status instead of 201
         if (repository.findByName(skill.getName()).isPresent()) {
             return new GenericResponse<>(null, String.format("Skill with name %s already exists", skill.getName()));
         }
@@ -53,6 +54,7 @@ public class SkillsController {
             return new GenericResponse<>(repository.save(newSkill), "Skill created");
         } catch (DataIntegrityViolationException error) {
             log.error("Error saving skill {}, error: {}", skill.getName(), error.getMessage());
+            // TODO : return a correct http status instead of 201
             return new GenericResponse<>(null, "Something went wrong please try again");
         }
     }
