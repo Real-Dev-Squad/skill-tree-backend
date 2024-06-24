@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -21,17 +19,17 @@ public class EndorsementModel extends TrackedProperties {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne(targetEntity = Skill.class, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne
     @JoinColumn(name = "skill_id", referencedColumnName = "id")
-    private Integer skillId;
+    private Skill skill;
 
-    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne
     @JoinColumn(name = "endorse_id", referencedColumnName = "id")
-    private String endorseId;
+    private UserModel endorse;
 
     @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "endorser_id", referencedColumnName = "id")
-    private String endorserId;
+    private UserModel endorser;
 
     @Column(name = "message", nullable = false)
     private String message;
