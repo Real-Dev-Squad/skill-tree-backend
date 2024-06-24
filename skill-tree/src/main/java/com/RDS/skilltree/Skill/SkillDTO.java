@@ -2,6 +2,7 @@ package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -28,9 +29,7 @@ public class SkillDTO {
 
     public static SkillDTO getSkillsWithUsers(Skill skill) {
         Set<UserDTO> users = new HashSet<>();
-//        if (skillModel.getUsers() != null) {
-//            users = skillModel.getUsers().stream().map(UserDTO::toDTO).collect(Collectors.toSet());
-//        }
+
         return SkillDTO.builder()
                 .id(skill.getId())
                 .name(skill.getName())

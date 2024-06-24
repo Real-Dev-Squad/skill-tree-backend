@@ -9,6 +9,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Integer> {
     Optional<Skill> findByName(String name);
-
-//    Page<SkillModel> findAll(Pageable pageable);
 }
