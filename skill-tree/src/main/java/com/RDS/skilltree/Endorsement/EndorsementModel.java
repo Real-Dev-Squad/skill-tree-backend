@@ -1,14 +1,13 @@
 package com.RDS.skilltree.Endorsement;
 
-import com.RDS.skilltree.EndorsementList.EndorsementListModel;
 import com.RDS.skilltree.Skill.Skill;
+import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+
 import lombok.*;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,21 +18,21 @@ import lombok.*;
 public class EndorsementModel extends TrackedProperties {
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(name = "id")
+    private Integer id;
 
-    @Column(name = "endorsee_id")
-    private UUID endorseeId;
-
-    @ManyToOne(targetEntity = Skill.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Skill.class, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "skill_id", referencedColumnName = "id")
-    private Skill skill;
+    private Integer skillId;
 
-    @OneToMany(mappedBy = "endorsement")
-    @JsonManagedReference
-    private List<EndorsementListModel> endorsersList = new ArrayList<>();
+    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "endorse_id", referencedColumnName = "id")
+    private String endorseId;
 
-    @Column(name = "endorsement_status")
-    @Enumerated(value = EnumType.STRING)
-    private EndorsementStatus status = EndorsementStatus.PENDING;
+    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "endorser_id", referencedColumnName = "id")
+    private String endorserId;
+
+    @Column(name = "message", nullable = false)
+    private String message;
 }

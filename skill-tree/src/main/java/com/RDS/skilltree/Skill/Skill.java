@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Skill;
 
+import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 
@@ -29,13 +30,11 @@ public class Skill extends TrackedProperties {
     @Enumerated(value = EnumType.STRING)
     private SkillTypeEnum type = SkillTypeEnum.ATOMIC;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private String createdBy;
 
-    // TODO : Confirm the type of this column from tejas
-    @Column(name = "created_by", nullable = false)
-    private UUID createdBy;
-
-    @Column(name = "updated_by")
-    private UUID updatedBy;
+    @ManyToOne(targetEntity = UserModel.class, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private String updatedBy;
 }

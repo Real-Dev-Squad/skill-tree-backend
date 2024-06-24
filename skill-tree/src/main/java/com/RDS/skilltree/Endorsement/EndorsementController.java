@@ -4,8 +4,9 @@ import com.RDS.skilltree.Common.Response.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import java.io.IOException;
+
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,28 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class EndorsementController {
     private final EndorsementService endorsementService;
-
-    @GetMapping(value = "")
-    public ResponseEntity<Page<?>> getAllEndorsements(
-            @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
-            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
-            @RequestParam(name = "skillID", required = false) String skillID,
-            @RequestParam(name = "userID", required = false) String userID,
-            @RequestParam(name = "dummyData", required = false) boolean dummyData)
-            throws IOException {
-        PageRequest pageRequest = PageRequest.of(offset, limit);
-        if (dummyData) {
-            Page<EndorsementModelFromJSON> pagedEndorsements =
-                    endorsementService.getEndorsementsFromDummyData(pageRequest, skillID, userID);
-            if (pagedEndorsements.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.ok(pagedEndorsements);
-            }
-        } else {
-            return ResponseEntity.ok(endorsementService.getEndorsements(pageRequest));
-        }
-    }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse<EndorsementDTO>> getEndorsementById(

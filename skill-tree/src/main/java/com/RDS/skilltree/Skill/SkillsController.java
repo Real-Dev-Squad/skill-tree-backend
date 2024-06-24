@@ -1,11 +1,16 @@
 package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.Endorsement.EndorsementRepository;
 import com.RDS.skilltree.User.JwtUserModel;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +23,11 @@ import java.util.UUID;
 @RequestMapping("/v1/skills")
 public class SkillsController {
     private final SkillRepository repository;
+    private final EndorsementRepository endorsementRepository;
 
-    public SkillsController(SkillRepository repository) {
+    public SkillsController(SkillRepository repository, EndorsementRepository endorsementRepository) {
         this.repository = repository;
+        this.endorsementRepository = endorsementRepository;
     }
 
     @GetMapping
@@ -44,11 +51,11 @@ public class SkillsController {
                 .name(skill.getName())
                 .type(skill.getType())
                 // TODO : use the id from userDetails once login is implemented
-                .createdBy(UUID.fromString("ae7a6673-c557-41e0-838f-209de4c644fc"))
-                .isDeleted(false)
+                .createdBy("ae7a6673c5574140838f209de4c644fc")
+//                .isDeleted(false)
                 .build();
 
-        newSkill.setCreatedAt(Instant.now());
+//        newSkill.setCreatedAt(Instant.now());
 
         try {
             return new GenericResponse<>(repository.save(newSkill), "Skill created");
@@ -57,5 +64,14 @@ public class SkillsController {
             // TODO : return a correct http status instead of 201
             return new GenericResponse<>(null, "Something went wrong please try again");
         }
+    }
+
+    @GetMapping("/{id}/endorsements")
+    public ResponseEntity<Page<?>> getEndorsementsBySkillId(
+            @RequestParam(name = "offset", defaultValue = "0", required = false) @Min(0) int offset,
+            @RequestParam(name = "limit", defaultValue = "10", required = false) @Min(1) int limit,
+            @PathVariable(value = "id") Integer skillID) {
+        PageRequest pageRequest = PageRequest.of(offset, limit);
+        return ResponseEntity.ok(endorsementRepository.findBySkillId(skillID, pageRequest));
     }
 }

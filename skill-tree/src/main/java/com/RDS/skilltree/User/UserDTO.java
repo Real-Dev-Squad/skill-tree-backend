@@ -1,6 +1,7 @@
 package com.RDS.skilltree.User;
 
 import com.RDS.skilltree.Skill.SkillDTO;
+
 import java.net.URL;
 import java.util.Set;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import lombok.Getter;
 @Builder
 public class UserDTO {
 
-    private UUID id;
+    private String id;
 
     private String rdsUserId;
 
