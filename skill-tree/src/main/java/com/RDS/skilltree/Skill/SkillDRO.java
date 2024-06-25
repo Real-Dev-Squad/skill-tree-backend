@@ -1,5 +1,6 @@
 package com.RDS.skilltree.Skill;
 
+import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

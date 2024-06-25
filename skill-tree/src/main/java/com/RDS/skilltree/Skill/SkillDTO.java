@@ -1,6 +1,7 @@
 package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserDTO;
+import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.models.Skill;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;

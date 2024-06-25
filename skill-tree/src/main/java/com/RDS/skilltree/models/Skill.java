@@ -1,7 +1,7 @@
 package com.RDS.skilltree.models;
 
-import com.RDS.skilltree.Skill.SkillTypeEnum;
 import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 import lombok.*;

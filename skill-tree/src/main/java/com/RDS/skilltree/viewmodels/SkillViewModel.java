@@ -1,6 +1,6 @@
 package com.RDS.skilltree.viewmodels;
 
-import com.RDS.skilltree.Skill.SkillTypeEnum;
+import com.RDS.skilltree.enums.SkillTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 

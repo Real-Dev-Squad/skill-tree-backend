@@ -1,7 +1,7 @@
 package com.RDS.skilltree.viewmodels;
 
-import com.RDS.skilltree.Skill.SkillTypeEnum;
 import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.enums.SkillTypeEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
