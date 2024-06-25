@@ -23,7 +23,6 @@ import java.util.Optional;
 public class EndorsementController {
     private final UserRepository userRepository;
     private final EndorsementRepository endorsementRepository;
-    private final EndorsementService endorsementService;
     private final SkillRepository skillRepository;
 
     //    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
