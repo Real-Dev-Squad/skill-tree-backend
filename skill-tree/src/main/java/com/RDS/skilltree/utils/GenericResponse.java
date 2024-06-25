@@ -1,4 +1,4 @@
-package com.RDS.skilltree.Common.Response;
+package com.RDS.skilltree.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

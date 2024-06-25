@@ -1,6 +1,6 @@
 package com.RDS.skilltree.exceptions;
 
-import com.RDS.skilltree.Common.Response.GenericResponse;
+import com.RDS.skilltree.utils.GenericResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;

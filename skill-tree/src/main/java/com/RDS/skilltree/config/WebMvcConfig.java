@@ -1,4 +1,4 @@
-package com.RDS.skilltree.Config;
+package com.RDS.skilltree.config;
 
 import com.RDS.skilltree.utils.UUIDValidationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
