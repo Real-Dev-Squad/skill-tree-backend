@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/skills")
+@RequestMapping("/v2/skills")
 public class SkillsController {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final EndorsementRepository endorsementRepository;
-    
+
     @GetMapping
     public GenericResponse<List<Skill>> getAllSkills(@RequestParam(required = false) String name) {
         skillRepository.findByName(name);

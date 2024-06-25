@@ -1,7 +1,7 @@
-package com.RDS.skilltree.Skill;
+package com.RDS.skilltree.models;
 
+import com.RDS.skilltree.Skill.SkillTypeEnum;
 import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Getter
-//@Table(name = "skills")
-public class Skill extends TrackedProperties {
+@Table(name = "skills")
+public class Skill {
     @Id
     @GeneratedValue
     @Column(name = "id")
