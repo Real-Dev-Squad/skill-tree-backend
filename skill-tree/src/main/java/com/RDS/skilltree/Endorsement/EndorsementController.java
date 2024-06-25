@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/v1/endorsements")
 @Slf4j
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1/endorsements")
 public class EndorsementController {
     private final UserRepository userRepository;
     private final EndorsementRepository endorsementRepository;
