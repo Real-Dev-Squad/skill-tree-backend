@@ -4,10 +4,8 @@ import com.RDS.skilltree.Exceptions.NoEntityException;
 import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.Skill.SkillRepository;
 import jakarta.transaction.Transactional;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,8 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(String id, UserDRO user) {
-    }
+    public void updateUser(String id, UserDRO user) {}
 
     @Override
     public UserDTO getUserById(String id) {
@@ -58,8 +55,8 @@ public class UserServiceImpl implements UserService {
             UserModel userModel = userOptional.get();
             Skill skill = skillOptional.get();
 
-//            userModel.getSkills().add(skillModel);
-//            skillModel.getUsers().add(userModel);
+            //            userModel.getSkills().add(skillModel);
+            //            skillModel.getUsers().add(userModel);
 
             userRepository.save(userModel);
             skillRepository.save(skill);

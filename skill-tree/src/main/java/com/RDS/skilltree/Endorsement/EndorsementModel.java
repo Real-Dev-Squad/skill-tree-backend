@@ -4,7 +4,6 @@ import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
-
 import lombok.*;
 
 @AllArgsConstructor
@@ -12,6 +11,7 @@ import lombok.*;
 @Entity
 @Builder
 @Getter
+@Setter
 @Table(name = "endorsements")
 public class EndorsementModel extends TrackedProperties {
     @Id

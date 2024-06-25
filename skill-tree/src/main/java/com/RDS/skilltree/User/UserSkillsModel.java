@@ -3,10 +3,8 @@ package com.RDS.skilltree.User;
 import com.RDS.skilltree.Skill.Skill;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
-import lombok.*;
-
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Getter

@@ -25,14 +25,14 @@ public class UserDRO {
     public static UserModel toModel(UserDRO user) {
         return UserModel.builder()
                 .rdsUserId(user.getRdsUserId())
-//                .role(user.getRole())
+                //                .role(user.getRole())
                 .build();
     }
 
     public static UserDRO fromModel(UserModel user) {
         return UserDRO.builder()
                 .rdsUserId(user.getRdsUserId())
-//                .role(user.getRole())
+                //                .role(user.getRole())
                 .build();
     }
 
@@ -40,9 +40,9 @@ public class UserDRO {
         if (userDRO.getRdsUserId() != null) {
             user.setRdsUserId(user.getRdsUserId());
         }
-//        if (userDRO.getRole() != null) {
-//            user.setRole(user.getRole());
-//        }
+        //        if (userDRO.getRole() != null) {
+        //            user.setRole(user.getRole());
+        //        }
         user.setUpdatedAt(Instant.now());
         return user;
     }

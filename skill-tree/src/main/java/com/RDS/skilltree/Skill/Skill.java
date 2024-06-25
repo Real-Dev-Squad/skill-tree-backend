@@ -3,7 +3,6 @@ package com.RDS.skilltree.Skill;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

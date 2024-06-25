@@ -3,9 +3,6 @@ package com.RDS.skilltree.User;
 import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
-
-import java.util.UUID;
-
 import lombok.*;
 
 @Entity

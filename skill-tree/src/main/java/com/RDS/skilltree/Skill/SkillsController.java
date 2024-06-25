@@ -7,6 +7,8 @@ import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -16,9 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @RestController
 @RequestMapping("/v1/skills")
@@ -27,7 +26,10 @@ public class SkillsController {
     private final SkillRepository skillRepository;
     private final EndorsementRepository endorsementRepository;
 
-    public SkillsController(UserRepository userRepository, SkillRepository skillRepository, EndorsementRepository endorsementRepository) {
+    public SkillsController(
+            UserRepository userRepository,
+            SkillRepository skillRepository,
+            EndorsementRepository endorsementRepository) {
         this.userRepository = userRepository;
         this.skillRepository = skillRepository;
         this.endorsementRepository = endorsementRepository;
@@ -42,7 +44,8 @@ public class SkillsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     // TODO : Return only the valid fields by using a DTO.
-    public GenericResponse<Skill> createSkill(Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
+    public GenericResponse<Skill> createSkill(
+            Authentication authentication, @RequestBody(required = true) @Valid SkillDRO skill) {
         JwtUserModel userDetails = (JwtUserModel) authentication.getPrincipal();
 
         String userId = "ae7a6673c5574140838f209de4c644fc";
@@ -50,7 +53,8 @@ public class SkillsController {
 
         // TODO : return a correct http status instead of 201
         if (skillRepository.findByName(skill.getName()).isPresent()) {
-            return new GenericResponse<>(null, String.format("Skill with name %s already exists", skill.getName()));
+            return new GenericResponse<>(
+                    null, String.format("Skill with name %s already exists", skill.getName()));
         }
 
         // TODO : return a correct http status instead of 201
@@ -58,11 +62,8 @@ public class SkillsController {
             return new GenericResponse<>(null, "User not found");
         }
 
-        Skill newSkill = Skill.builder()
-                .name(skill.getName())
-                .type(skill.getType())
-                .createdBy(user.get())
-                .build();
+        Skill newSkill =
+                Skill.builder().name(skill.getName()).type(skill.getType()).createdBy(user.get()).build();
 
         try {
             return new GenericResponse<>(skillRepository.save(newSkill), "Skill created");

@@ -2,9 +2,6 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.utils.TrackedProperties;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.UUID;
-
 import lombok.*;
 
 @Getter
@@ -15,15 +12,15 @@ public class EndorsementDTO extends TrackedProperties {
     private String endorseId;
     private Integer skillId;
 
-//    public static EndorsementDTO toDto(EndorsementModel endorsementModel) {
-//        EndorsementDTO endorsementDTO =
-//                EndorsementDTO.builder()
-//                        .id(endorsementModel.getId())
-//                        .endorseId(endorsementModel.getEndorseId())
-//                        .skillId(endorsementModel.getSkillId())
-//                        .build();
-//        endorsementDTO.setCreatedAt(endorsementModel.getCreatedAt());
-//        endorsementDTO.setUpdatedAt(endorsementModel.getUpdatedAt());
-//        return endorsementDTO;
-//    }
+    //    public static EndorsementDTO toDto(EndorsementModel endorsementModel) {
+    //        EndorsementDTO endorsementDTO =
+    //                EndorsementDTO.builder()
+    //                        .id(endorsementModel.getId())
+    //                        .endorseId(endorsementModel.getEndorseId())
+    //                        .skillId(endorsementModel.getSkillId())
+    //                        .build();
+    //        endorsementDTO.setCreatedAt(endorsementModel.getCreatedAt());
+    //        endorsementDTO.setUpdatedAt(endorsementModel.getUpdatedAt());
+    //        return endorsementDTO;
+    //    }
 }

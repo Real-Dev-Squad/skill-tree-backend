@@ -53,7 +53,9 @@ public class SecurityConfig {
                                         .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
                                         .requestMatchers("/v1/**")
                                         .hasAnyAuthority(
-                                                UserRoleEnum.USER.name(), UserRoleEnum.MEMBER.name(), UserRoleEnum.SUPERUSER.name())
+                                                UserRoleEnum.USER.name(),
+                                                UserRoleEnum.MEMBER.name(),
+                                                UserRoleEnum.SUPERUSER.name())
                                         .anyRequest()
                                         .authenticated())
                 .exceptionHandling(
