@@ -2,19 +2,18 @@ package com.RDS.skilltree.models;
 
 import com.RDS.skilltree.Skill.SkillTypeEnum;
 import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
 @Getter
+@Setter
 @Table(name = "skills")
-public class Skill {
+public class Skill extends TrackedProperties {
     @Id
     @GeneratedValue
     @Column(name = "id")

@@ -1,7 +1,7 @@
 package com.RDS.skilltree.Endorsement;
 
-import com.RDS.skilltree.Skill.Skill;
 import com.RDS.skilltree.User.UserModel;
+import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 import lombok.*;

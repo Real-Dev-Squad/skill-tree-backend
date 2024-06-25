@@ -1,10 +1,10 @@
 package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
-import com.RDS.skilltree.Skill.Skill;
-import com.RDS.skilltree.Skill.SkillRepository;
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.repositories.SkillRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

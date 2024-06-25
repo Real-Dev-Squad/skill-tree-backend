@@ -1,11 +1,13 @@
 package com.RDS.skilltree.Skill;
 
 import com.RDS.skilltree.User.UserDTO;
+import com.RDS.skilltree.models.Skill;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Builder

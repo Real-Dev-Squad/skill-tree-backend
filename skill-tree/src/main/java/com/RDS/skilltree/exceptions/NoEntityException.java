@@ -1,4 +1,4 @@
-package com.RDS.skilltree.Exceptions;
+package com.RDS.skilltree.exceptions;
 
 public class NoEntityException extends RuntimeException {
 

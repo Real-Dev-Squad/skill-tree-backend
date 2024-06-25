@@ -1,11 +1,7 @@
-package com.RDS.skilltree.utils;
+package com.RDS.skilltree.exceptions;
 
 import com.RDS.skilltree.Common.Response.GenericResponse;
-import com.RDS.skilltree.Exceptions.EntityAlreadyExistsException;
-import com.RDS.skilltree.Exceptions.InvalidParameterException;
-import com.RDS.skilltree.Exceptions.NoEntityException;
 import jakarta.validation.ConstraintViolationException;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
@@ -16,9 +12,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
-@ControllerAdvice
+import java.util.List;
+
 @Slf4j
+@ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler({NoEntityException.class})
     public ResponseEntity<GenericResponse<Object>> handleNoEntityException(NoEntityException ex) {
@@ -94,5 +93,17 @@ public class GlobalExceptionHandler {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new GenericResponse<>(null, ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SkillAlreadyExistsException.class)
+    public ResponseEntity<?> handleSkillAlreadyExistsException(SkillAlreadyExistsException ex, WebRequest request) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

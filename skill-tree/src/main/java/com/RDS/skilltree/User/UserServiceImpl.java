@@ -1,12 +1,13 @@
 package com.RDS.skilltree.User;
 
-import com.RDS.skilltree.Exceptions.NoEntityException;
-import com.RDS.skilltree.Skill.Skill;
-import com.RDS.skilltree.Skill.SkillRepository;
+import com.RDS.skilltree.exceptions.NoEntityException;
+import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.repositories.SkillRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,7 +27,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(String id, UserDRO user) {}
+    public void updateUser(String id, UserDRO user) {
+    }
 
     @Override
     public UserDTO getUserById(String id) {

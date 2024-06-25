@@ -1,6 +1,6 @@
 package com.RDS.skilltree.utils;
 
-import com.RDS.skilltree.Exceptions.InvalidParameterException;
+import com.RDS.skilltree.exceptions.InvalidParameterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
