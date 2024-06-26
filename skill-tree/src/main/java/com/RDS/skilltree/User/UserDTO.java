@@ -1,10 +1,11 @@
 package com.RDS.skilltree.User;
 
-import com.RDS.skilltree.Skill.SkillDTO;
-import java.net.URL;
-import java.util.Set;
+import com.RDS.skilltree.models.Skill;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.net.URL;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -22,7 +23,7 @@ public class UserDTO {
 
     private UserRoleEnum role;
 
-    private Set<SkillDTO> skills;
+    private Set<Skill> skills;
 
     public static UserDTO toDTO(UserModel user) {
 
