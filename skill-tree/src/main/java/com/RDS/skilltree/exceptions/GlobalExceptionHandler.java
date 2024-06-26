@@ -104,6 +104,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SkillAlreadyExistsException.class)
     public ResponseEntity<?> handleSkillAlreadyExistsException(SkillAlreadyExistsException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(SelfEndorsementNotAllowedException.class)
+    public ResponseEntity<?> handleSelfEndorsementNotAllowedException(SelfEndorsementNotAllowedException ex, WebRequest request) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(SkillNotFoundException.class)
+    public ResponseEntity<?> handleSkillNotFoundException(SkillNotFoundException ex, WebRequest request) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 }
