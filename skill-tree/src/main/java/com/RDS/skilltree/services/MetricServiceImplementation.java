@@ -1,20 +1,16 @@
-package com.RDS.skilltree.metrics;
+package com.RDS.skilltree.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MetricService {
-
+@RequiredArgsConstructor
+public class MetricServiceImplementation implements MetricService {
     private final MetricsEndpoint metricsEndpoint;
 
-    @Autowired
-    public MetricService(MetricsEndpoint metricsEndpoint) {
-        this.metricsEndpoint = metricsEndpoint;
-    }
-
-    public double getUptime() {
+    @Override
+    public Double getUptime() {
         return metricsEndpoint.metric("process.uptime", null).getMeasurements().stream()
                 .findFirst()
                 .map(MetricsEndpoint.Sample::getValue)
