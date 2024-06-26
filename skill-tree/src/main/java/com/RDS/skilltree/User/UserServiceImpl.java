@@ -1,12 +1,11 @@
 package com.RDS.skilltree.User;
 
-import com.RDS.skilltree.Exceptions.NoEntityException;
-import com.RDS.skilltree.Skill.SkillModel;
-import com.RDS.skilltree.Skill.SkillRepository;
+import com.RDS.skilltree.exceptions.NoEntityException;
+import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.repositories.SkillRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,10 +26,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UUID id, UserDRO user) {}
+    public void updateUser(String id, UserDRO user) {}
 
     @Override
-    public UserDTO getUserById(UUID id) {
+    public UserDTO getUserById(String id) {
         Optional<UserModel> userModel = userRepository.findById(id);
         return userModel.map(UserDTO::getUsersWithSkills).orElse(null);
     }
@@ -42,24 +41,25 @@ public class UserServiceImpl implements UserService {
 
     /**
      * updates the user and skill both
+     *
      * @param skillId
      * @param userId
      */
     @Override
     @Transactional
-    public void addSkill(UUID skillId, UUID userId) {
+    public void addSkill(Integer skillId, String userId) {
         Optional<UserModel> userOptional = userRepository.findById(userId);
-        Optional<SkillModel> skillOptional = skillRepository.findById(skillId);
+        Optional<Skill> skillOptional = skillRepository.findById(skillId);
 
         if (userOptional.isPresent() && skillOptional.isPresent()) {
             UserModel userModel = userOptional.get();
-            SkillModel skillModel = skillOptional.get();
+            Skill skill = skillOptional.get();
 
-            userModel.getSkills().add(skillModel);
-            skillModel.getUsers().add(userModel);
+            //            userModel.getSkills().add(skillModel);
+            //            skillModel.getUsers().add(userModel);
 
             userRepository.save(userModel);
-            skillRepository.save(skillModel);
+            skillRepository.save(skill);
         } else {
             if (skillOptional.isEmpty()) {
                 throw new NoEntityException("Skill Id is not passed in the input");

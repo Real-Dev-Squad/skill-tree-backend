@@ -1,9 +1,10 @@
 package com.RDS.skilltree.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
-import com.RDS.skilltree.Exceptions.InvalidParameterException;
+import com.RDS.skilltree.exceptions.InvalidParameterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;

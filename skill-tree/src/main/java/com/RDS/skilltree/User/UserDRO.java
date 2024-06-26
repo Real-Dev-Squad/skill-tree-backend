@@ -20,25 +20,19 @@ public class UserDRO {
 
     private URL imageUrl;
 
-    private UserRole role;
+    private UserRoleEnum role;
 
     public static UserModel toModel(UserDRO user) {
         return UserModel.builder()
                 .rdsUserId(user.getRdsUserId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .role(user.getRole())
-                .imageUrl(user.getImageUrl())
+                //                .role(user.getRole())
                 .build();
     }
 
     public static UserDRO fromModel(UserModel user) {
         return UserDRO.builder()
                 .rdsUserId(user.getRdsUserId())
-                .role(user.getRole())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .imageUrl(user.getImageUrl())
+                //                .role(user.getRole())
                 .build();
     }
 
@@ -46,18 +40,9 @@ public class UserDRO {
         if (userDRO.getRdsUserId() != null) {
             user.setRdsUserId(user.getRdsUserId());
         }
-        if (userDRO.getFirstName() != null) {
-            user.setFirstName(user.getFirstName());
-        }
-        if (userDRO.getLastName() != null) {
-            user.setLastName(user.getLastName());
-        }
-        if (userDRO.getImageUrl() != null) {
-            user.setImageUrl(user.getImageUrl());
-        }
-        if (userDRO.getRole() != null) {
-            user.setRole(user.getRole());
-        }
+        //        if (userDRO.getRole() != null) {
+        //            user.setRole(user.getRole());
+        //        }
         user.setUpdatedAt(Instant.now());
         return user;
     }
