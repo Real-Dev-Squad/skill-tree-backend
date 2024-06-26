@@ -1,7 +1,7 @@
 package com.RDS.skilltree.Skill;
 
-import com.RDS.skilltree.Endorsement.EndorsementRepository;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;

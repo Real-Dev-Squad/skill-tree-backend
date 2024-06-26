@@ -1,7 +1,6 @@
-package com.RDS.skilltree.Endorsement;
+package com.RDS.skilltree.models;
 
 import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "endorsements")
-public class EndorsementModel extends TrackedProperties {
+public class Endorsement extends TrackedProperties {
     @Id
     @GeneratedValue
     @Column(name = "id")

@@ -2,7 +2,9 @@ package com.RDS.skilltree.Endorsement;
 
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.utils.GenericResponse;
 import jakarta.validation.Valid;
@@ -27,7 +29,7 @@ public class EndorsementController {
 
     @PostMapping
     // TODO : add a check for when a endorsement is already created by a user for a particular skill.
-    public ResponseEntity<GenericResponse<EndorsementModel>> postEndorsement(
+    public ResponseEntity<GenericResponse<Endorsement>> postEndorsement(
             @RequestBody @Valid CreateEndorsementDro endorsementDro) {
 
         String message = endorsementDro.getMessage();
@@ -63,8 +65,8 @@ public class EndorsementController {
                     HttpStatus.NOT_FOUND);
         }
 
-        EndorsementModel newEndorsement =
-                EndorsementModel.builder()
+        Endorsement newEndorsement =
+                Endorsement.builder()
                         .endorser(endorserDetails.get())
                         .endorse(endorseDetails.get())
                         .skill(skillDetails.get())
@@ -87,16 +89,16 @@ public class EndorsementController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<GenericResponse<EndorsementModel>> updateEndorsement(
+    public ResponseEntity<GenericResponse<Endorsement>> updateEndorsement(
             @PathVariable Integer id, @RequestBody UpdateEndorsementDro body) {
-        Optional<EndorsementModel> endorsementDetails = endorsementRepository.findById(id);
+        Optional<Endorsement> endorsementDetails = endorsementRepository.findById(id);
 
         if (endorsementDetails.isEmpty()) {
             return new ResponseEntity<>(
                     new GenericResponse<>(null, "Endorsement not found"), HttpStatus.NOT_FOUND);
         }
 
-        EndorsementModel endorsement = endorsementDetails.get();
+        Endorsement endorsement = endorsementDetails.get();
 
         if (body.getMessage() != null) {
             endorsement.setMessage(body.getMessage());

@@ -27,7 +27,7 @@ public class SkillServiceImplementation implements SkillService {
     @Override
     public List<SkillViewModel> getAll() {
         return skillRepository.findAll().stream()
-                .map(this::toViewModel)
+                .map(SkillViewModel::toViewModel)
                 .collect(Collectors.toList());
     }
 
@@ -51,13 +51,7 @@ public class SkillServiceImplementation implements SkillService {
         Skill newSkill = toEntity(skill);
         newSkill.setCreatedBy(user.get());
 
-        return toViewModel(skillRepository.saveAndFlush(newSkill));
-    }
-
-    public SkillViewModel toViewModel(Skill entity) {
-        SkillViewModel viewModel = new SkillViewModel();
-        BeanUtils.copyProperties(entity, viewModel);
-        return viewModel;
+        return SkillViewModel.toViewModel(skillRepository.saveAndFlush(newSkill));
     }
 
     private Skill toEntity(CreateSkillViewModel viewModel) {
