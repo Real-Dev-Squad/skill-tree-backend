@@ -13,13 +13,12 @@ import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
     private final EndorsementRepository endorsementRepository;
 
     @Override
-    public Page<EndorsementViewModel> getAllEndorsementsBySkillId(Integer skillId, Pageable pageable) {
+    public Page<EndorsementViewModel> getAllEndorsementsBySkillId(
+            Integer skillId, Pageable pageable) {
         Page<Endorsement> endorsementPage = endorsementRepository.findBySkillId(skillId, pageable);
         return endorsementPage.map(EndorsementViewModel::toViewModel);
     }
@@ -79,7 +79,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
         Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
 
         if (exitingEndorsement.isEmpty()) {
-            throw new EndorsementNotFoundException(String.format("Endorsement with id: %s not found", endorsementId));
+            throw new EndorsementNotFoundException(
+                    String.format("Endorsement with id: %s not found", endorsementId));
         }
 
         Endorsement endorsement = exitingEndorsement.get();

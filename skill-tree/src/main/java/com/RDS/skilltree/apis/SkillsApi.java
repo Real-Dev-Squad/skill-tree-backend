@@ -7,14 +7,13 @@ import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,6 +40,5 @@ public class SkillsApi {
             @PathVariable(value = "id") Integer skillID) {
         PageRequest pageRequest = PageRequest.of(offset, limit);
         return ResponseEntity.ok(endorsementService.getAllEndorsementsBySkillId(skillID, pageRequest));
-
     }
 }

@@ -9,14 +9,13 @@ import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +33,8 @@ public class SkillServiceImplementation implements SkillService {
     @Override
     public SkillViewModel create(CreateSkillViewModel skill) {
         if (skillRepository.existsByName(skill.getName())) {
-            throw new SkillAlreadyExistsException(String.format("Skill with name %s already exists", skill.getName()));
+            throw new SkillAlreadyExistsException(
+                    String.format("Skill with name %s already exists", skill.getName()));
         }
 
         JwtUserModel jwtDetails =

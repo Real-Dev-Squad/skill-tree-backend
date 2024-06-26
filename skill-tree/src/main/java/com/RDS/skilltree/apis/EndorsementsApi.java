@@ -19,12 +19,14 @@ public class EndorsementsApi {
     private final EndorsementService endorsementService;
 
     @PostMapping
-    public ResponseEntity<EndorsementViewModel> create(@Valid @RequestBody CreateEndorsementViewModel endorsement) {
+    public ResponseEntity<EndorsementViewModel> create(
+            @Valid @RequestBody CreateEndorsementViewModel endorsement) {
         return new ResponseEntity<>(endorsementService.create(endorsement), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<EndorsementViewModel> update(@PathVariable Integer id, @Valid @RequestBody UpdateEndorsementViewModel body) {
+    public ResponseEntity<EndorsementViewModel> update(
+            @PathVariable Integer id, @Valid @RequestBody UpdateEndorsementViewModel body) {
         return new ResponseEntity<>(endorsementService.update(id, body), HttpStatus.OK);
     }
 }

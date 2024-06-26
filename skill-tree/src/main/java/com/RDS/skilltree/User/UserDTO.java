@@ -1,11 +1,10 @@
 package com.RDS.skilltree.User;
 
 import com.RDS.skilltree.models.Skill;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.net.URL;
 import java.util.Set;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder

@@ -2,6 +2,7 @@ package com.RDS.skilltree.exceptions;
 
 import com.RDS.skilltree.utils.GenericResponse;
 import jakarta.validation.ConstraintViolationException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.List;
 
 @Slf4j
 @ControllerAdvice
@@ -96,31 +95,37 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+    public ResponseEntity<?> handleUserNotFoundException(
+            UserNotFoundException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(SkillAlreadyExistsException.class)
-    public ResponseEntity<?> handleSkillAlreadyExistsException(SkillAlreadyExistsException ex, WebRequest request) {
+    public ResponseEntity<?> handleSkillAlreadyExistsException(
+            SkillAlreadyExistsException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SelfEndorsementNotAllowedException.class)
-    public ResponseEntity<?> handleSelfEndorsementNotAllowedException(SelfEndorsementNotAllowedException ex, WebRequest request) {
+    public ResponseEntity<?> handleSelfEndorsementNotAllowedException(
+            SelfEndorsementNotAllowedException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(
+                new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(SkillNotFoundException.class)
-    public ResponseEntity<?> handleSkillNotFoundException(SkillNotFoundException ex, WebRequest request) {
+    public ResponseEntity<?> handleSkillNotFoundException(
+            SkillNotFoundException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EndorsementNotFoundException.class)
-    public ResponseEntity<?> handleEndorsementNotException(EndorsementNotFoundException ex, WebRequest request) {
+    public ResponseEntity<?> handleEndorsementNotException(
+            EndorsementNotFoundException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
