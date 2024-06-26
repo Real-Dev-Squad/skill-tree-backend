@@ -2,6 +2,7 @@ package com.RDS.skilltree.services;
 
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.exceptions.EndorsementNotFoundException;
 import com.RDS.skilltree.exceptions.SelfEndorsementNotAllowedException;
 import com.RDS.skilltree.exceptions.SkillNotFoundException;
 import com.RDS.skilltree.exceptions.UserNotFoundException;
@@ -11,6 +12,7 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
+import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,6 +70,24 @@ public class EndorsementServiceImplementation implements EndorsementService {
         endorsement.setSkill(skillDetails.get());
         endorsement.setEndorse(endorseDetails.get());
         endorsement.setEndorser(endorserDetails.get());
+
+        return EndorsementViewModel.toViewModel(endorsementRepository.save(endorsement));
+    }
+
+    @Override
+    public EndorsementViewModel update(Integer endorsementId, UpdateEndorsementViewModel body) {
+        Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
+
+        if (exitingEndorsement.isEmpty()) {
+            throw new EndorsementNotFoundException(String.format("Endorsement with id: %s not found", endorsementId));
+        }
+
+        Endorsement endorsement = exitingEndorsement.get();
+        String updatedMessage = body.getMessage();
+
+        if (updatedMessage != null) {
+            endorsement.setMessage(updatedMessage);
+        }
 
         return EndorsementViewModel.toViewModel(endorsementRepository.save(endorsement));
     }
