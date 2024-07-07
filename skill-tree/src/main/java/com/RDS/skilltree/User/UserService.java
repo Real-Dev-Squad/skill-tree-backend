@@ -1,16 +1,15 @@
 package com.RDS.skilltree.User;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface UserService {
     UserDTO createUser(UserDRO user);
 
-    void updateUser(UUID id, UserDRO user);
+    void updateUser(String id, UserDRO user);
 
-    UserDTO getUserById(UUID id);
+    UserDTO getUserById(String id);
 
     List<UserDTO> getAllUsers();
 
-    void addSkill(UUID skill, UUID userId);
+    void addSkill(Integer skill, String userId);
 }
