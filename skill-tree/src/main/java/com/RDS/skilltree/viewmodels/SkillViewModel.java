@@ -2,12 +2,10 @@ package com.RDS.skilltree.viewmodels;
 
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.models.Skill;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
-@Getter
-@Setter
+@Data
 public class SkillViewModel {
     private Integer id;
     private String name;

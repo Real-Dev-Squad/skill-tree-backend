@@ -3,7 +3,6 @@ package com.RDS.skilltree.User;
 import com.RDS.skilltree.models.Skill;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.*;
 
 @Entity
@@ -16,8 +15,7 @@ import lombok.*;
 public class UserSkillsModel {
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "BINARY(16)")
-    private UUID id;
+    private Integer id;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
