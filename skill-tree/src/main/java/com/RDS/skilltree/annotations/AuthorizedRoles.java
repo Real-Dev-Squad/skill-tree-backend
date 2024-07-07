@@ -1,7 +1,6 @@
 package com.RDS.skilltree.annotations;
 
 import com.RDS.skilltree.User.UserRoleEnum;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
