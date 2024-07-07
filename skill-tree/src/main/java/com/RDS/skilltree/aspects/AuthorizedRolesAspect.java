@@ -7,25 +7,46 @@ import com.RDS.skilltree.exceptions.ForbiddenException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
 
 @Aspect
 @Component
 public class AuthorizedRolesAspect {
 
-    @Around("@annotation(authorizedRoles)")
-    public Object authorize(ProceedingJoinPoint jointPoint, AuthorizedRoles authorizedRoles) throws Throwable {
+    @Around("@within(authorizedRoles) || @annotation(authorizedRoles)")
+    public Object authorize(ProceedingJoinPoint joinPoint, AuthorizedRoles authorizedRoles) throws Throwable {
         JwtUserModel jwtDetails =
                 (JwtUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         UserRoleEnum role = jwtDetails.getRole();
 
-        if (!isAuthorized(role, authorizedRoles.value())) {
+
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Class<?> targetClass = method.getDeclaringClass();
+
+        AuthorizedRoles methodAuthorized = method.getAnnotation(AuthorizedRoles.class);
+        AuthorizedRoles classAuthorized = targetClass.getAnnotation(AuthorizedRoles.class);
+
+        UserRoleEnum[] allowedRoles = {};
+
+        if (methodAuthorized != null) {
+            allowedRoles = methodAuthorized.value();
+        } else if (classAuthorized != null) {
+            allowedRoles = classAuthorized.value();
+        } else {
+            // If no roles are specified, proceed with the method execution
+            joinPoint.proceed();
+        }
+
+        if (!isAuthorized(role, allowedRoles)) {
             throw new ForbiddenException("You're not authorized to make this request");
         }
 
-        return jointPoint.proceed();
+        return joinPoint.proceed();
     }
 
     private boolean isAuthorized(UserRoleEnum userRole, UserRoleEnum[] allowedRoles) {

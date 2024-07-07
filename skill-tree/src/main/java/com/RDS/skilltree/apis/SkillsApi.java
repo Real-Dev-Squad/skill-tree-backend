@@ -22,12 +22,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/skills")
+@AuthorizedRoles({UserRoleEnum.USER, UserRoleEnum.SUPERUSER})
 public class SkillsApi {
     private final SkillService skillService;
     private final EndorsementService endorsementService;
 
     @GetMapping
-    @AuthorizedRoles({UserRoleEnum.USER, UserRoleEnum.SUPERUSER})
     public ResponseEntity<List<SkillViewModel>> getAll() {
         return ResponseEntity.ok(skillService.getAll());
     }
