@@ -1,33 +1,64 @@
 package com.RDS.skilltree.services;
 
-import com.RDS.skilltree.User.JwtUserModel;
-import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.User.*;
+import com.RDS.skilltree.dtos.SkillRequestsDto;
 import com.RDS.skilltree.exceptions.SkillAlreadyExistsException;
 import com.RDS.skilltree.exceptions.UserNotFoundException;
+import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
+import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
+import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.RDS.skilltree.viewmodels.UserViewModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SkillServiceImplementation implements SkillService {
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
+    private final UserSkillRepository userSkillRepository;
+    private final EndorsementRepository endorsementRepository;
 
     @Override
     public List<SkillViewModel> getAll() {
         return skillRepository.findAll().stream()
                 .map(SkillViewModel::toViewModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public SkillRequestsDto getAllRequests() {
+        List<UserSkillsModel> pendingSkills = userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
+        Set<UserViewModel> uniqueUsers = new HashSet<>();
+
+        List<SkillRequestViewModel> skillRequests = pendingSkills.stream().map(pendingSkill -> {
+            List<Endorsement> endorsements = endorsementRepository.findBySkillId(pendingSkill.getSkill().getId());
+
+            uniqueUsers.add(
+                    // TODO : call rds backend to get user details
+                    UserViewModel.toViewModel(new UserModel(pendingSkill.getUser().getId(), ""))
+            );
+
+            endorsements.forEach(endorsement -> {
+                UserModel endorser = endorsement.getEndorser();
+                // TODO : call rds backend to get user details
+                uniqueUsers.add(UserViewModel.toViewModel(new UserModel(endorser.getId(), "")));
+            });
+
+            return SkillRequestViewModel.toViewModel(pendingSkill, endorsements);
+        }).toList();
+
+        return SkillRequestsDto.toDto(skillRequests, new ArrayList<>(uniqueUsers));
     }
 
     @Override

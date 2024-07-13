@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 @Getter
 @Setter
 public class UserViewModel {
+    private String id;
     private String name;
 
     public static UserViewModel toViewModel(UserModel user) {
