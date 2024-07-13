@@ -129,4 +129,10 @@ public class GlobalExceptionHandler {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> handleForbiddenException(ForbiddenException ex, WebRequest request) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
 }

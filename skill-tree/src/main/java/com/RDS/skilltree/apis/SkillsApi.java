@@ -1,5 +1,7 @@
 package com.RDS.skilltree.apis;
 
+import com.RDS.skilltree.User.UserRoleEnum;
+import com.RDS.skilltree.annotations.AuthorizedRoles;
 import com.RDS.skilltree.services.EndorsementService;
 import com.RDS.skilltree.services.SkillService;
 import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/skills")
+@AuthorizedRoles({UserRoleEnum.USER, UserRoleEnum.SUPERUSER})
 public class SkillsApi {
     private final SkillService skillService;
     private final EndorsementService endorsementService;
@@ -29,6 +32,7 @@ public class SkillsApi {
     }
 
     @PostMapping
+    @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     public ResponseEntity<SkillViewModel> create(@Valid @RequestBody CreateSkillViewModel skill) {
         return ResponseEntity.ok(skillService.create(skill));
     }
