@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EndorsementRepository extends JpaRepository<Endorsement, Integer> {
     List<Endorsement> findBySkillId(Integer skillId);
-
-    //    Page<Endorsement> findBySkillIdPaginated(Integer skillId, Pageable pageable);
 }
