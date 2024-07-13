@@ -9,12 +9,11 @@ import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -42,7 +41,8 @@ public class SkillsApi {
     }
 
     @GetMapping("/{id}/endorsements")
-    public ResponseEntity<List<EndorsementViewModel>> getEndorsementsBySkillId(@PathVariable(value = "id") Integer skillID) {
+    public ResponseEntity<List<EndorsementViewModel>> getEndorsementsBySkillId(
+            @PathVariable(value = "id") Integer skillID) {
         return ResponseEntity.ok(endorsementService.getAllEndorsementsBySkillId(skillID));
     }
 }

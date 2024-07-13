@@ -16,12 +16,11 @@ import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +66,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
             throw new SkillNotFoundException(String.format("Skill id: %s not found", skillId));
         }
 
-        List<UserSkillsModel> userSkillEntry = userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
+        List<UserSkillsModel> userSkillEntry =
+                userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
         Endorsement endorsement = new Endorsement();
 
         endorsement.setMessage(message);

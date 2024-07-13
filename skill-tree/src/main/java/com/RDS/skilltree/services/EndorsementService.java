@@ -3,7 +3,6 @@ package com.RDS.skilltree.services;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
-
 import java.util.List;
 
 public interface EndorsementService {
