@@ -30,6 +30,7 @@ public class SkillsApi {
     }
 
     @GetMapping("/requests")
+    @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     public ResponseEntity<SkillRequestsDto> getAllRequests() {
         return ResponseEntity.ok(skillService.getAllRequests());
     }
