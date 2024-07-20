@@ -9,20 +9,20 @@ import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
-import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
-import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
-import com.RDS.skilltree.viewmodels.SkillViewModel;
-import com.RDS.skilltree.viewmodels.UserViewModel;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.RDS.skilltree.services.external.RdsService;
+import com.RDS.skilltree.viewmodels.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class SkillServiceImplementation implements SkillService {
+    private final RdsService rdsService;
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
     private final UserSkillRepository userSkillRepository;
@@ -48,16 +48,20 @@ public class SkillServiceImplementation implements SkillService {
                                     List<Endorsement> endorsements =
                                             endorsementRepository.findBySkillId(pendingSkill.getSkill().getId());
 
-                                    uniqueUsers.add(
-                                            // TODO : call rds backend to get user details
-                                            UserViewModel.toViewModel(new UserModel(pendingSkill.getUser().getId(), "")));
+                                    String endorseRdsUserId = pendingSkill.getUser().getRdsUserId();
+                                    RdsUserViewModel rdsDetails = rdsService.getUserDetails(endorseRdsUserId);
+                                    UserViewModel endorseDetails = getUserModalFromRdsDetails(pendingSkill.getUser().getId(), rdsDetails);
+                                    
+                                    uniqueUsers.add(endorseDetails);
 
                                     endorsements.forEach(
                                             endorsement -> {
                                                 UserModel endorser = endorsement.getEndorser();
-                                                // TODO : call rds backend to get user details
-                                                uniqueUsers.add(
-                                                        UserViewModel.toViewModel(new UserModel(endorser.getId(), "")));
+
+                                                RdsUserViewModel rdsUserDetails = rdsService.getUserDetails(endorser.getRdsUserId());
+                                                UserViewModel endorserDetails = getUserModalFromRdsDetails(endorser.getId(), rdsUserDetails);
+
+                                                uniqueUsers.add(endorserDetails);
                                             });
 
                                     return SkillRequestViewModel.toViewModel(pendingSkill, endorsements);
@@ -65,6 +69,19 @@ public class SkillServiceImplementation implements SkillService {
                         .toList();
 
         return SkillRequestsDto.toDto(skillRequests, new ArrayList<>(uniqueUsers));
+    }
+
+    private static UserViewModel getUserModalFromRdsDetails(String id, RdsUserViewModel rdsDetails) {
+        String firstName = rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
+        String lastName = rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
+
+        String username = firstName + ' ' + lastName;
+
+        UserViewModel user = new UserViewModel();
+        user.setId(id);
+        user.setName(username);
+
+        return user;
     }
 
     @Override
