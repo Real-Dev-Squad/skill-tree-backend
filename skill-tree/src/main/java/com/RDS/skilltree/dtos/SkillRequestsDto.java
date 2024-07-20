@@ -2,20 +2,21 @@ package com.RDS.skilltree.dtos;
 
 import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
 import com.RDS.skilltree.viewmodels.UserViewModel;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class SkillRequestsDto {
-    private List<SkillRequestViewModel> data;
+    private List<SkillRequestViewModel> requests;
     private List<UserViewModel> users;
 
     public static SkillRequestsDto toDto(
             List<SkillRequestViewModel> skillRequests, List<UserViewModel> users) {
         SkillRequestsDto skillRequestsDto = new SkillRequestsDto();
-        skillRequestsDto.setData(skillRequests);
+        skillRequestsDto.setRequests(skillRequests);
         skillRequestsDto.setUsers(users);
 
         return skillRequestsDto;
