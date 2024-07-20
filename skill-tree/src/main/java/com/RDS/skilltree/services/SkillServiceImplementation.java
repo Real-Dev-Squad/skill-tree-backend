@@ -11,15 +11,16 @@ import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
 import com.RDS.skilltree.viewmodels.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +76,7 @@ public class SkillServiceImplementation implements SkillService {
                                                     RdsUserViewModel endorserRdsDetails =
                                                             rdsService.getUserDetails(endorserRdsUserId);
                                                     UserViewModel endorserDetails =
-                                                            getUserModalFromRdsDetails(endorseId, endorserRdsDetails);
+                                                            getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
                                                     userDetails.put(endorserId, endorserDetails);
                                                 }
                                             });
