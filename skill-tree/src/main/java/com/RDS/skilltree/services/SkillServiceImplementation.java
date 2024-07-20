@@ -11,16 +11,15 @@ import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
 import com.RDS.skilltree.viewmodels.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -40,46 +39,59 @@ public class SkillServiceImplementation implements SkillService {
 
     @Override
     public SkillRequestsDto getAllRequests() {
-        List<UserSkillsModel> pendingSkills = userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
+        List<UserSkillsModel> pendingSkills =
+                userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
 
         // store all users data that are a part of this request
         Map<String, UserViewModel> userDetails = new HashMap<>();
 
         // make a list of all pending skill requests with their endorsement details
-        List<SkillRequestViewModel> skillRequests = pendingSkills.stream().map(skill -> {
-            Integer skillId = skill.getSkill().getId();
-            String endorseId = skill.getUser().getId();
-            String endorseRdsUserId = skill.getUser().getRdsUserId();
+        List<SkillRequestViewModel> skillRequests =
+                pendingSkills.stream()
+                        .map(
+                                skill -> {
+                                    Integer skillId = skill.getSkill().getId();
+                                    String endorseId = skill.getUser().getId();
+                                    String endorseRdsUserId = skill.getUser().getRdsUserId();
 
-            // Get all endorsement for a specific skill and user Id
-            List<Endorsement> endorsements = endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+                                    // Get all endorsement for a specific skill and user Id
+                                    List<Endorsement> endorsements =
+                                            endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
 
-            if (!userDetails.containsKey(endorseId)) {
-                RdsUserViewModel endorseRdsDetails = rdsService.getUserDetails(endorseRdsUserId);
-                UserViewModel endorseDetails = getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
-                userDetails.put(endorseId, endorseDetails);
-            }
+                                    if (!userDetails.containsKey(endorseId)) {
+                                        RdsUserViewModel endorseRdsDetails =
+                                                rdsService.getUserDetails(endorseRdsUserId);
+                                        UserViewModel endorseDetails =
+                                                getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
+                                        userDetails.put(endorseId, endorseDetails);
+                                    }
 
-            endorsements.forEach(endorsement -> {
-                String endorserId = endorsement.getEndorser().getId();
-                String endorserRdsUserId = endorsement.getEndorser().getRdsUserId();
+                                    endorsements.forEach(
+                                            endorsement -> {
+                                                String endorserId = endorsement.getEndorser().getId();
+                                                String endorserRdsUserId = endorsement.getEndorser().getRdsUserId();
 
-                if (!userDetails.containsKey(endorserId)) {
-                    RdsUserViewModel endorserRdsDetails = rdsService.getUserDetails(endorserRdsUserId);
-                    UserViewModel endorserDetails = getUserModalFromRdsDetails(endorseId, endorserRdsDetails);
-                    userDetails.put(endorserId, endorserDetails);
-                }
-            });
+                                                if (!userDetails.containsKey(endorserId)) {
+                                                    RdsUserViewModel endorserRdsDetails =
+                                                            rdsService.getUserDetails(endorserRdsUserId);
+                                                    UserViewModel endorserDetails =
+                                                            getUserModalFromRdsDetails(endorseId, endorserRdsDetails);
+                                                    userDetails.put(endorserId, endorserDetails);
+                                                }
+                                            });
 
-            return SkillRequestViewModel.toViewModel(skill, endorsements);
-        }).toList();
+                                    return SkillRequestViewModel.toViewModel(skill, endorsements);
+                                })
+                        .toList();
 
         return SkillRequestsDto.toDto(skillRequests, userDetails.values().stream().toList());
     }
 
     private static UserViewModel getUserModalFromRdsDetails(String id, RdsUserViewModel rdsDetails) {
-        String firstName = rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
-        String lastName = rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
+        String firstName =
+                rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
+        String lastName =
+                rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
 
         String username = firstName + ' ' + lastName;
 

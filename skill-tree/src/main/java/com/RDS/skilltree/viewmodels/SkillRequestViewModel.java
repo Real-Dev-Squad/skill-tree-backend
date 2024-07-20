@@ -4,11 +4,10 @@ import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserSkillsModel;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
