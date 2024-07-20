@@ -42,7 +42,7 @@ public class SkillServiceImplementation implements SkillService {
     public SkillRequestsDto getAllRequests() {
         List<UserSkillsModel> pendingSkills = userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
 
-        // store all users data that are a part of this request cycle.
+        // store all users data that are a part of this request
         Map<String, UserViewModel> userDetails = new HashMap<>();
 
         // make a list of all pending skill requests with their endorsement details
