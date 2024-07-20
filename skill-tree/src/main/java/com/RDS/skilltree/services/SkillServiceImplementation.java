@@ -16,7 +16,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,38 +40,41 @@ public class SkillServiceImplementation implements SkillService {
 
     @Override
     public SkillRequestsDto getAllRequests() {
-        List<UserSkillsModel> pendingSkills =
-                userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
-        Set<UserViewModel> uniqueUsers = new HashSet<>();
+        List<UserSkillsModel> pendingSkills = userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
 
-        List<SkillRequestViewModel> skillRequests =
-                pendingSkills.stream()
-                        .map(
-                                pendingSkill -> {
-                                    List<Endorsement> endorsements =
-                                            endorsementRepository.findBySkillId(pendingSkill.getSkill().getId());
+        // store all users data that are a part of this request cycle.
+        Map<String, UserViewModel> userDetails = new HashMap<>();
 
-                                    String endorseRdsUserId = pendingSkill.getUser().getRdsUserId();
-                                    RdsUserViewModel rdsDetails = rdsService.getUserDetails(endorseRdsUserId);
-                                    UserViewModel endorseDetails = getUserModalFromRdsDetails(pendingSkill.getUser().getId(), rdsDetails);
-                                    
-                                    uniqueUsers.add(endorseDetails);
+        // make a list of all pending skill requests with their endorsement details
+        List<SkillRequestViewModel> skillRequests = pendingSkills.stream().map(skill -> {
+            Integer skillId = skill.getSkill().getId();
+            String endorseId = skill.getUser().getId();
+            String endorseRdsUserId = skill.getUser().getRdsUserId();
 
-                                    endorsements.forEach(
-                                            endorsement -> {
-                                                UserModel endorser = endorsement.getEndorser();
+            // Get all endorsement for a specific skill and user Id
+            List<Endorsement> endorsements = endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
 
-                                                RdsUserViewModel rdsUserDetails = rdsService.getUserDetails(endorser.getRdsUserId());
-                                                UserViewModel endorserDetails = getUserModalFromRdsDetails(endorser.getId(), rdsUserDetails);
+            if (!userDetails.containsKey(endorseId)) {
+                RdsUserViewModel endorseRdsDetails = rdsService.getUserDetails(endorseRdsUserId);
+                UserViewModel endorseDetails = getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
+                userDetails.put(endorseId, endorseDetails);
+            }
 
-                                                uniqueUsers.add(endorserDetails);
-                                            });
+            endorsements.forEach(endorsement -> {
+                String endorserId = endorsement.getEndorser().getId();
+                String endorserRdsUserId = endorsement.getEndorser().getRdsUserId();
 
-                                    return SkillRequestViewModel.toViewModel(pendingSkill, endorsements);
-                                })
-                        .toList();
+                if (!userDetails.containsKey(endorserId)) {
+                    RdsUserViewModel endorserRdsDetails = rdsService.getUserDetails(endorserRdsUserId);
+                    UserViewModel endorserDetails = getUserModalFromRdsDetails(endorseId, endorserRdsDetails);
+                    userDetails.put(endorserId, endorserDetails);
+                }
+            });
 
-        return SkillRequestsDto.toDto(skillRequests, new ArrayList<>(uniqueUsers));
+            return SkillRequestViewModel.toViewModel(skill, endorsements);
+        }).toList();
+
+        return SkillRequestsDto.toDto(skillRequests, userDetails.values().stream().toList());
     }
 
     private static UserViewModel getUserModalFromRdsDetails(String id, RdsUserViewModel rdsDetails) {

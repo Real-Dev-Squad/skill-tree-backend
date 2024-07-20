@@ -4,16 +4,17 @@ import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserSkillsModel;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 public class SkillRequestViewModel {
-    private Integer id;
-    private String name;
+    private Integer skillId;
+    private String skillName;
     private String endorseId;
     private List<MinimalEndorsementViewModel> endorsements;
 
@@ -24,8 +25,8 @@ public class SkillRequestViewModel {
         Skill skill = userSkillsModel.getSkill();
         UserModel user = userSkillsModel.getUser();
 
-        skillRequestViewModel.setId(skill.getId());
-        skillRequestViewModel.setName(skill.getName());
+        skillRequestViewModel.setSkillId(skill.getId());
+        skillRequestViewModel.setSkillName(skill.getName());
         skillRequestViewModel.setEndorseId(user.getId());
         skillRequestViewModel.setEndorsements(
                 endorsements.stream()
