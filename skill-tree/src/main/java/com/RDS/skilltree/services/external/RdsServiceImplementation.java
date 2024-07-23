@@ -24,8 +24,7 @@ public class RdsServiceImplementation implements RdsService {
 
         try {
             return restTemplate.getForObject(url, RdsUserViewModel.class);
-        } catch (
-                RestClientException error) {
+        } catch (RestClientException error) {
             log.error("Error calling url: {}, Error : {}", url, error.getMessage());
             throw new RuntimeException("Failed to communicate with RDS backend");
         }
