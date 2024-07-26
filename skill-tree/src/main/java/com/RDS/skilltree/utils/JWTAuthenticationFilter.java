@@ -52,7 +52,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return SecurityConfig.PERMITTED_PATHS.stream().anyMatch(path::startsWith);
+        return SecurityConfig.NON_AUTH_ROUTES.stream().anyMatch(path::startsWith);
     }
 
     public String getJWTFromRequest(HttpServletRequest request) {

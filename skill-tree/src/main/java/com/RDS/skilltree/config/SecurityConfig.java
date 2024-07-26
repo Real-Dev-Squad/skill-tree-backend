@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final AuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
-    public static final List<String> PERMITTED_PATHS = List.of("/v1/health", "/v1/auth");
+    public static final List<String> NON_AUTH_ROUTES = List.of("/v1/health", "/v1/auth");
 
     public SecurityConfig(
             AuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
@@ -44,7 +44,7 @@ public class SecurityConfig {
                                 httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
                         auth -> {
-                            PERMITTED_PATHS.forEach(path -> auth.requestMatchers(path + "/**").permitAll());
+                            NON_AUTH_ROUTES.forEach(path -> auth.requestMatchers(path + "/**").permitAll());
                             auth.requestMatchers(HttpMethod.GET, "/v1/**")
                                     .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
                                     .requestMatchers("/v1/**")
