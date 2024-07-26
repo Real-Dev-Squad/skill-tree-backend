@@ -16,7 +16,7 @@ import lombok.*;
 public class UserSkillsModel {
     @Id
     @GeneratedValue
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(name = "id")
     private UUID id;
 
     @JsonBackReference

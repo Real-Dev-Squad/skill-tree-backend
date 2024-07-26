@@ -2,6 +2,8 @@ package com.RDS.skilltree.services;
 
 import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.User.UserRepository;
+import com.RDS.skilltree.User.UserSkillStatusEnum;
+import com.RDS.skilltree.User.UserSkillsModel;
 import com.RDS.skilltree.exceptions.EndorsementNotFoundException;
 import com.RDS.skilltree.exceptions.SelfEndorsementNotAllowedException;
 import com.RDS.skilltree.exceptions.SkillNotFoundException;
@@ -10,14 +12,14 @@ import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
+import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,12 +28,12 @@ public class EndorsementServiceImplementation implements EndorsementService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final EndorsementRepository endorsementRepository;
+    private final UserSkillRepository userSkillRepository;
 
     @Override
-    public Page<EndorsementViewModel> getAllEndorsementsBySkillId(
-            Integer skillId, Pageable pageable) {
-        Page<Endorsement> endorsementPage = endorsementRepository.findBySkillId(skillId, pageable);
-        return endorsementPage.map(EndorsementViewModel::toViewModel);
+    public List<EndorsementViewModel> getAllEndorsementsBySkillId(Integer skillId) {
+        List<Endorsement> endorsements = endorsementRepository.findBySkillId(skillId);
+        return endorsements.stream().map(EndorsementViewModel::toViewModel).toList();
     }
 
     @Override
@@ -42,7 +44,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
         String endorseId = endorsementViewModel.getEndorseId();
 
         // TODO: Get this from security context once the login api is implemented.
-        String endorserId = "ae7a6673c5574140838f209de4c644fc";
+        String endorserId = "cf8893a16cee42cc94387a9bd086ed46";
 
         if (Objects.equals(endorseId, endorserId)) {
             throw new SelfEndorsementNotAllowedException("Self endorsement not allowed");
@@ -64,6 +66,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
             throw new SkillNotFoundException(String.format("Skill id: %s not found", skillId));
         }
 
+        List<UserSkillsModel> userSkillEntry =
+                userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
         Endorsement endorsement = new Endorsement();
 
         endorsement.setMessage(message);
@@ -71,7 +75,18 @@ public class EndorsementServiceImplementation implements EndorsementService {
         endorsement.setEndorse(endorseDetails.get());
         endorsement.setEndorser(endorserDetails.get());
 
-        return EndorsementViewModel.toViewModel(endorsementRepository.save(endorsement));
+        if (userSkillEntry.isEmpty()) {
+            UserSkillsModel userSkillsModel = new UserSkillsModel();
+            userSkillsModel.setUser(endorseDetails.get());
+            userSkillsModel.setSkill(skillDetails.get());
+            userSkillsModel.setStatus(UserSkillStatusEnum.PENDING);
+
+            userSkillRepository.save(userSkillsModel);
+        }
+
+        Endorsement newEndorsement = endorsementRepository.save(endorsement);
+
+        return EndorsementViewModel.toViewModel(newEndorsement);
     }
 
     @Override

@@ -3,11 +3,10 @@ package com.RDS.skilltree.services;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 public interface EndorsementService {
-    Page<EndorsementViewModel> getAllEndorsementsBySkillId(Integer skillId, Pageable pageable);
+    List<EndorsementViewModel> getAllEndorsementsBySkillId(Integer skillId);
 
     EndorsementViewModel create(CreateEndorsementViewModel endorsement);
 
