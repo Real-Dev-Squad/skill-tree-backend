@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,16 +19,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
-import java.io.IOException;
-
 @Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${cookieName}")
     private String cookieName;
 
-    @Autowired
-    private JWTUtils jwtUtils;
+    @Autowired private JWTUtils jwtUtils;
     private static final String BEARER_PREFIX = "Bearer ";
 
     @Override

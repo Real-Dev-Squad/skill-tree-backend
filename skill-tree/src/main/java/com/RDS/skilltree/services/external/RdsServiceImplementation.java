@@ -30,17 +30,18 @@ public class RdsServiceImplementation implements RdsService {
 
     @Override
     public String signIn(String callbackUrl) {
-        String url = UriComponentsBuilder
-                .fromUriString(rdsBackendBaseUrl)
-                .path("/auth/github/login")
-                .queryParam("redirectURL", callbackUrl)
-                .queryParam("v2", true)
-                .toUriString();
+        String url =
+                UriComponentsBuilder.fromUriString(rdsBackendBaseUrl)
+                        .path("/auth/github/login")
+                        .queryParam("redirectURL", callbackUrl)
+                        .queryParam("v2", true)
+                        .toUriString();
 
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-            if (response.getStatusCode().is5xxServerError() || response.getStatusCode().is4xxClientError()) {
+            if (response.getStatusCode().is5xxServerError()
+                    || response.getStatusCode().is4xxClientError()) {
                 throw new InternalServerErrorException("Something went wrong during authentication");
             }
 
