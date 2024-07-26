@@ -20,7 +20,7 @@ public class RdsUserViewModel {
         private Roles roles;
         private String linkedin_id;
         private Picture picture;
-        private int yoe;
+        private float yoe;
         private long github_created_at;
         private String github_display_name;
         private String github_id;
