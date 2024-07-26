@@ -4,8 +4,6 @@ import com.RDS.skilltree.Authentication.AuthEntryPoint;
 import com.RDS.skilltree.Authentication.CustomAccessDeniedHandler;
 import com.RDS.skilltree.User.UserRoleEnum;
 import com.RDS.skilltree.utils.JWTAuthenticationFilter;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -20,12 +18,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
     private final AuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
+
+    public static final List<String> PERMITTED_PATHS = List.of("/v1/health", "/v1/auth");
 
     public SecurityConfig(
             AuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
@@ -41,23 +44,18 @@ public class SecurityConfig {
                         httpSecurityCorsConfigurer ->
                                 httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
-                        auth ->
-                                auth.requestMatchers("/v1/health")
-                                        .permitAll()
-                                        .requestMatchers(
-                                                request ->
-                                                        request.getQueryString() != null
-                                                                && request.getQueryString().contains("dummyData=true"))
-                                        .permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/v1/**")
-                                        .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
-                                        .requestMatchers("/v1/**")
-                                        .hasAnyAuthority(
-                                                UserRoleEnum.USER.name(),
-                                                UserRoleEnum.MEMBER.name(),
-                                                UserRoleEnum.SUPERUSER.name())
-                                        .anyRequest()
-                                        .authenticated())
+                        auth -> {
+                            PERMITTED_PATHS.forEach(path -> auth.requestMatchers(path + "/**").permitAll());
+                            auth.requestMatchers(HttpMethod.GET, "/v1/**")
+                                    .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
+                                    .requestMatchers("/v1/**")
+                                    .hasAnyAuthority(
+                                            UserRoleEnum.USER.name(),
+                                            UserRoleEnum.MEMBER.name(),
+                                            UserRoleEnum.SUPERUSER.name())
+                                    .anyRequest()
+                                    .authenticated();
+                        })
                 .exceptionHandling(
                         ex ->
                                 ex.accessDeniedHandler(this.accessDeniedHandler)
