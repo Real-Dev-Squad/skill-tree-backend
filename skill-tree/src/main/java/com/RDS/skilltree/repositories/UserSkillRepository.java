@@ -1,12 +1,13 @@
 package com.RDS.skilltree.repositories;
 
-import com.RDS.skilltree.User.UserSkillStatusEnum;
-import com.RDS.skilltree.User.UserSkillsModel;
-import java.util.List;
+import com.RDS.skilltree.enums.UserSkillStatusEnum;
+import com.RDS.skilltree.models.UserSkills;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserSkillRepository extends JpaRepository<UserSkillsModel, Integer> {
-    List<UserSkillsModel> findByStatus(UserSkillStatusEnum status);
+import java.util.List;
 
-    List<UserSkillsModel> findByUserIdAndSkillId(String userId, Integer skillId);
+public interface UserSkillRepository extends JpaRepository<UserSkills, Integer> {
+    List<UserSkills> findByStatus(UserSkillStatusEnum status);
+
+    List<UserSkills> findByUserIdAndSkillId(String userId, Integer skillId);
 }

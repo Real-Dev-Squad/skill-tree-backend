@@ -1,6 +1,5 @@
 package com.RDS.skilltree.models;
 
-import com.RDS.skilltree.User.UserModel;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.utils.TrackedProperties;
 import jakarta.persistence.*;
@@ -26,11 +25,17 @@ public class Skill extends TrackedProperties {
     @Enumerated(value = EnumType.STRING)
     private SkillTypeEnum type = SkillTypeEnum.ATOMIC;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
-    private UserModel createdBy;
+//    @ManyToOne
+//    @JoinColumn(name = "created_by", nullable = false)
+//    private RdsUserViewModel createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private UserModel updatedBy;
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
+
+//    @ManyToOne
+//    @JoinColumn(name = "updated_by")
+//    private RdsUserViewModel updatedBy;
+
+    @Column(name = "updated_by")
+    private String updateBy;
 }

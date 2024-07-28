@@ -1,4 +1,4 @@
-package com.RDS.skilltree.User;
+package com.RDS.skilltree.enums;
 
 public enum UserSkillStatusEnum {
     APPROVED,

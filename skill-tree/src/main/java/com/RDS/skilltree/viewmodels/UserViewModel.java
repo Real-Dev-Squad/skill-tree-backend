@@ -1,23 +1,24 @@
 package com.RDS.skilltree.viewmodels;
 
-import com.RDS.skilltree.User.UserModel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
+@Builder
 public class UserViewModel {
     private String id;
     private String name;
 
-    public static UserViewModel toViewModel(UserModel user) {
+    public static UserViewModel toViewModel(RdsUserViewModel user) {
         if (user == null) {
             return null;
         }
 
-        UserViewModel viewModel = new UserViewModel();
-        BeanUtils.copyProperties(user, viewModel);
-        return viewModel;
+        return UserViewModel.builder()
+                .id(user.getId())
+                .name(String.format("%s %s", user.getFirst_name(), user.getLast_name()))
+                .build();
     }
 }

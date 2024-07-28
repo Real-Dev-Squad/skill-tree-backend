@@ -1,12 +1,12 @@
 package com.RDS.skilltree.viewmodels;
 
-import com.RDS.skilltree.User.UserModel;
-import com.RDS.skilltree.User.UserSkillsModel;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.models.UserSkills;
+import lombok.Data;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Data;
 
 @Data
 public class SkillRequestViewModel {
@@ -24,14 +24,14 @@ public class SkillRequestViewModel {
     }
 
     public static SkillRequestViewModel toViewModel(
-            UserSkillsModel userSkillsModel, List<Endorsement> endorsements) {
-        Skill skill = userSkillsModel.getSkill();
-        UserModel user = userSkillsModel.getUser();
+            UserSkills userSkills, List<Endorsement> endorsements) {
+        Skill skill = userSkills.getSkill();
+        String userId = userSkills.getUserId();
 
         return new SkillRequestViewModel(
                 skill.getId(),
                 skill.getName(),
-                user.getId(),
+                userId,
                 endorsements.stream()
                         .map(MinimalEndorsementViewModel::toViewModel)
                         .collect(Collectors.toList()));

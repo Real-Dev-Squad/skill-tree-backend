@@ -1,7 +1,7 @@
 package com.RDS.skilltree.apis;
 
-import com.RDS.skilltree.User.UserRoleEnum;
 import com.RDS.skilltree.annotations.AuthorizedRoles;
+import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.services.EndorsementService;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;

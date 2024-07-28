@@ -1,16 +1,17 @@
 package com.RDS.skilltree.aspects;
 
-import com.RDS.skilltree.User.JwtUserModel;
-import com.RDS.skilltree.User.UserRoleEnum;
 import com.RDS.skilltree.annotations.AuthorizedRoles;
+import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.exceptions.ForbiddenException;
-import java.lang.reflect.Method;
+import com.RDS.skilltree.models.JwtUser;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -19,8 +20,8 @@ public class AuthorizedRolesAspect {
     @Around("@within(authorizedRoles) || @annotation(authorizedRoles)")
     public Object authorize(ProceedingJoinPoint joinPoint, AuthorizedRoles authorizedRoles)
             throws Throwable {
-        JwtUserModel jwtDetails =
-                (JwtUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUser jwtDetails =
+                (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserRoleEnum role = jwtDetails.getRole();
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

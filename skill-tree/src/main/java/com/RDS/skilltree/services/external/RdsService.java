@@ -1,9 +1,9 @@
 package com.RDS.skilltree.services.external;
 
-import com.RDS.skilltree.viewmodels.RdsUserViewModel;
+import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 
 public interface RdsService {
-    RdsUserViewModel getUserDetails(String id);
+    RdsGetUserDetailsResDto getUserDetails(String id);
 
     String signIn(String callbackUrl);
 }
