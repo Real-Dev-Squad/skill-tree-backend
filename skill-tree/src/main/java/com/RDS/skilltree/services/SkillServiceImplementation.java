@@ -70,11 +70,6 @@ public class SkillServiceImplementation implements SkillService {
 
                                     endorsements.forEach(
                                             endorsement -> {
-                                                //                                                String endorserId =
-                                                // endorsement.getEndorser().getId();
-                                                //                                                String endorserRdsUserId =
-                                                // endorsement.getEndorser().getId();
-
                                                 String endorserId = endorsement.getEndorserId();
 
                                                 if (!userDetails.containsKey(endorserId)) {

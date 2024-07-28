@@ -12,7 +12,10 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
-import com.RDS.skilltree.viewmodels.*;
+import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
+import com.RDS.skilltree.viewmodels.EndorsementViewModel;
+import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
+import com.RDS.skilltree.viewmodels.UserViewModel;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -31,10 +34,6 @@ public class EndorsementServiceImplementation implements EndorsementService {
 
     @Override
     public List<EndorsementViewModel> getAllEndorsementsBySkillId(Integer skillId) {
-        //        endorsements.forEach(endorsement -> {
-        //           RdsGetUserDetailsResDto userDetails = rdsService.getUserDetails(endorsement.)
-        //        });
-
         List<Endorsement> endorsements = endorsementRepository.findBySkillId(skillId);
 
         // store all users data that are a part of this request
@@ -57,15 +56,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
                                 userDetails.put(endorserId, UserViewModel.toViewModel(endorserDetails.getUser()));
                             }
 
-                            UserViewModel endorseDetails = userDetails.get(endorseId);
-                            UserViewModel endorserDetails = userDetails.get(endorserId);
-
-                            return new EndorsementViewModel(
-                                    endorsement.getId(),
-                                    SkillViewModel.toViewModel(endorsement.getSkill()),
-                                    endorseDetails,
-                                    endorserDetails,
-                                    endorsement.getMessage());
+                            return EndorsementViewModel.toViewModel(
+                                    endorsement, userDetails.get(endorseId), userDetails.get(endorserId));
                         })
                 .toList();
     }

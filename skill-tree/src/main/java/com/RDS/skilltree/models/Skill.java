@@ -25,16 +25,8 @@ public class Skill extends TrackedProperties {
     @Enumerated(value = EnumType.STRING)
     private SkillTypeEnum type = SkillTypeEnum.ATOMIC;
 
-    //    @ManyToOne
-    //    @JoinColumn(name = "created_by", nullable = false)
-    //    private RdsUserViewModel createdBy;
-
     @Column(name = "created_by", nullable = false)
     private String createdBy;
-
-    //    @ManyToOne
-    //    @JoinColumn(name = "updated_by")
-    //    private RdsUserViewModel updatedBy;
 
     @Column(name = "updated_by")
     private String updateBy;

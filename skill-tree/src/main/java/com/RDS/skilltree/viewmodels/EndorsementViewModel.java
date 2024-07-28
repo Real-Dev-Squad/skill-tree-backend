@@ -1,13 +1,13 @@
 package com.RDS.skilltree.viewmodels;
 
 import com.RDS.skilltree.models.Endorsement;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 public class EndorsementViewModel {
     private Integer id;
     private SkillViewModel skill;
@@ -17,18 +17,13 @@ public class EndorsementViewModel {
 
     public static EndorsementViewModel toViewModel(
             Endorsement endorsement, UserViewModel endorse, UserViewModel endorser) {
-        //        EndorsementViewModel viewModel = new EndorsementViewModel();
-        //        BeanUtils.copyProperties(endorsement, viewModel);
 
-        //        viewModel.setSkill(SkillViewModel.toViewModel(endorsement.getSkill()));
-        //        viewModel.setEndorse(endorse);
-        //        viewModel.setEndorser(endorser);
-
-        return new EndorsementViewModel(
-                endorsement.getId(),
-                SkillViewModel.toViewModel(endorsement.getSkill()),
-                endorse,
-                endorser,
-                endorsement.getMessage());
+        return EndorsementViewModel.builder()
+                .id(endorsement.getId())
+                .skill(SkillViewModel.toViewModel((endorsement.getSkill())))
+                .endorse(endorse)
+                .endorser(endorser)
+                .message(endorsement.getMessage())
+                .build();
     }
 }
