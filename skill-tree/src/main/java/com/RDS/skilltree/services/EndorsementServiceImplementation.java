@@ -131,8 +131,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
         Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
 
         if (exitingEndorsement.isEmpty()) {
-            throw new EndorsementNotFoundException(
-                    String.format("Endorsement with id: %s not found", endorsementId));
+            log.error(String.format("Endorsement with id: %s not found", endorsementId));
+            throw new EndorsementNotFoundException("Endorsement not found");
         }
 
         Endorsement endorsement = exitingEndorsement.get();
