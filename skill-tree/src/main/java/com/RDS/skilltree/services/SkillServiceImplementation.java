@@ -16,15 +16,14 @@ import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
 import com.RDS.skilltree.viewmodels.UserViewModel;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +42,7 @@ public class SkillServiceImplementation implements SkillService {
 
     @Override
     public SkillRequestsDto getAllRequests() {
-        List<UserSkills> pendingSkills =
-                userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
+        List<UserSkills> pendingSkills = userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
 
         // store all users data that are a part of this request
         Map<String, UserViewModel> userDetails = new HashMap<>();
@@ -72,8 +70,10 @@ public class SkillServiceImplementation implements SkillService {
 
                                     endorsements.forEach(
                                             endorsement -> {
-//                                                String endorserId = endorsement.getEndorser().getId();
-//                                                String endorserRdsUserId = endorsement.getEndorser().getId();
+                                                //                                                String endorserId =
+                                                // endorsement.getEndorser().getId();
+                                                //                                                String endorserRdsUserId =
+                                                // endorsement.getEndorser().getId();
 
                                                 String endorserId = endorsement.getEndorserId();
 
@@ -93,12 +93,13 @@ public class SkillServiceImplementation implements SkillService {
         return SkillRequestsDto.toDto(skillRequests, userDetails.values().stream().toList());
     }
 
-    private static UserViewModel getUserModalFromRdsDetails(String id, RdsGetUserDetailsResDto rdsDetails) {
+    private static UserViewModel getUserModalFromRdsDetails(
+            String id, RdsGetUserDetailsResDto rdsDetails) {
         String firstName =
                 rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
         String lastName =
                 rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
-        
+
         return UserViewModel.builder().id(id).name(firstName + ' ' + lastName).build();
     }
 

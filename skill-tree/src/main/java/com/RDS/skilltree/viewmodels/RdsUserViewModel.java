@@ -31,7 +31,6 @@ public class RdsUserViewModel {
     private long updated_at;
     private long created_at;
 
-
     @Getter
     @Setter
     public static class Roles {

@@ -3,10 +3,9 @@ package com.RDS.skilltree.viewmodels;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.models.UserSkills;
-import lombok.Data;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
 
 @Data
 public class SkillRequestViewModel {

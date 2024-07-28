@@ -13,13 +13,12 @@ import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
 import com.RDS.skilltree.viewmodels.*;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,39 +31,43 @@ public class EndorsementServiceImplementation implements EndorsementService {
 
     @Override
     public List<EndorsementViewModel> getAllEndorsementsBySkillId(Integer skillId) {
-//        endorsements.forEach(endorsement -> {
-//           RdsGetUserDetailsResDto userDetails = rdsService.getUserDetails(endorsement.)
-//        });
+        //        endorsements.forEach(endorsement -> {
+        //           RdsGetUserDetailsResDto userDetails = rdsService.getUserDetails(endorsement.)
+        //        });
 
         List<Endorsement> endorsements = endorsementRepository.findBySkillId(skillId);
 
         // store all users data that are a part of this request
         Map<String, UserViewModel> userDetails = new HashMap<>();
 
-        return endorsements.stream().map(endorsement -> {
-            String endorseId = endorsement.getEndorseId();
-            String endorserId = endorsement.getEndorserId();
+        return endorsements.stream()
+                .map(
+                        endorsement -> {
+                            String endorseId = endorsement.getEndorseId();
+                            String endorserId = endorsement.getEndorserId();
 
-            if (!userDetails.containsKey(endorseId)) {
-                RdsGetUserDetailsResDto endorseDetails = rdsService.getUserDetails(endorsement.getEndorseId());
-                userDetails.put(endorseId, UserViewModel.toViewModel(endorseDetails.getUser()));
-            }
+                            if (!userDetails.containsKey(endorseId)) {
+                                RdsGetUserDetailsResDto endorseDetails =
+                                        rdsService.getUserDetails(endorsement.getEndorseId());
+                                userDetails.put(endorseId, UserViewModel.toViewModel(endorseDetails.getUser()));
+                            }
 
-            if (!userDetails.containsKey(endorserId)) {
-                RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(endorserId);
-                userDetails.put(endorserId, UserViewModel.toViewModel(endorserDetails.getUser()));
-            }
+                            if (!userDetails.containsKey(endorserId)) {
+                                RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(endorserId);
+                                userDetails.put(endorserId, UserViewModel.toViewModel(endorserDetails.getUser()));
+                            }
 
-            UserViewModel endorseDetails = userDetails.get(endorseId);
-            UserViewModel endorserDetails = userDetails.get(endorserId);
+                            UserViewModel endorseDetails = userDetails.get(endorseId);
+                            UserViewModel endorserDetails = userDetails.get(endorserId);
 
-            return new EndorsementViewModel(
-                    endorsement.getId(),
-                    SkillViewModel.toViewModel(endorsement.getSkill()),
-                    endorseDetails, endorserDetails,
-                    endorsement.getMessage()
-            );
-        }).toList();
+                            return new EndorsementViewModel(
+                                    endorsement.getId(),
+                                    SkillViewModel.toViewModel(endorsement.getSkill()),
+                                    endorseDetails,
+                                    endorserDetails,
+                                    endorsement.getMessage());
+                        })
+                .toList();
     }
 
     @Override
@@ -79,9 +82,9 @@ public class EndorsementServiceImplementation implements EndorsementService {
 
         String endorserId = jwtDetails.getRdsUserId();
 
-
         if (Objects.equals(endorseId, endorserId)) {
-            log.error("Self endorsement nto allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
+            log.error(
+                    "Self endorsement nto allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
             throw new SelfEndorsementNotAllowedException("Self endorsement not allowed");
         }
 
@@ -99,20 +102,19 @@ public class EndorsementServiceImplementation implements EndorsementService {
         List<UserSkills> userSkillEntry =
                 userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
 
-        Endorsement endorsement = Endorsement.builder()
-                .skill(skillDetails.get())
-                .message(message)
-                .endorseId(endorseId)
-                .endorserId(endorserId)
-                .build();
+        Endorsement endorsement =
+                Endorsement.builder()
+                        .skill(skillDetails.get())
+                        .message(message)
+                        .endorseId(endorseId)
+                        .endorserId(endorserId)
+                        .build();
 
         // If a skill request is not created then create one
         // This is because there is no specific api to create a skill request at the time of writing
         if (userSkillEntry.isEmpty()) {
-            UserSkills userSkills = UserSkills.builder()
-                    .userId(endorseId)
-                    .skill(skillDetails.get())
-                    .build();
+            UserSkills userSkills =
+                    UserSkills.builder().userId(endorseId).skill(skillDetails.get()).build();
 
             userSkillRepository.save(userSkills);
         }
@@ -122,8 +124,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
         return EndorsementViewModel.toViewModel(
                 newEndorsement,
                 UserViewModel.toViewModel(endorseDetails.getUser()),
-                UserViewModel.toViewModel(endorserDetails.getUser())
-        );
+                UserViewModel.toViewModel(endorserDetails.getUser()));
     }
 
     @Override
@@ -143,13 +144,14 @@ public class EndorsementServiceImplementation implements EndorsementService {
         }
 
         Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
-        RdsGetUserDetailsResDto endorseDetails = rdsService.getUserDetails(savedEndorsementDetails.getEndorseId());
-        RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(savedEndorsementDetails.getEndorserId());
+        RdsGetUserDetailsResDto endorseDetails =
+                rdsService.getUserDetails(savedEndorsementDetails.getEndorseId());
+        RdsGetUserDetailsResDto endorserDetails =
+                rdsService.getUserDetails(savedEndorsementDetails.getEndorserId());
 
         return EndorsementViewModel.toViewModel(
                 savedEndorsementDetails,
                 UserViewModel.toViewModel(endorseDetails.getUser()),
-                UserViewModel.toViewModel(endorserDetails.getUser())
-        );
+                UserViewModel.toViewModel(endorserDetails.getUser()));
     }
 }

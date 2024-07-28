@@ -15,20 +15,20 @@ public class EndorsementViewModel {
     private UserViewModel endorser;
     private String message;
 
-    public static EndorsementViewModel toViewModel(Endorsement endorsement, UserViewModel endorse, UserViewModel endorser) {
-//        EndorsementViewModel viewModel = new EndorsementViewModel();
-//        BeanUtils.copyProperties(endorsement, viewModel);
+    public static EndorsementViewModel toViewModel(
+            Endorsement endorsement, UserViewModel endorse, UserViewModel endorser) {
+        //        EndorsementViewModel viewModel = new EndorsementViewModel();
+        //        BeanUtils.copyProperties(endorsement, viewModel);
 
-//        viewModel.setSkill(SkillViewModel.toViewModel(endorsement.getSkill()));
-//        viewModel.setEndorse(endorse);
-//        viewModel.setEndorser(endorser);
+        //        viewModel.setSkill(SkillViewModel.toViewModel(endorsement.getSkill()));
+        //        viewModel.setEndorse(endorse);
+        //        viewModel.setEndorser(endorser);
 
         return new EndorsementViewModel(
                 endorsement.getId(),
                 SkillViewModel.toViewModel(endorsement.getSkill()),
                 endorse,
                 endorser,
-                endorsement.getMessage()
-        );
+                endorsement.getMessage());
     }
 }

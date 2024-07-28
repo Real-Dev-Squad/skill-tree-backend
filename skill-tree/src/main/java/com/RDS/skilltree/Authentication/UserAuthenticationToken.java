@@ -2,11 +2,10 @@ package com.RDS.skilltree.Authentication;
 
 import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.models.JwtUser;
+import java.util.List;
+import javax.security.auth.Subject;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import javax.security.auth.Subject;
-import java.util.List;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
