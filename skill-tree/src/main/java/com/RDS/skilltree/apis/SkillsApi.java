@@ -2,10 +2,12 @@ package com.RDS.skilltree.apis;
 
 import com.RDS.skilltree.annotations.AuthorizedRoles;
 import com.RDS.skilltree.dtos.CreateEndorsementRequestDto;
+import com.RDS.skilltree.dtos.SkillRequestActionRequestDto;
 import com.RDS.skilltree.dtos.SkillRequestsDto;
 import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.services.EndorsementService;
 import com.RDS.skilltree.services.SkillService;
+import com.RDS.skilltree.utils.GenericResponse;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
@@ -36,6 +38,16 @@ public class SkillsApi {
     @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     public ResponseEntity<SkillRequestsDto> getAllRequests() {
         return ResponseEntity.ok(skillService.getAllRequests());
+    }
+
+    @PostMapping("/requests/{skillId}/action")
+    @AuthorizedRoles({UserRoleEnum.SUPERUSER})
+    public ResponseEntity<GenericResponse<String>> approveRejectSkillRequest(
+            @PathVariable(value = "skillId") Integer skillId,
+            @Valid @RequestBody SkillRequestActionRequestDto skillRequestAction) {
+        return ResponseEntity.ok(
+                skillService.approveRejectSkillRequest(
+                        skillId, skillRequestAction.getEndorseId(), skillRequestAction.getAction()));
     }
 
     @PostMapping

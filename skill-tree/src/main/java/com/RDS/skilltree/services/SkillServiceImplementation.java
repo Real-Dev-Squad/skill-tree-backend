@@ -3,6 +3,7 @@ package com.RDS.skilltree.services;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.dtos.SkillRequestsDto;
 import com.RDS.skilltree.enums.UserSkillStatusEnum;
+import com.RDS.skilltree.exceptions.NoEntityException;
 import com.RDS.skilltree.exceptions.SkillAlreadyExistsException;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.JwtUser;
@@ -12,6 +13,7 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
+import com.RDS.skilltree.utils.GenericResponse;
 import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SkillServiceImplementation implements SkillService {
+    private static final Logger log = LoggerFactory.getLogger(SkillServiceImplementation.class);
     private final RdsService rdsService;
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
@@ -114,6 +119,24 @@ public class SkillServiceImplementation implements SkillService {
         newSkill.setCreatedBy(userDetails.getUser().getId());
 
         return SkillViewModel.toViewModel(skillRepository.saveAndFlush(newSkill));
+    }
+
+    @Override
+    public GenericResponse<String> approveRejectSkillRequest(
+            Integer skillId, String endorseId, UserSkillStatusEnum action) {
+        List<UserSkills> existingSkillRequest =
+                userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
+
+        if (existingSkillRequest.isEmpty()) {
+            log.info("Skill request not found! endorseId: {} and skillId: {}", endorseId, skillId);
+            throw new NoEntityException("Skill request not found");
+        }
+
+        UserSkills updatedSkillRequest = existingSkillRequest.get(0);
+        updatedSkillRequest.setStatus(action);
+
+        userSkillRepository.save(updatedSkillRequest);
+        return new GenericResponse<>("Skill {}", action.toString().toLowerCase());
     }
 
     private Skill toEntity(CreateSkillViewModel viewModel) {
