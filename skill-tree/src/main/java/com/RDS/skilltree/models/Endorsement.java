@@ -27,6 +27,6 @@ public class Endorsement extends TrackedProperties {
     @Column(name = "endorser_id", nullable = false)
     private String endorserId;
 
-    @Column(name = "message", nullable = false)
+    @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
 }
