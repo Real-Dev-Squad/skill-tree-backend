@@ -1,10 +1,12 @@
 package com.RDS.skilltree.apis;
 
 import com.RDS.skilltree.annotations.AuthorizedRoles;
+import com.RDS.skilltree.dtos.CreateEndorsementRequestDto;
 import com.RDS.skilltree.dtos.SkillRequestsDto;
 import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.services.EndorsementService;
 import com.RDS.skilltree.services.SkillService;
+import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
@@ -12,6 +14,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,5 +48,16 @@ public class SkillsApi {
     public ResponseEntity<List<EndorsementViewModel>> getEndorsementsBySkillId(
             @PathVariable(value = "id") Integer skillID) {
         return ResponseEntity.ok(endorsementService.getAllEndorsementsBySkillId(skillID));
+    }
+
+    @PostMapping("/{id}/endorsements")
+    public ResponseEntity<EndorsementViewModel> create(
+            @PathVariable(value = "id") Integer skillID,
+            @Valid @RequestBody CreateEndorsementRequestDto endorsementRequest) {
+        return new ResponseEntity<>(
+                endorsementService.create(
+                        CreateEndorsementViewModel.toViewModel(
+                                skillID, endorsementRequest.getEndorseId(), endorsementRequest.getMessage())),
+                HttpStatus.CREATED);
     }
 }
