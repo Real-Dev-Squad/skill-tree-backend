@@ -13,13 +13,12 @@ import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,11 +40,14 @@ public class SkillsApi {
         return ResponseEntity.ok(skillService.getAllRequests());
     }
 
-
     @PostMapping("/requests/{skillId}/action")
     @AuthorizedRoles({UserRoleEnum.SUPERUSER})
-    public ResponseEntity<GenericResponse<String>> approveRejectSkillRequest(@PathVariable(value = "skillId") Integer skillId, @Valid @RequestBody SkillRequestActionRequestDto skillRequestAction) {
-        return ResponseEntity.ok(skillService.approveRejectSkillRequest(skillId, skillRequestAction.getEndorseId(), skillRequestAction.getAction()));
+    public ResponseEntity<GenericResponse<String>> approveRejectSkillRequest(
+            @PathVariable(value = "skillId") Integer skillId,
+            @Valid @RequestBody SkillRequestActionRequestDto skillRequestAction) {
+        return ResponseEntity.ok(
+                skillService.approveRejectSkillRequest(
+                        skillId, skillRequestAction.getEndorseId(), skillRequestAction.getAction()));
     }
 
     @PostMapping

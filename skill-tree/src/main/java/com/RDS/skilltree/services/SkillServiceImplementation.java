@@ -18,17 +18,16 @@ import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
 import com.RDS.skilltree.viewmodels.UserViewModel;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -123,8 +122,10 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     @Override
-    public GenericResponse<String> approveRejectSkillRequest(Integer skillId, String endorseId, UserSkillStatusEnum action) {
-        List<UserSkills> existingSkillRequest = userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
+    public GenericResponse<String> approveRejectSkillRequest(
+            Integer skillId, String endorseId, UserSkillStatusEnum action) {
+        List<UserSkills> existingSkillRequest =
+                userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
 
         if (existingSkillRequest.isEmpty()) {
             log.info("Skill request not found! endorseId: {} and skillId: {}", endorseId, skillId);
