@@ -75,15 +75,15 @@ public class EndorsementServiceImplementation implements EndorsementService {
         String endorserId = jwtDetails.getRdsUserId();
 
         if (Objects.equals(endorseId, endorserId)) {
-            log.error(
-                    "Self endorsement nto allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
+            log.info(
+                    "Self endorsement not allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
             throw new SelfEndorsementNotAllowedException("Self endorsement not allowed");
         }
 
         Optional<Skill> skillDetails = skillRepository.findById(skillId);
 
         if (skillDetails.isEmpty()) {
-            log.error(String.format("Skill id: %s not found", skillId));
+            log.info(String.format("Skill id: %s not found", skillId));
             throw new SkillNotFoundException("Skill does not exist");
         }
 
@@ -124,7 +124,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
         Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
 
         if (exitingEndorsement.isEmpty()) {
-            log.error(String.format("Endorsement with id: %s not found", endorsementId));
+            log.info(String.format("Endorsement with id: %s not found", endorsementId));
             throw new EndorsementNotFoundException("Endorsement not found");
         }
 
