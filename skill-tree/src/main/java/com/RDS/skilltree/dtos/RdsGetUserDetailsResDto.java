@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RdsGetUserDetailsResDto {
-
     private String message;
     private RdsUserViewModel user;
 }
