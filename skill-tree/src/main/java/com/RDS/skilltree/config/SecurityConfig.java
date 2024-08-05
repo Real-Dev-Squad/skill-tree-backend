@@ -2,7 +2,7 @@ package com.RDS.skilltree.config;
 
 import com.RDS.skilltree.Authentication.AuthEntryPoint;
 import com.RDS.skilltree.Authentication.CustomAccessDeniedHandler;
-import com.RDS.skilltree.User.UserRoleEnum;
+import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.utils.JWTAuthenticationFilter;
 import java.util.Arrays;
 import java.util.List;

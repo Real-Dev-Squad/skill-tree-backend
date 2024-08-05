@@ -1,22 +1,30 @@
 package com.RDS.skilltree.services;
 
-import com.RDS.skilltree.User.*;
+import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.dtos.SkillRequestsDto;
+import com.RDS.skilltree.enums.UserSkillStatusEnum;
+import com.RDS.skilltree.exceptions.NoEntityException;
 import com.RDS.skilltree.exceptions.SkillAlreadyExistsException;
-import com.RDS.skilltree.exceptions.UserNotFoundException;
 import com.RDS.skilltree.models.Endorsement;
+import com.RDS.skilltree.models.JwtUser;
 import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.models.UserSkills;
 import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
-import com.RDS.skilltree.viewmodels.*;
+import com.RDS.skilltree.utils.GenericResponse;
+import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
+import com.RDS.skilltree.viewmodels.SkillRequestViewModel;
+import com.RDS.skilltree.viewmodels.SkillViewModel;
+import com.RDS.skilltree.viewmodels.UserViewModel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,9 +32,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SkillServiceImplementation implements SkillService {
+    private static final Logger log = LoggerFactory.getLogger(SkillServiceImplementation.class);
     private final RdsService rdsService;
     private final SkillRepository skillRepository;
-    private final UserRepository userRepository;
     private final UserSkillRepository userSkillRepository;
     private final EndorsementRepository endorsementRepository;
 
@@ -39,8 +47,7 @@ public class SkillServiceImplementation implements SkillService {
 
     @Override
     public SkillRequestsDto getAllRequests() {
-        List<UserSkillsModel> pendingSkills =
-                userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
+        List<UserSkills> pendingSkills = userSkillRepository.findByStatus(UserSkillStatusEnum.PENDING);
 
         // store all users data that are a part of this request
         Map<String, UserViewModel> userDetails = new HashMap<>();
@@ -51,16 +58,16 @@ public class SkillServiceImplementation implements SkillService {
                         .map(
                                 skill -> {
                                     Integer skillId = skill.getSkill().getId();
-                                    String endorseId = skill.getUser().getId();
-                                    String endorseRdsUserId = skill.getUser().getRdsUserId();
+
+                                    String endorseId = skill.getUserId();
 
                                     // Get all endorsement for a specific skill and user Id
                                     List<Endorsement> endorsements =
                                             endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
 
                                     if (!userDetails.containsKey(endorseId)) {
-                                        RdsUserViewModel endorseRdsDetails =
-                                                rdsService.getUserDetails(endorseRdsUserId);
+                                        RdsGetUserDetailsResDto endorseRdsDetails =
+                                                rdsService.getUserDetails(endorseId);
                                         UserViewModel endorseDetails =
                                                 getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
                                         userDetails.put(endorseId, endorseDetails);
@@ -68,12 +75,11 @@ public class SkillServiceImplementation implements SkillService {
 
                                     endorsements.forEach(
                                             endorsement -> {
-                                                String endorserId = endorsement.getEndorser().getId();
-                                                String endorserRdsUserId = endorsement.getEndorser().getRdsUserId();
+                                                String endorserId = endorsement.getEndorserId();
 
                                                 if (!userDetails.containsKey(endorserId)) {
-                                                    RdsUserViewModel endorserRdsDetails =
-                                                            rdsService.getUserDetails(endorserRdsUserId);
+                                                    RdsGetUserDetailsResDto endorserRdsDetails =
+                                                            rdsService.getUserDetails(endorserId);
                                                     UserViewModel endorserDetails =
                                                             getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
                                                     userDetails.put(endorserId, endorserDetails);
@@ -87,19 +93,14 @@ public class SkillServiceImplementation implements SkillService {
         return SkillRequestsDto.toDto(skillRequests, userDetails.values().stream().toList());
     }
 
-    private static UserViewModel getUserModalFromRdsDetails(String id, RdsUserViewModel rdsDetails) {
+    private static UserViewModel getUserModalFromRdsDetails(
+            String id, RdsGetUserDetailsResDto rdsDetails) {
         String firstName =
                 rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
         String lastName =
                 rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
 
-        String username = firstName + ' ' + lastName;
-
-        UserViewModel user = new UserViewModel();
-        user.setId(id);
-        user.setName(username);
-
-        return user;
+        return UserViewModel.builder().id(id).name(firstName + ' ' + lastName).build();
     }
 
     @Override
@@ -109,21 +110,33 @@ public class SkillServiceImplementation implements SkillService {
                     String.format("Skill with name %s already exists", skill.getName()));
         }
 
-        JwtUserModel jwtDetails =
-                (JwtUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUser jwtDetails =
+                (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // TODO : user the userId from jwtDetails after the login api is implemented
-        String userId = "ae7a6673c5574140838f209de4c644fc";
-        Optional<UserModel> user = userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("unable to create skill for the current user");
-        }
+        RdsGetUserDetailsResDto userDetails = rdsService.getUserDetails(jwtDetails.getRdsUserId());
 
         Skill newSkill = toEntity(skill);
-        newSkill.setCreatedBy(user.get());
+        newSkill.setCreatedBy(userDetails.getUser().getId());
 
         return SkillViewModel.toViewModel(skillRepository.saveAndFlush(newSkill));
+    }
+
+    @Override
+    public GenericResponse<String> approveRejectSkillRequest(
+            Integer skillId, String endorseId, UserSkillStatusEnum action) {
+        List<UserSkills> existingSkillRequest =
+                userSkillRepository.findByUserIdAndSkillId(endorseId, skillId);
+
+        if (existingSkillRequest.isEmpty()) {
+            log.info("Skill request not found! endorseId: {} and skillId: {}", endorseId, skillId);
+            throw new NoEntityException("Skill request not found");
+        }
+
+        UserSkills updatedSkillRequest = existingSkillRequest.get(0);
+        updatedSkillRequest.setStatus(action);
+
+        userSkillRepository.save(updatedSkillRequest);
+        return new GenericResponse<>("Skill {}", action.toString().toLowerCase());
     }
 
     private Skill toEntity(CreateSkillViewModel viewModel) {

@@ -1,28 +1,25 @@
-package com.RDS.skilltree.User;
+package com.RDS.skilltree.models;
 
-import com.RDS.skilltree.models.Skill;
+import com.RDS.skilltree.enums.UserSkillStatusEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import java.util.UUID;
 import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_skills")
-public class UserSkillsModel {
+public class UserSkills {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
-    private UUID id;
+    private String id;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserModel user;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,5 +28,6 @@ public class UserSkillsModel {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private UserSkillStatusEnum status = UserSkillStatusEnum.PENDING;
 }
