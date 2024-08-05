@@ -1,11 +1,11 @@
 package com.RDS.skilltree.viewmodels;
 
 import com.RDS.skilltree.models.Endorsement;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class MinimalEndorsementViewModel {
     private Integer id;
     private String endorserId;
@@ -13,13 +13,11 @@ public class MinimalEndorsementViewModel {
     private String message;
 
     public static MinimalEndorsementViewModel toViewModel(Endorsement endorsement) {
-        MinimalEndorsementViewModel endorsementViewModel = new MinimalEndorsementViewModel();
-
-        endorsementViewModel.setId(endorsement.getId());
-        endorsementViewModel.setMessage(endorsement.getMessage());
-        endorsementViewModel.setEndorsementDate(endorsement.getCreatedAt().toString());
-        endorsementViewModel.setEndorserId(endorsement.getEndorser().getId());
-
-        return endorsementViewModel;
+        return MinimalEndorsementViewModel.builder()
+                .id(endorsement.getId())
+                .message(endorsement.getMessage())
+                .endorserId(endorsement.getEndorserId())
+                .endorsementDate(endorsement.getCreatedAt().toString())
+                .build();
     }
 }

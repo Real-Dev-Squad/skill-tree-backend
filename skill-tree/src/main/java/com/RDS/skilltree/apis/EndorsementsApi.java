@@ -1,9 +1,8 @@
 package com.RDS.skilltree.apis;
 
-import com.RDS.skilltree.User.UserRoleEnum;
 import com.RDS.skilltree.annotations.AuthorizedRoles;
+import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.services.EndorsementService;
-import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
 import jakarta.validation.Valid;
@@ -20,12 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @AuthorizedRoles({UserRoleEnum.USER, UserRoleEnum.SUPERUSER})
 public class EndorsementsApi {
     private final EndorsementService endorsementService;
-
-    @PostMapping
-    public ResponseEntity<EndorsementViewModel> create(
-            @Valid @RequestBody CreateEndorsementViewModel endorsement) {
-        return new ResponseEntity<>(endorsementService.create(endorsement), HttpStatus.CREATED);
-    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<EndorsementViewModel> update(

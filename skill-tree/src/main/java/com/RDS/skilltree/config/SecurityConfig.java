@@ -2,7 +2,7 @@ package com.RDS.skilltree.config;
 
 import com.RDS.skilltree.Authentication.AuthEntryPoint;
 import com.RDS.skilltree.Authentication.CustomAccessDeniedHandler;
-import com.RDS.skilltree.User.UserRoleEnum;
+import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.utils.JWTAuthenticationFilter;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +27,8 @@ public class SecurityConfig {
     private final AuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
+    public static final List<String> NON_AUTH_ROUTES = List.of("/v1/health", "/v1/auth");
+
     public SecurityConfig(
             AuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
         this.authEntryPoint = authEntryPoint;
@@ -41,23 +43,18 @@ public class SecurityConfig {
                         httpSecurityCorsConfigurer ->
                                 httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
-                        auth ->
-                                auth.requestMatchers("/v1/health")
-                                        .permitAll()
-                                        .requestMatchers(
-                                                request ->
-                                                        request.getQueryString() != null
-                                                                && request.getQueryString().contains("dummyData=true"))
-                                        .permitAll()
-                                        .requestMatchers(HttpMethod.GET, "/v1/**")
-                                        .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
-                                        .requestMatchers("/v1/**")
-                                        .hasAnyAuthority(
-                                                UserRoleEnum.USER.name(),
-                                                UserRoleEnum.MEMBER.name(),
-                                                UserRoleEnum.SUPERUSER.name())
-                                        .anyRequest()
-                                        .authenticated())
+                        auth -> {
+                            NON_AUTH_ROUTES.forEach(path -> auth.requestMatchers(path + "/**").permitAll());
+                            auth.requestMatchers(HttpMethod.GET, "/v1/**")
+                                    .hasAnyAuthority(UserRoleEnum.getAllRoles()) // give read-only access to all
+                                    .requestMatchers("/v1/**")
+                                    .hasAnyAuthority(
+                                            UserRoleEnum.USER.name(),
+                                            UserRoleEnum.MEMBER.name(),
+                                            UserRoleEnum.SUPERUSER.name())
+                                    .anyRequest()
+                                    .authenticated();
+                        })
                 .exceptionHandling(
                         ex ->
                                 ex.accessDeniedHandler(this.accessDeniedHandler)

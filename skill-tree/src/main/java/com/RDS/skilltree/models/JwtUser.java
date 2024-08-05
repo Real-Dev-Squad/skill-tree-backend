@@ -1,13 +1,14 @@
-package com.RDS.skilltree.User;
+package com.RDS.skilltree.models;
 
+import com.RDS.skilltree.enums.UserRoleEnum;
 import lombok.Getter;
 
 @Getter
-public class JwtUserModel {
+public class JwtUser {
     private final String rdsUserId;
     private final UserRoleEnum role;
 
-    public JwtUserModel(String rdsUserId, UserRoleEnum role) {
+    public JwtUser(String rdsUserId, UserRoleEnum role) {
         this.role = role;
         this.rdsUserId = rdsUserId;
     }

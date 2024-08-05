@@ -1,6 +1,7 @@
 package com.RDS.skilltree.utils;
 
 import com.RDS.skilltree.Authentication.UserAuthenticationToken;
+import com.RDS.skilltree.config.SecurityConfig;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,6 +47,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return SecurityConfig.NON_AUTH_ROUTES.stream().anyMatch(path::startsWith);
     }
 
     public String getJWTFromRequest(HttpServletRequest request) {
