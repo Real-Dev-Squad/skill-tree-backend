@@ -14,7 +14,7 @@ import lombok.*;
 @Table(name = "user_skills")
 public class UserSkills {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private String id;
 
