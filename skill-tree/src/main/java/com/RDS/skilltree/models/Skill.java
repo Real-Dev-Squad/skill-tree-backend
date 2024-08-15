@@ -14,7 +14,7 @@ import lombok.*;
 @Table(name = "skills")
 public class Skill extends TrackedProperties {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
