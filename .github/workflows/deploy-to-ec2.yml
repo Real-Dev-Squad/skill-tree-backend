@@ -57,5 +57,8 @@ jobs:
               -e DB_NAME="${{ vars.DB_NAME }}" \
               -e MYSQL_DB_USERNAME="${{ secrets.MYSQL_DB_USERNAME }}" \
               -e MYSQL_DB_PASSWORD="${{ secrets.MYSQL_DB_PASSWORD }}" \
+              -e RDS_BACKEND_BASE_URL="${{ vars.RDS_BACKEND_BASE_URL }}" \
+              -e SKILL_TREE_BACKEND_BASE_URL="${{ vars.SKILL_TREE_BACKEND_BASE_URL }}" \
+              -e SKILL_TREE_FRONTEND_BASE_URL="${{ vars.SKILL_TREE_FRONTEND_BASE_URL }}" \
               -e API_V1_PREFIX=/api/v1 \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
