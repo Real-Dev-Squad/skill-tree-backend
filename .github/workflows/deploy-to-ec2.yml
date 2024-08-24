@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - develop
-      - feat/aws-deploy # Remove before merting this PR to dev
 
 jobs:
   build-and-push:
@@ -53,5 +52,10 @@ jobs:
               --name ${{ github.event.repository.name }}-${{ vars.ENV }} \
               --network=${{ vars.DOCKER_NETWORK }} \
               -e RDS_PUBLIC_KEY="${{ secrets.RDS_PUBLIC_KEY }}" \
+              -e MYSQL_HOST="${{ secrets.MYSQL_HOST }}" \
+              -e MYSQL_PORT="${{ secrets.MYSQL_PORT }}" \
+              -e DB_NAME="${{ vars.DB_NAME }}" \
+              -e MYSQL_DB_USERNAME="${{ secrets.MYSQL_DB_USERNAME }}" \
+              -e MYSQL_DB_PASSWORD="${{ secrets.MYSQL_DB_PASSWORD }}" \
               -e API_V1_PREFIX=/api/v1 \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
