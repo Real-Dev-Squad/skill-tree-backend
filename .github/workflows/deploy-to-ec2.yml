@@ -60,5 +60,6 @@ jobs:
               -e RDS_BACKEND_BASE_URL="${{ vars.RDS_BACKEND_BASE_URL }}" \
               -e SKILL_TREE_BACKEND_BASE_URL="${{ vars.SKILL_TREE_BACKEND_BASE_URL }}" \
               -e SKILL_TREE_FRONTEND_BASE_URL="${{ vars.SKILL_TREE_FRONTEND_BASE_URL }}" \
+              -e SPRING_PROFILES_ACTIVE="${{ vars.SPRING_PROFILES_ACTIVE }}" \
               -e API_V1_PREFIX=/api/v1 \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
