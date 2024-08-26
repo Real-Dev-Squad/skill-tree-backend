@@ -37,8 +37,9 @@ public class SkillsApi {
 
     @GetMapping("/requests")
     @AuthorizedRoles({UserRoleEnum.SUPERUSER})
-    public ResponseEntity<SkillRequestsDto> getAllRequests(@RequestParam (value = "status", required = false) UserSkillStatusEnum status) {
-        if (status != null){
+    public ResponseEntity<SkillRequestsDto> getAllRequests(
+            @RequestParam(value = "status", required = false) UserSkillStatusEnum status) {
+        if (status != null) {
             return ResponseEntity.ok(skillService.getRequestsByStatus(status));
         }
 

@@ -4,10 +4,9 @@ import com.RDS.skilltree.enums.UserSkillStatusEnum;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.models.UserSkills;
-import lombok.Data;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
 
 @Data
 public class SkillRequestViewModel {
@@ -18,7 +17,11 @@ public class SkillRequestViewModel {
     private List<MinimalEndorsementViewModel> endorsements;
 
     public SkillRequestViewModel(
-            Integer id, String name, String endorseId, List<MinimalEndorsementViewModel> endorsements, UserSkillStatusEnum status) {
+            Integer id,
+            String name,
+            String endorseId,
+            List<MinimalEndorsementViewModel> endorsements,
+            UserSkillStatusEnum status) {
         this.skillId = id;
         this.skillName = name;
         this.endorseId = endorseId;
@@ -38,6 +41,7 @@ public class SkillRequestViewModel {
                 userId,
                 endorsements.stream()
                         .map(MinimalEndorsementViewModel::toViewModel)
-                        .collect(Collectors.toList()), status);
+                        .collect(Collectors.toList()),
+                status);
     }
 }

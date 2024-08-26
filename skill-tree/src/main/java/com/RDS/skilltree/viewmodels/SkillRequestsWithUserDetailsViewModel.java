@@ -1,13 +1,12 @@
 package com.RDS.skilltree.viewmodels;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Builder
 @Getter
 public class SkillRequestsWithUserDetailsViewModel {
     private List<SkillRequestViewModel> skillRequests;
-   private  List<UserViewModel> users;
+    private List<UserViewModel> users;
 }
