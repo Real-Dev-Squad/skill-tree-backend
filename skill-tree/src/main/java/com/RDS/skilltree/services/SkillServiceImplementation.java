@@ -35,6 +35,16 @@ public class SkillServiceImplementation implements SkillService {
     private final UserSkillRepository userSkillRepository;
     private final EndorsementRepository endorsementRepository;
 
+    private static UserViewModel getUserModalFromRdsDetails(
+            String id, RdsGetUserDetailsResDto rdsDetails) {
+        String firstName =
+                rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
+        String lastName =
+                rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
+
+        return UserViewModel.builder().id(id).name(firstName + ' ' + lastName).build();
+    }
+
     @Override
     public List<SkillViewModel> getAll() {
         return skillRepository.findAll().stream()
@@ -46,7 +56,7 @@ public class SkillServiceImplementation implements SkillService {
     public SkillRequestsDto getAllRequests() {
         List<UserSkills> skillRequests = userSkillRepository.findAll();
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsViewModel(skillRequests);
+                toSkillRequestsWithUserDetailsViewModel(skillRequests);
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
@@ -56,20 +66,10 @@ public class SkillServiceImplementation implements SkillService {
     public SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status) {
         List<UserSkills> skillRequests = userSkillRepository.findByStatus(status);
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsViewModel(skillRequests);
+                toSkillRequestsWithUserDetailsViewModel(skillRequests);
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
-    }
-
-    private static UserViewModel getUserModalFromRdsDetails(
-            String id, RdsGetUserDetailsResDto rdsDetails) {
-        String firstName =
-                rdsDetails.getUser().getFirst_name() != null ? rdsDetails.getUser().getFirst_name() : "";
-        String lastName =
-                rdsDetails.getUser().getLast_name() != null ? rdsDetails.getUser().getLast_name() : "";
-
-        return UserViewModel.builder().id(id).name(firstName + ' ' + lastName).build();
     }
 
     @Override
@@ -108,7 +108,8 @@ public class SkillServiceImplementation implements SkillService {
         return new GenericResponse<>("Skill {}", action.toString().toLowerCase());
     }
 
-    private SkillRequestsWithUserDetailsViewModel toSkillRequestsViewModel(List<UserSkills> skills) {
+    private SkillRequestsWithUserDetailsViewModel toSkillRequestsWithUserDetailsViewModel(
+            List<UserSkills> skills) {
         // store all users data that are a part of this request
         Map<String, UserViewModel> userDetails = new HashMap<>();
 
