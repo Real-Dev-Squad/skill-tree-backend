@@ -14,6 +14,8 @@ public interface SkillService {
 
     SkillRequestsDto getAllRequests();
 
+    SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status);
+
     GenericResponse<String> approveRejectSkillRequest(
             Integer skillId, String endorseId, UserSkillStatusEnum action);
 }

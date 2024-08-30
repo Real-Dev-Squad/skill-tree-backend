@@ -5,6 +5,7 @@ import com.RDS.skilltree.dtos.CreateEndorsementRequestDto;
 import com.RDS.skilltree.dtos.SkillRequestActionRequestDto;
 import com.RDS.skilltree.dtos.SkillRequestsDto;
 import com.RDS.skilltree.enums.UserRoleEnum;
+import com.RDS.skilltree.enums.UserSkillStatusEnum;
 import com.RDS.skilltree.services.EndorsementService;
 import com.RDS.skilltree.services.SkillService;
 import com.RDS.skilltree.utils.GenericResponse;
@@ -36,7 +37,12 @@ public class SkillsApi {
 
     @GetMapping("/requests")
     @AuthorizedRoles({UserRoleEnum.SUPERUSER})
-    public ResponseEntity<SkillRequestsDto> getAllRequests() {
+    public ResponseEntity<SkillRequestsDto> getAllRequests(
+            @RequestParam(value = "status", required = false) UserSkillStatusEnum status) {
+        if (status != null) {
+            return ResponseEntity.ok(skillService.getRequestsByStatus(status));
+        }
+
         return ResponseEntity.ok(skillService.getAllRequests());
     }
 
