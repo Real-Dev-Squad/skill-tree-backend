@@ -14,18 +14,18 @@ import com.RDS.skilltree.viewmodels.CreateSkillViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.SkillViewModel;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/skills")
-@AuthorizedRoles({UserRoleEnum.USER, UserRoleEnum.SUPERUSER})
 public class SkillsApi {
     private final SkillService skillService;
     private final EndorsementService endorsementService;
@@ -36,7 +36,6 @@ public class SkillsApi {
     }
 
     @GetMapping("/requests")
-    @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     public ResponseEntity<SkillRequestsDto> getAllRequests(
             @RequestParam(value = "status", required = false) UserSkillStatusEnum status) {
         if (status != null) {
