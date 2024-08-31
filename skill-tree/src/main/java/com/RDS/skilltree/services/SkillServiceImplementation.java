@@ -3,6 +3,7 @@ package com.RDS.skilltree.services;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.dtos.SkillRequestsDto;
 import com.RDS.skilltree.enums.UserSkillStatusEnum;
+import com.RDS.skilltree.exceptions.InternalServerErrorException;
 import com.RDS.skilltree.exceptions.NoEntityException;
 import com.RDS.skilltree.exceptions.SkillAlreadyExistsException;
 import com.RDS.skilltree.models.Endorsement;
@@ -54,7 +55,25 @@ public class SkillServiceImplementation implements SkillService {
 
     @Override
     public SkillRequestsDto getAllRequests() {
-        List<UserSkills> skillRequests = userSkillRepository.findAll();
+        JwtUser jwtDetails =
+                (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RdsGetUserDetailsResDto userDetails = rdsService.getUserDetails(jwtDetails.getRdsUserId());
+        RdsUserViewModel.Roles userRole = userDetails.getUser().getRoles();
+        String userId = userDetails.getUser().getId();
+
+        List<UserSkills> skillRequests = null;
+
+        if (userRole.isSuper_user()) {
+            skillRequests = userSkillRepository.findAll();
+        } else {
+            skillRequests = userSkillRepository.findUserSkillsByEndorserId(userId);
+        }
+
+        if (skillRequests == null) {
+            throw new InternalServerErrorException("Unable to fetch skill requests");
+        }
+
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
                 toSkillRequestsWithUserDetailsViewModel(skillRequests);
 
