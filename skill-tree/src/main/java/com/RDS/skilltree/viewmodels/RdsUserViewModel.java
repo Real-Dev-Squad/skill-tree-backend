@@ -37,6 +37,7 @@ public class RdsUserViewModel {
         private boolean archived;
         private boolean in_discord;
         private boolean member;
+        private boolean super_user;
     }
 
     @Getter

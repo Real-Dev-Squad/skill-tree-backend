@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/skills")
-@AuthorizedRoles({UserRoleEnum.USER, UserRoleEnum.SUPERUSER})
 public class SkillsApi {
     private final SkillService skillService;
     private final EndorsementService endorsementService;
@@ -36,7 +35,6 @@ public class SkillsApi {
     }
 
     @GetMapping("/requests")
-    @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     public ResponseEntity<SkillRequestsDto> getAllRequests(
             @RequestParam(value = "status", required = false) UserSkillStatusEnum status) {
         if (status != null) {
