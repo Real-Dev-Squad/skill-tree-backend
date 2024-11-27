@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import utils.WithCustomMockUser;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,15 +31,10 @@ public class GetAllSkillsIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
 
-    private Cookie authCookie;
+    private final String route = "/v1/skills";
 
     @BeforeEach
     public void setUp() {
-        authCookie =
-                new Cookie(
-                        "rds-session-v2-development",
-                        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzOXpRVW00WGJWRXo3eHpSa2FadiIsInJvbGUiOiJzdXBlcl91c2VyIiwiaWF0IjoxNzI4NjY0NjA2LCJleHAiOjE3MzEyNTY2MDZ9.EyOFKrVcbleuTjUGic3GzOzYRDoLU4IShyoboe0MHlvWFOAfU2pchpXLE4NcyvdGUZ_tvoUecHd4kUkR8MkhxnkRNU3HE7N-1c1tFeYXZL0KfScJE9YzDXAl113Hx3eZVvYbhNjNUttbDlH4s_kR6YABC3sdbLGKEiLfmp9VeAs");
-
         skillRepository.deleteAll();
         Skill skill1 = new Skill();
         skill1.setName("Java");
@@ -54,14 +50,13 @@ public class GetAllSkillsIntegrationTest {
     }
 
     @Test
+    @WithCustomMockUser(
+            username = "rds-user",
+            authorities = {"SUPERUSER"})
     @DisplayName("happy flow - returns all skills that are in db")
     public void getAllSkillsHappyFlow() throws Exception {
-
         mockMvc
-                .perform(
-                        MockMvcRequestBuilders.get("/v1/skills")
-                                .cookie(authCookie)
-                                .accept(MediaType.APPLICATION_JSON))
+                .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Java"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Springboot"))
@@ -70,14 +65,14 @@ public class GetAllSkillsIntegrationTest {
 
     @Test
     @DisplayName("if no skills available, return empty list")
+    @WithCustomMockUser(
+            username = "rds-user",
+            authorities = {"SUPERUSER"})
     public void noSkillsAvailable_shouldReturnEmptyList() throws Exception {
         skillRepository.deleteAll();
 
         mockMvc
-                .perform(
-                        MockMvcRequestBuilders.get("/v1/skills")
-                                .cookie(authCookie)
-                                .accept(MediaType.APPLICATION_JSON))
+                .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
@@ -85,11 +80,14 @@ public class GetAllSkillsIntegrationTest {
     @Test
     @DisplayName("if invalid cookie, return 401")
     public void ifInvalidCoolie_returnUnauthorized() throws Exception {
+        Cookie authCookie =
+                new Cookie(
+                        "cookie",
+                        "eyJhbGciOiJSUzI1NiIsInR5cCI.eyJ1c2VySWQiOiI2N2lSeXJOTWQ.E-EtcPOj7Ca5l8JuE0hwky0rRikYSNZBvC");
+
         mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get("/v1/skills")
-                                .cookie(new Cookie("cookie1", "eyJhbGciOiJSUz.eyJhbGciOiJSUz.EyJhbGciOiJSUz"))
-                                .accept(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(route).cookie(authCookie).accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 }
