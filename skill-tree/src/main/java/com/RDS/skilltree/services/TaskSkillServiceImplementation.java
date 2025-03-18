@@ -32,17 +32,21 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
             if (!skillRepository.existsById(skillId)) {
                 throw new SkillNotFoundException("Skill not found for skillId = " + skillId);
             }
+            // Create a composite key for the association.
+            TaskSkillId tsId = new TaskSkillId(taskId, skillId);
+            // Explicitly check if an association already exists.
+            if (taskSkillRepository.existsById(tsId)) {
+                throw new TaskSkillAssociationAlreadyExistsException(
+                        "Task-Skill association already exists for task " + taskId + " and skill " + skillId);
+            }
+            // Create and save the new association.
             TaskSkill taskSkill = TaskSkill.builder()
-                    .id(new TaskSkillId(taskId, skillId))
+                    .id(tsId)
                     .createdAt(now)
                     .createdBy(createdBy)
                     .build();
-            try {
-                taskSkillRepository.save(taskSkill);
-            } catch (DataIntegrityViolationException e) {
-                throw new TaskSkillAssociationAlreadyExistsException(
-                        "Task-Skill association already exists for task " + taskId + " and skill " + skillId, e);
-            }
+            taskSkillRepository.saveAndFlush(taskSkill);
         }
     }
+
 }
