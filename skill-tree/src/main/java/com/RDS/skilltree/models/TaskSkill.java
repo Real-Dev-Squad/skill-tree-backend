@@ -1,8 +1,8 @@
 package com.RDS.skilltree.models;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "task_skills")
@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TaskSkill {
 
-    @EmbeddedId
-    private TaskSkillId id;
+    @EmbeddedId private TaskSkillId id;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
