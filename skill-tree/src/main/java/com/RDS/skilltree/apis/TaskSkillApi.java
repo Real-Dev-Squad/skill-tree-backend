@@ -5,6 +5,7 @@ import com.RDS.skilltree.enums.UserRoleEnum;
 import com.RDS.skilltree.exceptions.TaskSkillAssociationAlreadyExistsException;
 import com.RDS.skilltree.models.JwtUser;
 import com.RDS.skilltree.services.TaskSkillService;
+import java.util.List;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,10 +25,10 @@ public class TaskSkillApi {
     @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     @PostMapping("/{taskId}/skills")
     public ResponseEntity<ApiResponse> createTaskSkills(
-            @PathVariable String taskId,
-            @RequestBody TaskSkillsRequest request) {
+            @PathVariable String taskId, @RequestBody TaskSkillsRequest request) {
         // Extract the authenticated user's details from the security context.
-        JwtUser currentUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUser currentUser =
+                (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String createdBy = currentUser.getRdsUserId(); // Save the user's unique identifier
         taskSkillService.createTaskSkills(taskId, request.getSkillIds(), createdBy);
         return ResponseEntity.ok(new ApiResponse("Skills are linked to task successfully!"));
@@ -37,8 +37,7 @@ public class TaskSkillApi {
     @ExceptionHandler(TaskSkillAssociationAlreadyExistsException.class)
     public ResponseEntity<ApiResponse> handleTaskSkillAssociationAlreadyExistsException(
             TaskSkillAssociationAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ApiResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(ex.getMessage()));
     }
 
     @Data

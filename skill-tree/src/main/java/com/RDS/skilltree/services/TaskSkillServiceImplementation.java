@@ -4,13 +4,12 @@ import com.RDS.skilltree.exceptions.SkillNotFoundException;
 import com.RDS.skilltree.exceptions.TaskSkillAssociationAlreadyExistsException;
 import com.RDS.skilltree.models.TaskSkill;
 import com.RDS.skilltree.models.TaskSkillId;
-import com.RDS.skilltree.repositories.TaskSkillRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.RDS.skilltree.repositories.TaskSkillRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TaskSkillServiceImplementation implements TaskSkillService {
@@ -18,7 +17,8 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
     private final TaskSkillRepository taskSkillRepository;
     private final SkillRepository skillRepository;
 
-    public TaskSkillServiceImplementation(TaskSkillRepository taskSkillRepository, SkillRepository skillRepository) {
+    public TaskSkillServiceImplementation(
+            TaskSkillRepository taskSkillRepository, SkillRepository skillRepository) {
         this.taskSkillRepository = taskSkillRepository;
         this.skillRepository = skillRepository;
     }
@@ -40,13 +40,9 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
                         "Task-Skill association already exists for task " + taskId + " and skill " + skillId);
             }
             // Create and save the new association.
-            TaskSkill taskSkill = TaskSkill.builder()
-                    .id(tsId)
-                    .createdAt(now)
-                    .createdBy(createdBy)
-                    .build();
+            TaskSkill taskSkill =
+                    TaskSkill.builder().id(tsId).createdAt(now).createdBy(createdBy).build();
             taskSkillRepository.saveAndFlush(taskSkill);
         }
     }
-
 }

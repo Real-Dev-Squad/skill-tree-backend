@@ -1,8 +1,8 @@
 package com.RDS.skilltree.models;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
 import java.io.Serializable;
+import lombok.*;
 
 @Embeddable
 @Getter
