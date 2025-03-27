@@ -2,6 +2,7 @@ package com.RDS.skilltree.services;
 
 import com.RDS.skilltree.exceptions.SkillNotFoundException;
 import com.RDS.skilltree.exceptions.TaskSkillAssociationAlreadyExistsException;
+import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.models.TaskSkill;
 import com.RDS.skilltree.models.TaskSkillId;
 import com.RDS.skilltree.repositories.SkillRepository;
@@ -32,10 +33,13 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
         // Remove duplicate skill IDs
         Set<Integer> uniqueSkillIds = new HashSet<>(skillIds);
         for (Integer skillId : uniqueSkillIds) {
-            // Check if the skill exists; if not, throw SkillNotFoundException.
-            if (!skillRepository.existsById(skillId)) {
-                throw new SkillNotFoundException("Skill not found for skillId = " + skillId);
-            }
+            // Fetch the skill entity before using it in TaskSkill.
+            Skill skill =
+                    skillRepository
+                            .findById(skillId)
+                            .orElseThrow(
+                                    () -> new SkillNotFoundException("Skill not found for skillId = " + skillId));
+
             // Create a composite key for the association.
             TaskSkillId tsId = new TaskSkillId(taskId, skillId);
             // Explicitly check if an association already exists.
@@ -45,7 +49,7 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
             }
             // Create and save the new association.
             TaskSkill taskSkill =
-                    TaskSkill.builder().id(tsId).createdAt(now).createdBy(createdBy).build();
+                    TaskSkill.builder().id(tsId).skill(skill).createdAt(now).createdBy(createdBy).build();
             taskSkillRepository.saveAndFlush(taskSkill);
         }
     }
