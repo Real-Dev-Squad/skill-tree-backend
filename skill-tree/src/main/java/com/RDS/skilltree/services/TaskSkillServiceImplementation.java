@@ -7,7 +7,9 @@ import com.RDS.skilltree.models.TaskSkillId;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.TaskSkillRepository;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,9 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
     @Transactional
     public void createTaskSkills(String taskId, List<Integer> skillIds, String createdBy) {
         LocalDateTime now = LocalDateTime.now();
-        for (Integer skillId : skillIds) {
+        // Remove duplicate skill IDs
+        Set<Integer> uniqueSkillIds = new HashSet<>(skillIds);
+        for (Integer skillId : uniqueSkillIds) {
             // Check if the skill exists; if not, throw SkillNotFoundException.
             if (!skillRepository.existsById(skillId)) {
                 throw new SkillNotFoundException("Skill not found for skillId = " + skillId);
