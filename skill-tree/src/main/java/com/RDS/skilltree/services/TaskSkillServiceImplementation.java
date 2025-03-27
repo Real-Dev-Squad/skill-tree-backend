@@ -7,6 +7,7 @@ import com.RDS.skilltree.models.TaskSkill;
 import com.RDS.skilltree.models.TaskSkillId;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.TaskSkillRepository;
+import com.RDS.skilltree.viewmodels.CreateTaskSkillViewModel;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,8 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
 
     @Override
     @Transactional
-    public void createTaskSkills(String taskId, List<Integer> skillIds, String createdBy) {
+    public CreateTaskSkillViewModel createTaskSkills(
+            String taskId, List<Integer> skillIds, String createdBy) {
         LocalDateTime now = LocalDateTime.now();
         // Remove duplicate skill IDs
         Set<Integer> uniqueSkillIds = new HashSet<>(skillIds);
@@ -52,5 +54,6 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
                     TaskSkill.builder().id(tsId).skill(skill).createdAt(now).createdBy(createdBy).build();
             taskSkillRepository.saveAndFlush(taskSkill);
         }
+        return new CreateTaskSkillViewModel("Skills are linked to task successfully!");
     }
 }
