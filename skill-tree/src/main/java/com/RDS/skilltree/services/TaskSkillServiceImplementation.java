@@ -44,31 +44,42 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
             uniqueSkillIds.removeAll(foundIds);
             throw new SkillNotFoundException("Skill not found for skillId(s): " + uniqueSkillIds);
         }
-        for (Integer skillId : uniqueSkillIds) {
-            TaskSkillId tsId = new TaskSkillId(taskId, skillId);
+        List<TaskSkill> taskSkillsToSave =
+                uniqueSkillIds.stream()
+                        .map(
+                                skillId -> {
+                                    TaskSkillId tsId = new TaskSkillId(taskId, skillId);
 
-            if (taskSkillRepository.existsById(tsId)) {
-                throw new TaskSkillAssociationAlreadyExistsException(
-                        "Task-Skill association already exists for task " + taskId + " and skill " + skillId);
-            }
+                                    if (taskSkillRepository.existsById(tsId)) {
+                                        throw new TaskSkillAssociationAlreadyExistsException(
+                                                "Task-Skill association already exists for task "
+                                                        + taskId
+                                                        + " and skill "
+                                                        + skillId);
+                                    }
 
-            // Find the corresponding Skill object from the fetched list
-            Skill skill =
-                    skills.stream()
-                            .filter(s -> s.getId().equals(skillId))
-                            .findFirst()
-                            .orElseThrow(
-                                    () -> new SkillNotFoundException("Skill not found for skillId = " + skillId));
+                                    // Find the corresponding Skill object from the fetched list
+                                    Skill skill =
+                                            skills.stream()
+                                                    .filter(s -> s.getId().equals(skillId))
+                                                    .findFirst()
+                                                    .orElseThrow(
+                                                            () ->
+                                                                    new SkillNotFoundException(
+                                                                            "Skill not found for skillId = " + skillId));
 
-            TaskSkill taskSkill =
-                    TaskSkill.builder()
-                            .id(tsId)
-                            .skill(skill) // Set the Skill relationship
-                            .createdAt(now)
-                            .createdBy(createdBy)
-                            .build();
-            taskSkillRepository.saveAndFlush(taskSkill);
-        }
+                                    return TaskSkill.builder()
+                                            .id(tsId)
+                                            .skill(skill) // Set the Skill relationship
+                                            .createdAt(now)
+                                            .createdBy(createdBy)
+                                            .build();
+                                })
+                        .collect(Collectors.toList());
+
+        // Save all TaskSkill entities in one batch call
+        taskSkillRepository.saveAll(taskSkillsToSave);
+
         return new CreateTaskSkillViewModel("Skills are linked to task successfully!");
     }
 }
