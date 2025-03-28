@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TaskSkillRepository extends JpaRepository<TaskSkill, TaskSkillId> {
-    List<TaskSkill> findByIdTaskId(String taskId);
+    List<TaskSkill> findAllByIdTaskId(String taskId);
 }
