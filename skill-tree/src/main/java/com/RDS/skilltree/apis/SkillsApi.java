@@ -57,7 +57,7 @@ public class SkillsApi {
     @PostMapping
     @AuthorizedRoles({UserRoleEnum.SUPERUSER})
     public ResponseEntity<SkillViewModel> create(@Valid @RequestBody CreateSkillViewModel skill) {
-        return ResponseEntity.ok(skillService.create(skill));
+        return ResponseEntity.status(HttpStatus.CREATED).body(skillService.create(skill));
     }
 
     @GetMapping("/{id}/endorsements")
