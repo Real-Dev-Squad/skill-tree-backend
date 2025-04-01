@@ -1,5 +1,9 @@
 package com.RDS.skilltree.skills;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.enums.UserSkillStatusEnum;
@@ -28,26 +32,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class SkillRequestActionIntegrationTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private UserSkillRepository userSkillRepository;
-    @Autowired
-    private SkillRepository skillRepository;
-    @MockBean
-    private RdsService rdsService;
-    @MockBean
-    private JWTUtils jwtUtils;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private UserSkillRepository userSkillRepository;
+    @Autowired private SkillRepository skillRepository;
+    @MockBean private RdsService rdsService;
+    @MockBean private JWTUtils jwtUtils;
+    @Autowired private ObjectMapper objectMapper;
     private Skill skill;
     private final String baseRoute = "/v1/skills/requests";
 
@@ -92,109 +86,115 @@ public class SkillRequestActionIntegrationTest {
 
     @Test
     @DisplayName("Happy flow - Super user can approve a skill request")
-    @WithCustomMockUser(username = "super-user-id", authorities = {"SUPERUSER"})
+    @WithCustomMockUser(
+            username = "super-user-id",
+            authorities = {"SUPERUSER"})
     public void approveSkillRequest_validRequest_shouldApproveSkillRequest() throws Exception {
-        String requestBody = """
-                {
-                    "endorseId": "test-user-id",
-                    "action": "APPROVED"
-                }
-                """;
+        String requestBody =
+                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"APPROVED\"" + "}";
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(String.valueOf(requestBody)))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("approved"));
 
         // Verify the status was updated in database
-        UserSkills updatedUserSkill = userSkillRepository.findByUserIdAndSkillId("test-user-id", skill.getId()).get(0);
+        UserSkills updatedUserSkill =
+                userSkillRepository.findByUserIdAndSkillId("test-user-id", skill.getId()).get(0);
         Assertions.assertEquals(UserSkillStatusEnum.APPROVED, updatedUserSkill.getStatus());
     }
 
     @Test
     @DisplayName("Happy flow - Super user can reject a skill request")
-    @WithCustomMockUser(username = "super-user-id", authorities = {"SUPERUSER"})
+    @WithCustomMockUser(
+            username = "super-user-id",
+            authorities = {"SUPERUSER"})
     public void rejectSkillRequest_validRequest_shouldRejectSkillRequest() throws Exception {
-        String requestBody = """
-                {
-                    "endorseId": "test-user-id",
-                    "action": "REJECTED"
-                }
-                """;
+        String requestBody =
+                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"REJECTED\"" + "}";
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("rejected"));
 
         // Verify the status was updatedUserSkill in database
-        UserSkills updatedUserSkill = userSkillRepository.findByUserIdAndSkillId("test-user-id", skill.getId()).get(0);
+        UserSkills updatedUserSkill =
+                userSkillRepository.findByUserIdAndSkillId("test-user-id", skill.getId()).get(0);
         Assertions.assertEquals(UserSkillStatusEnum.REJECTED, updatedUserSkill.getStatus());
     }
 
     @Test
     @DisplayName("Error case - Request with non-existent skill ID")
-    @WithCustomMockUser(username = "super-user-id", authorities = {"SUPERUSER"})
+    @WithCustomMockUser(
+            username = "super-user-id",
+            authorities = {"SUPERUSER"})
     public void approveSkillRequest_NonExistentSkillId_ShouldFail() throws Exception {
-        String requestBody = """
-                {
-                    "endorseId": "test-user-id",
-                    "action": "APPROVED"
-                }
-                """;
+        String requestBody =
+                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"APPROVED\"" + "}";
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseRoute + "/123/action")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post(baseRoute + "/123/action")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     @DisplayName("Error case - Request with non-existent user ID")
-    @WithCustomMockUser(username = "super-user-id", authorities = {"SUPERUSER"})
+    @WithCustomMockUser(
+            username = "super-user-id",
+            authorities = {"SUPERUSER"})
     public void approveSkillRequest_NonExistentUserId_ShouldFail() throws Exception {
-        String requestBody = """
-                {
-                    "endorseId": "non-existent-user",
-                    "action": "APPROVED"
-                }
-                """;
+        String requestBody =
+                "{" + "\"endorseId\": \"non-existent-user\"," + "\"action\": \"APPROVED\"" + "}";
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     @DisplayName("Validation test - Missing required fields")
-    @WithCustomMockUser(username = "super-user-id", authorities = {"SUPERUSER"})
+    @WithCustomMockUser(
+            username = "super-user-id",
+            authorities = {"SUPERUSER"})
     public void approveSkillRequest_MissingRequiredFields_ShouldFail() throws Exception {
         String requestBody = "{}";
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     @DisplayName("Authorization test - Non-super user cannot access endpoint")
-    @WithCustomMockUser(username = "normal-user", authorities = {"USER"})
+    @WithCustomMockUser(
+            username = "normal-user",
+            authorities = {"USER"})
     public void approveSkillRequest_NonSuperUser_ShouldFail() throws Exception {
-        String requestBody = """
-                {
-                    "endorseId": "test-user-id",
-                    "action": "APPROVED"
-                }
-                """;
+        String requestBody =
+                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"APPROVED\"" + "}";
 
-        mockMvc.perform(MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 }
