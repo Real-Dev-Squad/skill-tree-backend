@@ -1,4 +1,4 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
