@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
+import com.RDS.skilltree.dtos.SkillRequestActionRequestDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.enums.UserSkillStatusEnum;
 import com.RDS.skilltree.models.Skill;
@@ -90,8 +91,10 @@ public class SkillRequestActionIntegrationTest {
             username = "super-user-id",
             authorities = {"SUPERUSER"})
     public void approveSkillRequest_validRequest_shouldApproveSkillRequest() throws Exception {
-        String requestBody =
-                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"APPROVED\"" + "}";
+        SkillRequestActionRequestDto requestDto = new SkillRequestActionRequestDto();
+        requestDto.setEndorseId("test-user-id");
+        requestDto.setAction(UserSkillStatusEnum.APPROVED);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
 
         mockMvc
                 .perform(
@@ -114,8 +117,10 @@ public class SkillRequestActionIntegrationTest {
             username = "super-user-id",
             authorities = {"SUPERUSER"})
     public void rejectSkillRequest_validRequest_shouldRejectSkillRequest() throws Exception {
-        String requestBody =
-                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"REJECTED\"" + "}";
+        SkillRequestActionRequestDto requestDto = new SkillRequestActionRequestDto();
+        requestDto.setEndorseId("test-user-id");
+        requestDto.setAction(UserSkillStatusEnum.REJECTED);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
 
         mockMvc
                 .perform(
@@ -125,7 +130,7 @@ public class SkillRequestActionIntegrationTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("rejected"));
 
-        // Verify the status was updatedUserSkill in database
+        // Verify the status was updated in database
         UserSkills updatedUserSkill =
                 userSkillRepository.findByUserIdAndSkillId("test-user-id", skill.getId()).get(0);
         Assertions.assertEquals(UserSkillStatusEnum.REJECTED, updatedUserSkill.getStatus());
@@ -137,8 +142,10 @@ public class SkillRequestActionIntegrationTest {
             username = "super-user-id",
             authorities = {"SUPERUSER"})
     public void approveSkillRequest_NonExistentSkillId_ShouldFail() throws Exception {
-        String requestBody =
-                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"APPROVED\"" + "}";
+        SkillRequestActionRequestDto requestDto = new SkillRequestActionRequestDto();
+        requestDto.setEndorseId("test-user-id");
+        requestDto.setAction(UserSkillStatusEnum.APPROVED);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
 
         mockMvc
                 .perform(
@@ -154,8 +161,10 @@ public class SkillRequestActionIntegrationTest {
             username = "super-user-id",
             authorities = {"SUPERUSER"})
     public void approveSkillRequest_NonExistentUserId_ShouldFail() throws Exception {
-        String requestBody =
-                "{" + "\"endorseId\": \"non-existent-user\"," + "\"action\": \"APPROVED\"" + "}";
+        SkillRequestActionRequestDto requestDto = new SkillRequestActionRequestDto();
+        requestDto.setEndorseId("non-existent-user");
+        requestDto.setAction(UserSkillStatusEnum.APPROVED);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
 
         mockMvc
                 .perform(
@@ -187,8 +196,10 @@ public class SkillRequestActionIntegrationTest {
             username = "normal-user",
             authorities = {"USER"})
     public void approveSkillRequest_NonSuperUser_ShouldFail() throws Exception {
-        String requestBody =
-                "{" + "\"endorseId\": \"test-user-id\"," + "\"action\": \"APPROVED\"" + "}";
+        SkillRequestActionRequestDto requestDto = new SkillRequestActionRequestDto();
+        requestDto.setEndorseId("test-user-id");
+        requestDto.setAction(UserSkillStatusEnum.APPROVED);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
 
         mockMvc
                 .perform(
