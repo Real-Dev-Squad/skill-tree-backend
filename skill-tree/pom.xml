@@ -95,19 +95,24 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>4.0.0</version>
+        </dependency>
 
         <!--Start io.jsonwebtoken: todo: remove the below block when rolling back to new version -->
-                <dependency>
-                    <groupId>io.jsonwebtoken</groupId>
-                    <artifactId>jjwt</artifactId>
-                    <version>0.9.1</version>
-                </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
         <!-- This package is required by the jjwt library versions < 0.10.0 - https://github.com/jwtk/jjwt/issues/297               -->
-                <dependency>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                    <version>2.3.1</version>
-                </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
         <!--End io.jsonwebtoken-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -216,8 +221,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
 
                 <configuration>
-                    <skip>${skip-ut}</skip>
-                    <skip>${skip-tests}</skip>
                     <includes>
                         <include>**/unit/*.java</include>
                     </includes>
@@ -229,11 +232,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
-                    <skip>${skip-tests}</skip>
                     <includes>
-                        <include>**/integration/*.java</include>
+                        <include>**/integration/*/*.java</include>
                     </includes>
-
                 </configuration>
 
                 <executions>
