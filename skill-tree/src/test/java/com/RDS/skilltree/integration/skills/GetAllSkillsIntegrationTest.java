@@ -1,5 +1,6 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.repositories.SkillRepository;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,10 +22,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
+// @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class GetAllSkillsIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class GetAllSkillsIntegrationTest extends TestContainerManager {
 
     @Autowired private SkillService skillService;
 

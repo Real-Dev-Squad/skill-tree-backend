@@ -1,9 +1,10 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.enums.UserSkillStatusEnum;
@@ -18,7 +19,10 @@ import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.RdsUserViewModel;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,10 +36,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.CustomResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
+// @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class GetAllSkillRequestIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     @Autowired private MockMvc mockMvc;
 
     @Autowired private UserSkillRepository userSkillRepository;
