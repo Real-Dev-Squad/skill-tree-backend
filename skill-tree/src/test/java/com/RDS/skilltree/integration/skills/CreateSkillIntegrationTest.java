@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.models.Skill;
@@ -16,6 +17,7 @@ import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,10 +30,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
+// @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class CreateSkillIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class CreateSkillIntegrationTest extends TestContainerManager {
     @Autowired private MockMvc mockMvc;
     @Autowired private SkillRepository skillRepository;
     @MockBean private RdsService rdsService;
@@ -83,7 +87,6 @@ public class CreateSkillIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("ATOMIC"));
 
         assert skillRepository.existsByName("Java");
-        ;
     }
 
     @Test
