@@ -11,6 +11,7 @@ import com.RDS.skilltree.viewmodels.CreateTaskSkillViewModel;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -32,52 +33,48 @@ public class TaskSkillServiceImplementation implements TaskSkillService {
     @Transactional
     public CreateTaskSkillViewModel createTaskSkills(
             String taskId, List<Integer> skillIds, String createdBy) {
-        LocalDateTime now = LocalDateTime.now();
         // Remove duplicate skill IDs
         Set<Integer> uniqueSkillIds = new HashSet<>(skillIds);
 
-        List<Skill> skills = skillRepository.findAllById(uniqueSkillIds);
-        // Verify if any requested skill ID is missing
-        if (skills.size() != uniqueSkillIds.size()) {
-            // Determine missing IDs
-            Set<Integer> foundIds = skills.stream().map(Skill::getId).collect(Collectors.toSet());
-            uniqueSkillIds.removeAll(foundIds);
-            throw new SkillNotFoundException("Skill not found for skillId(s): " + uniqueSkillIds);
+        // FIRST: Check if any TaskSkill associations already exist (batch check)
+        Set<Integer> existingSkillIds =
+                taskSkillRepository.findSkillIdsByTaskIdAndSkillIdIn(taskId, uniqueSkillIds);
+        if (!existingSkillIds.isEmpty()) {
+            throw new TaskSkillAssociationAlreadyExistsException(
+                    "Task-Skill associations already exist for task "
+                            + taskId
+                            + " and skills: "
+                            + existingSkillIds);
         }
+
+        // SECOND: Load all skills at once and verify they exist
+        List<Skill> skills = skillRepository.findAllById(uniqueSkillIds);
+
+        // Check for missing skills
+        if (skills.size() != uniqueSkillIds.size()) {
+            Set<Integer> foundSkillIds = skills.stream().map(Skill::getId).collect(Collectors.toSet());
+            Set<Integer> missingIds = new HashSet<>(uniqueSkillIds);
+            missingIds.removeAll(foundSkillIds);
+            throw new SkillNotFoundException("Skill not found for skillId(s): " + missingIds);
+        }
+
+        // Create a map for quick lookups
+        Map<Integer, Skill> skillsMap = skills.stream().collect(Collectors.toMap(Skill::getId, s -> s));
+
+        // Create and save TaskSkill entities
+        LocalDateTime now = LocalDateTime.now();
         List<TaskSkill> taskSkillsToSave =
                 uniqueSkillIds.stream()
                         .map(
-                                skillId -> {
-                                    TaskSkillId tsId = new TaskSkillId(taskId, skillId);
-
-                                    if (taskSkillRepository.existsById(tsId)) {
-                                        throw new TaskSkillAssociationAlreadyExistsException(
-                                                "Task-Skill association already exists for task "
-                                                        + taskId
-                                                        + " and skill "
-                                                        + skillId);
-                                    }
-
-                                    // Find the corresponding Skill object from the fetched list
-                                    Skill skill =
-                                            skills.stream()
-                                                    .filter(s -> s.getId().equals(skillId))
-                                                    .findFirst()
-                                                    .orElseThrow(
-                                                            () ->
-                                                                    new SkillNotFoundException(
-                                                                            "Skill not found for skillId = " + skillId));
-
-                                    return TaskSkill.builder()
-                                            .id(tsId)
-                                            .skill(skill) // Set the Skill relationship
-                                            .createdAt(now)
-                                            .createdBy(createdBy)
-                                            .build();
-                                })
+                                skillId ->
+                                        TaskSkill.builder()
+                                                .id(new TaskSkillId(taskId, skillId))
+                                                .skill(skillsMap.get(skillId)) // Set the actual Skill entity reference
+                                                .createdAt(now)
+                                                .createdBy(createdBy)
+                                                .build())
                         .collect(Collectors.toList());
 
-        // Save all TaskSkill entities in one batch call
         taskSkillRepository.saveAll(taskSkillsToSave);
 
         return new CreateTaskSkillViewModel("Skills are linked to task successfully!");
