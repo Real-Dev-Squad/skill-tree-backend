@@ -97,17 +97,17 @@
         </dependency>
 
         <!--Start io.jsonwebtoken: todo: remove the below block when rolling back to new version -->
-                <dependency>
-                    <groupId>io.jsonwebtoken</groupId>
-                    <artifactId>jjwt</artifactId>
-                    <version>0.9.1</version>
-                </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
         <!-- This package is required by the jjwt library versions < 0.10.0 - https://github.com/jwtk/jjwt/issues/297               -->
-                <dependency>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                    <version>2.3.1</version>
-                </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
         <!--End io.jsonwebtoken-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -198,8 +198,8 @@
                         </indent>
                         <trimTrailingWhitespace/>
                         <endWithNewline/>
-                        <importOrder />
-                        <removeUnusedImports />
+                        <importOrder/>
+                        <removeUnusedImports/>
                     </java>
                 </configuration>
                 <executions>
@@ -231,7 +231,7 @@
                 <configuration>
                     <skip>${skip-tests}</skip>
                     <includes>
-                        <include>**/integration/*.java</include>
+                        <include>*/integration/**/*.java</include>
                     </includes>
 
                 </configuration>
