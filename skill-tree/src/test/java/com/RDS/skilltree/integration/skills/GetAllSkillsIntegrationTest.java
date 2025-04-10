@@ -26,11 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-// @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -79,8 +77,7 @@ public class GetAllSkillsIntegrationTest extends TestContainerManager {
                 .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Java"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Springboot"))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Springboot"));
     }
 
     @Test

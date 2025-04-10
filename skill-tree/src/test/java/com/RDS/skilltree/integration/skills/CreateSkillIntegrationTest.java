@@ -26,11 +26,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-// @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -81,7 +79,6 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Java"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("ATOMIC"));
@@ -108,7 +105,6 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isConflict());
     }
 

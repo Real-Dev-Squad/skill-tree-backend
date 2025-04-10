@@ -27,11 +27,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-// @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -101,7 +99,6 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("approved"));
 
