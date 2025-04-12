@@ -10,7 +10,7 @@ public abstract class TestContainerManager {
 
     static {
         mysqlContainer =
-                new MySQLContainer("mysql:8.1")
+                new MySQLContainer("mysql:8.1.0")
                         .withDatabaseName("skilltree-test")
                         .withUsername("root")
                         .withPassword("password");
