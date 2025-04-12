@@ -219,7 +219,7 @@
                     <skip>${skip-ut}</skip>
                     <skip>${skip-tests}</skip>
                     <includes>
-                        <include>**/unit/*.java</include>
+                        <include>**/unit/*/*.java</include>
                     </includes>
 
                 </configuration>
