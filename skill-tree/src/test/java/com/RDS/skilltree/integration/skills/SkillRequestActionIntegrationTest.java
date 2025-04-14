@@ -99,7 +99,7 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("approved"));
 
         // Verify the status was updated in database
@@ -124,7 +124,7 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("rejected"));
 
         // Verify the status was updated in database
@@ -149,7 +149,7 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/123/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
@@ -184,7 +184,7 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -203,6 +203,6 @@ public class SkillRequestActionIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 }

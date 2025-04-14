@@ -79,7 +79,7 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.status().is(201))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Java"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("ATOMIC"));
 
@@ -105,7 +105,7 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isConflict());
+                .andExpect(MockMvcResultMatchers.status().is(409));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
+                .andExpect(MockMvcResultMatchers.status().is(500));
     }
 
     @Test
@@ -153,6 +153,6 @@ public class CreateSkillIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 }

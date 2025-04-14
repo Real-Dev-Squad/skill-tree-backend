@@ -166,7 +166,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     public void getAllRequests_asSuperUser_shouldReturnAllRequests() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Java", "user-id", "PENDING"))
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
@@ -192,6 +192,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     public void getAllRequests_asNormalUser_shouldReturnAllRequestsByEndorser() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
@@ -210,7 +211,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=APPROVED")
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
@@ -227,7 +228,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     public void noSkillRequestsEndorsedByUser_ShouldReturnEmptyLists() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
     }
@@ -242,7 +243,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=REJECTED")
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
     }
@@ -259,7 +260,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
 
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
     }
@@ -277,6 +278,6 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
                         MockMvcRequestBuilders.get(route)
                                 .cookie(authCookie)
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().is(401));
     }
 }

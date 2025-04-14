@@ -75,7 +75,7 @@ public class GetAllSkillsIntegrationTest extends TestContainerManager {
     public void getAllSkillsHappyFlow() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Java"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Springboot"));
     }
@@ -90,7 +90,7 @@ public class GetAllSkillsIntegrationTest extends TestContainerManager {
 
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
@@ -105,6 +105,6 @@ public class GetAllSkillsIntegrationTest extends TestContainerManager {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders.get(route).cookie(authCookie).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().is(401));
     }
 }
