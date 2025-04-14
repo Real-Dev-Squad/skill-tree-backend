@@ -1,24 +1,12 @@
 package com.RDS.skilltree;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 
 public abstract class TestContainerManager {
-    @ServiceConnection static final MySQLContainer mysqlContainer;
+    @ServiceConnection static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.1.0");
 
     static {
-        mysqlContainer =
-                new MySQLContainer("mysql:8.1.0")
-                        .withDatabaseName("skilltree-test")
-                        .withUsername("root")
-                        .withPassword("password");
-        mysqlContainer.start();
-    }
-
-    @DynamicPropertySource
-    static void configureTestProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
+        mySQLContainer.start();
     }
 }
