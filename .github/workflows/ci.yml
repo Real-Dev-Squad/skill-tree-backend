@@ -9,25 +9,25 @@ jobs:
     name: Maven Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: "temurin"
 
       - name: Build with Maven
-        run: mvn verify --file skill-tree/pom.xml -P git-build-profile -D skip-tests=true
+        run: mvn verify --file skill-tree/pom.xml -P git-build-profile -Dskip-tests=true
 
   unit-test:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: "temurin"
@@ -39,13 +39,13 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: "temurin"
 
       - name: Integration Test
-        run: mvn verify --file skill-tree/pom.xml -D skip-ut=true
+        run: mvn verify --file skill-tree/pom.xml -Dskip-ut=true
