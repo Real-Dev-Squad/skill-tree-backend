@@ -1,9 +1,10 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.enums.UserSkillStatusEnum;
@@ -18,7 +19,10 @@ import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.RdsUserViewModel;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,15 +31,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.CustomResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class GetAllSkillRequestIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     @Autowired private MockMvc mockMvc;
 
     @Autowired private UserSkillRepository userSkillRepository;
@@ -162,8 +166,7 @@ public class GetAllSkillRequestIntegrationTest {
     public void getAllRequests_asSuperUser_shouldReturnAllRequests() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Java", "user-id", "PENDING"))
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
@@ -189,7 +192,7 @@ public class GetAllSkillRequestIntegrationTest {
     public void getAllRequests_asNormalUser_shouldReturnAllRequestsByEndorser() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
@@ -208,8 +211,7 @@ public class GetAllSkillRequestIntegrationTest {
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=APPROVED")
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
@@ -226,8 +228,7 @@ public class GetAllSkillRequestIntegrationTest {
     public void noSkillRequestsEndorsedByUser_ShouldReturnEmptyLists() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
     }
@@ -242,8 +243,7 @@ public class GetAllSkillRequestIntegrationTest {
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=REJECTED")
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
     }
@@ -260,8 +260,7 @@ public class GetAllSkillRequestIntegrationTest {
 
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
     }
@@ -279,7 +278,6 @@ public class GetAllSkillRequestIntegrationTest {
                         MockMvcRequestBuilders.get(route)
                                 .cookie(authCookie)
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().is(401));
     }
 }

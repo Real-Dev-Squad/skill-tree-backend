@@ -1,9 +1,10 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.models.Skill;
@@ -16,6 +17,7 @@ import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,14 +26,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class CreateSkillIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class CreateSkillIntegrationTest extends TestContainerManager {
     @Autowired private MockMvc mockMvc;
     @Autowired private SkillRepository skillRepository;
     @MockBean private RdsService rdsService;
@@ -77,13 +79,11 @@ public class CreateSkillIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.status().is(201))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Java"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type").value("ATOMIC"));
 
         assert skillRepository.existsByName("Java");
-        ;
     }
 
     @Test
@@ -105,8 +105,7 @@ public class CreateSkillIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isConflict());
+                .andExpect(MockMvcResultMatchers.status().is(409));
     }
 
     @Test
@@ -122,7 +121,7 @@ public class CreateSkillIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -138,7 +137,7 @@ public class CreateSkillIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
+                .andExpect(MockMvcResultMatchers.status().is(500));
     }
 
     @Test
@@ -154,6 +153,6 @@ public class CreateSkillIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 }

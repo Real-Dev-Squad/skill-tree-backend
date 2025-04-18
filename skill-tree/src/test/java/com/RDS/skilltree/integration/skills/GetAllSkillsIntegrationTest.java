@@ -1,35 +1,48 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.enums.SkillTypeEnum;
 import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.services.SkillService;
+import com.RDS.skilltree.services.external.RdsService;
+import com.RDS.skilltree.utils.JWTUtils;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class GetAllSkillsIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class GetAllSkillsIntegrationTest extends TestContainerManager {
 
     @Autowired private SkillService skillService;
 
     @Autowired private SkillRepository skillRepository;
 
     @Autowired private MockMvc mockMvc;
+    @MockBean private JWTUtils jwtUtils;
+
+    @MockBean private RdsService rdsService;
 
     private final String route = "/v1/skills";
 
@@ -47,6 +60,11 @@ public class GetAllSkillsIntegrationTest {
         skill2.setCreatedBy("s9zQUm4XbVEz7xzRkaZv");
 
         skillRepository.saveAll(Arrays.asList(skill1, skill2));
+
+        // Mock JWTUtils to bypass actual JWT verification
+        Claims mockClaims = mock(Claims.class);
+        when(mockClaims.get("userId", String.class)).thenReturn("rds-user");
+        when(jwtUtils.validateToken(anyString())).thenReturn(mockClaims);
     }
 
     @Test
@@ -57,10 +75,9 @@ public class GetAllSkillsIntegrationTest {
     public void getAllSkillsHappyFlow() throws Exception {
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Java"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Springboot"))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Springboot"));
     }
 
     @Test
@@ -73,7 +90,7 @@ public class GetAllSkillsIntegrationTest {
 
         mockMvc
                 .perform(MockMvcRequestBuilders.get(route).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
@@ -88,6 +105,6 @@ public class GetAllSkillsIntegrationTest {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders.get(route).cookie(authCookie).accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().is(401));
     }
 }

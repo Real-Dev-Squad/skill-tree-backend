@@ -1,14 +1,14 @@
-package com.RDS.skilltree.utils;
+package com.RDS.skilltree.unit.utils;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.RDS.skilltree.exceptions.InvalidParameterException;
+import com.RDS.skilltree.utils.UUIDValidationInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +25,6 @@ class UUIDValidationInterceptorTest {
     @InjectMocks private UUIDValidationInterceptor interceptor;
 
     @Test
-    @Disabled
     public void itShouldReturnTrueIfValidUserIDIsGiven() {
         when(request.getParameter("skillID")).thenReturn(null);
         when(request.getParameter("userID")).thenReturn(UUID.randomUUID().toString());
@@ -34,7 +33,6 @@ class UUIDValidationInterceptorTest {
     }
 
     @Test
-    @Disabled
     public void itShouldReturnTrueIfValidSkillIDIsGiven() {
         when(request.getParameter("userID")).thenReturn(null);
         when(request.getParameter("skillID")).thenReturn(UUID.randomUUID().toString());
@@ -43,7 +41,6 @@ class UUIDValidationInterceptorTest {
     }
 
     @Test
-    @Disabled
     public void itShouldReturnTrueIfValidUserIDAndValidSkillIDIsGiven() {
         when(request.getParameter("userID")).thenReturn(UUID.randomUUID().toString());
         when(request.getParameter("skillID")).thenReturn(UUID.randomUUID().toString());
@@ -52,7 +49,6 @@ class UUIDValidationInterceptorTest {
     }
 
     @Test
-    @Disabled
     public void itShouldReturnFalseIfInvalidUserIDIsGiven() {
         when(request.getParameter("userID")).thenReturn("null");
         when(request.getParameter("skillID")).thenReturn(UUID.randomUUID().toString());
@@ -62,7 +58,6 @@ class UUIDValidationInterceptorTest {
     }
 
     @Test
-    @Disabled
     public void itShouldReturnFalseIfInvalidSkillIDIsGiven() {
         when(request.getParameter("userID")).thenReturn(UUID.randomUUID().toString());
         when(request.getParameter("skillID")).thenReturn("null");
@@ -72,7 +67,6 @@ class UUIDValidationInterceptorTest {
     }
 
     @Test
-    @Disabled
     public void itShouldReturnFalseIfInvalidUserIDAndInvalidSkillIDIsGiven() {
         when(request.getParameter("userID")).thenReturn("invalid-user-id");
         when(request.getParameter("skillID")).thenReturn("invalid-skill-id");

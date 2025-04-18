@@ -1,9 +1,10 @@
-package com.RDS.skilltree.skills;
+package com.RDS.skilltree.integration.skills;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.RDS.skilltree.TestContainerManager;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.dtos.SkillRequestActionRequestDto;
 import com.RDS.skilltree.enums.SkillTypeEnum;
@@ -17,10 +18,7 @@ import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.RdsUserViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,14 +27,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import utils.WithCustomMockUser;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class SkillRequestActionIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class SkillRequestActionIntegrationTest extends TestContainerManager {
     @Autowired private MockMvc mockMvc;
     @Autowired private UserSkillRepository userSkillRepository;
     @Autowired private SkillRepository skillRepository;
@@ -101,8 +99,7 @@ public class SkillRequestActionIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("approved"));
 
         // Verify the status was updated in database
@@ -127,7 +124,7 @@ public class SkillRequestActionIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("rejected"));
 
         // Verify the status was updated in database
@@ -152,7 +149,7 @@ public class SkillRequestActionIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute + "/123/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
@@ -171,7 +168,7 @@ public class SkillRequestActionIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
@@ -187,7 +184,7 @@ public class SkillRequestActionIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
@@ -206,6 +203,6 @@ public class SkillRequestActionIntegrationTest {
                         MockMvcRequestBuilders.post(baseRoute + "/" + skill.getId() + "/action")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 }
