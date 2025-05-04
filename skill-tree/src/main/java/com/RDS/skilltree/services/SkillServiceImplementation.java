@@ -75,7 +75,7 @@ public class SkillServiceImplementation implements SkillService {
         }
 
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsWithUserDetailsViewModel(skillRequests);
+                toSkillRequestsWithUserDetailsViewModel(skillRequests, userId, userRole.isSuper_user());
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
@@ -83,9 +83,27 @@ public class SkillServiceImplementation implements SkillService {
 
     @Override
     public SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status) {
-        List<UserSkills> skillRequests = userSkillRepository.findByStatus(status);
+        JwtUser jwtDetails =
+                (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RdsGetUserDetailsResDto userDetails = rdsService.getUserDetails(jwtDetails.getRdsUserId());
+        RdsUserViewModel.Roles userRole = userDetails.getUser().getRoles();
+        String userId = userDetails.getUser().getId();
+
+        List<UserSkills> skillRequests;
+
+        if (userRole.isSuper_user()) {
+            skillRequests = userSkillRepository.findByStatus(status);
+        } else {
+            skillRequests = userSkillRepository.findByStatusAndEndorserId(status, userId);
+        }
+
+        if (skillRequests == null) {
+            throw new InternalServerErrorException("Unable to fetch skill requests");
+        }
+
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsWithUserDetailsViewModel(skillRequests);
+                toSkillRequestsWithUserDetailsViewModel(skillRequests, userId, userRole.isSuper_user());
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
@@ -128,40 +146,47 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     private SkillRequestsWithUserDetailsViewModel toSkillRequestsWithUserDetailsViewModel(
-            List<UserSkills> skills) {
+            List<UserSkills> skills, String currentUserId, boolean isSuperUser) {
+
         // store all users data that are a part of this request
-        Map<String, UserViewModel> userDetails = new HashMap<>();
+        Map<String, UserViewModel> userViewModelMap = new HashMap<>();
 
         List<SkillRequestViewModel> skillRequests =
                 skills.stream()
                         .map(
                                 skill -> {
                                     Integer skillId = skill.getSkill().getId();
-
                                     String endorseId = skill.getUserId();
 
-                                    // Get all endorsement for a specific skill and user Id
-                                    List<Endorsement> endorsements =
-                                            endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+                                    List<Endorsement> endorsements;
 
-                                    if (!userDetails.containsKey(endorseId)) {
+                                    if (isSuperUser) {
+                                        endorsements =
+                                                endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+                                    } else {
+                                        endorsements =
+                                                endorsementRepository.findByEndorseIdAndSkillIdAndEndorserId(
+                                                        endorseId, skillId, currentUserId);
+                                    }
+
+                                    if (!userViewModelMap.containsKey(endorseId)) {
                                         RdsGetUserDetailsResDto endorseRdsDetails =
                                                 rdsService.getUserDetails(endorseId);
                                         UserViewModel endorseDetails =
                                                 getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
-                                        userDetails.put(endorseId, endorseDetails);
+                                        userViewModelMap.put(endorseId, endorseDetails);
                                     }
 
                                     endorsements.forEach(
                                             endorsement -> {
                                                 String endorserId = endorsement.getEndorserId();
 
-                                                if (!userDetails.containsKey(endorserId)) {
+                                                if (!userViewModelMap.containsKey(endorserId)) {
                                                     RdsGetUserDetailsResDto endorserRdsDetails =
                                                             rdsService.getUserDetails(endorserId);
                                                     UserViewModel endorserDetails =
                                                             getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
-                                                    userDetails.put(endorserId, endorserDetails);
+                                                    userViewModelMap.put(endorserId, endorserDetails);
                                                 }
                                             });
 
@@ -171,7 +196,7 @@ public class SkillServiceImplementation implements SkillService {
 
         return SkillRequestsWithUserDetailsViewModel.builder()
                 .skillRequests(skillRequests)
-                .users(userDetails.values().stream().toList())
+                .users(userViewModelMap.values().stream().toList())
                 .build();
     }
 

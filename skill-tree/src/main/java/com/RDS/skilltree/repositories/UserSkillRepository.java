@@ -14,7 +14,14 @@ public interface UserSkillRepository extends JpaRepository<UserSkills, Integer> 
 
     @Query(
             "SELECT us FROM UserSkills us "
-                    + "JOIN Endorsement e ON us.userId = e.endorseId "
+                    + "JOIN Endorsement e ON us.userId = e.endorseId AND us.skill.id = e.skill.id "
                     + "WHERE e.endorserId = :endorserId")
     List<UserSkills> findUserSkillsByEndorserId(@Param("endorserId") String endorserId);
+
+    @Query(
+            "SELECT us FROM UserSkills us "
+                    + "JOIN Endorsement e ON us.userId = e.endorseId AND us.skill.id = e.skill.id "
+                    + "WHERE e.endorserId = :endorserId AND us.status = :status")
+    List<UserSkills> findByStatusAndEndorserId(
+            @Param("status") UserSkillStatusEnum status, @Param("endorserId") String endorserId);
 }
