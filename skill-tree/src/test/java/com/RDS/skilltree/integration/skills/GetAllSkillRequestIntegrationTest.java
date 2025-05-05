@@ -197,8 +197,8 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
                                 "Springboot", "user-id", "user-id-2", "skill2 for user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"));
+                .andExpect(CustomResultMatchers.hasUser("user-id", " "))
+                .andExpect(CustomResultMatchers.hasUser("user-id-2", " "));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     @WithCustomMockUser(
             username = "super-user-id",
             authorities = {"SUPERUSER"})
-    public void getAllRequests_asByStatus_ShouldReturnFilteredRequests() throws Exception {
+    public void getAllRequests_ByStatus_ShouldReturnFilteredRequests() throws Exception {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=APPROVED")
@@ -221,15 +221,14 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Normal user filter by status - should only see endorsed requests")
+    @DisplayName("Normal user with dev flag - should only see endorsed requests")
     @WithCustomMockUser(
             username = "user-id-2",
             authorities = {"USER"})
-    public void getRequestsByStatus_asNormalUser_shouldOnlyShowEndorsedRequests() throws Exception {
+    public void getAllRequests_withDevFlag_shouldOnlyShowEndorsedRequests() throws Exception {
         mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get(route + "?status=APPROVED")
-                                .contentType(MediaType.APPLICATION_JSON))
+                        MockMvcRequestBuilders.get(route + "?dev=true").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
                 .andExpect(
@@ -240,18 +239,39 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Normal user with no matching status - should see empty list")
+    @DisplayName(
+            "Normal user filtering by status with dev flag - should only see endorsed requests with status")
     @WithCustomMockUser(
             username = "user-id-2",
             authorities = {"USER"})
-    public void getRequestsByStatus_asNormalUserWithNoMatch_shouldReturnEmpty() throws Exception {
+    public void getRequestsByStatus_withDevFlag_shouldOnlyShowEndorsedRequestsWithStatus()
+            throws Exception {
         mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get(route + "?status=PENDING")
+                        MockMvcRequestBuilders.get(route + "?status=APPROVED&dev=true")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
+                .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id"))
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"));
+    }
+
+    @Test
+    @DisplayName(
+            "Normal user filtering by status without dev flag - should see all requests with status (original behavior)")
+    @WithCustomMockUser(
+            username = "user-id-2",
+            authorities = {"USER"})
+    public void getRequestsByStatus_withoutDevFlag_shouldShowAllRequestsWithStatus()
+            throws Exception {
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get(route + "?status=APPROVED")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id"))
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"));
     }
 
     @Test

@@ -54,7 +54,7 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     @Override
-    public SkillRequestsDto getAllRequests() {
+    public SkillRequestsDto getAllRequests(boolean devMode) {
         JwtUser jwtDetails =
                 (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -67,7 +67,11 @@ public class SkillServiceImplementation implements SkillService {
         if (userRole.isSuper_user()) {
             skillRequests = userSkillRepository.findAll();
         } else {
-            skillRequests = userSkillRepository.findUserSkillsByEndorserId(userId);
+            if (devMode) {
+                skillRequests = userSkillRepository.findUserSkillsByEndorserId(userId);
+            } else {
+                skillRequests = userSkillRepository.findUserSkillsByEndorserIdLegacy(userId);
+            }
         }
 
         if (skillRequests == null) {
@@ -75,14 +79,15 @@ public class SkillServiceImplementation implements SkillService {
         }
 
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsWithUserDetailsViewModel(skillRequests, userId, userRole.isSuper_user());
+                toSkillRequestsWithUserDetailsViewModel(
+                        skillRequests, userId, userRole.isSuper_user(), devMode);
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
     }
 
     @Override
-    public SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status) {
+    public SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status, boolean devMode) {
         JwtUser jwtDetails =
                 (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -92,9 +97,13 @@ public class SkillServiceImplementation implements SkillService {
 
         List<UserSkills> skillRequests;
 
-        if (userRole.isSuper_user()) {
+        if (!devMode) {
+            skillRequests = userSkillRepository.findByStatus(status);
+        } else if (userRole.isSuper_user()) {
+            // New behavior for superuser
             skillRequests = userSkillRepository.findByStatus(status);
         } else {
+            // New behavior for normal user
             skillRequests = userSkillRepository.findByStatusAndEndorserId(status, userId);
         }
 
@@ -103,7 +112,8 @@ public class SkillServiceImplementation implements SkillService {
         }
 
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsWithUserDetailsViewModel(skillRequests, userId, userRole.isSuper_user());
+                toSkillRequestsWithUserDetailsViewModel(
+                        skillRequests, userId, userRole.isSuper_user(), devMode);
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
@@ -146,7 +156,7 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     private SkillRequestsWithUserDetailsViewModel toSkillRequestsWithUserDetailsViewModel(
-            List<UserSkills> skills, String currentUserId, boolean isSuperUser) {
+            List<UserSkills> skills, String currentUserId, boolean isSuperUser, boolean devMode) {
 
         // store all users data that are a part of this request
         Map<String, UserViewModel> userViewModelMap = new HashMap<>();
@@ -160,7 +170,10 @@ public class SkillServiceImplementation implements SkillService {
 
                                     List<Endorsement> endorsements;
 
-                                    if (isSuperUser) {
+                                    if (!devMode) {
+                                        endorsements =
+                                                endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+                                    } else if (isSuperUser) {
                                         endorsements =
                                                 endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
                                     } else {
