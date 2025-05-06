@@ -173,6 +173,16 @@ public class SkillServiceImplementation implements SkillService {
                                         endorsements =
                                                 endorsementRepository.findByEndorseIdAndSkillIdAndEndorserId(
                                                         endorseId, skillId, currentUserId);
+
+                                        // Optimization: We already know the currentUserId will be in this list,
+                                        // so we can ensure it's in the map before the forEach loop
+                                        if (!userViewModelMap.containsKey(currentUserId)) {
+                                            RdsGetUserDetailsResDto currentUserDetails =
+                                                    rdsService.getUserDetails(currentUserId);
+                                            UserViewModel currentUserViewModel =
+                                                    getUserModalFromRdsDetails(currentUserId, currentUserDetails);
+                                            userViewModelMap.put(currentUserId, currentUserViewModel);
+                                        }
                                     }
 
                                     if (!userViewModelMap.containsKey(endorseId)) {
@@ -186,7 +196,6 @@ public class SkillServiceImplementation implements SkillService {
                                     endorsements.forEach(
                                             endorsement -> {
                                                 String endorserId = endorsement.getEndorserId();
-
                                                 if (!userViewModelMap.containsKey(endorserId)) {
                                                     RdsGetUserDetailsResDto endorserRdsDetails =
                                                             rdsService.getUserDetails(endorserId);
