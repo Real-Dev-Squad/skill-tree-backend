@@ -12,7 +12,6 @@ import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.Skill;
 import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
-import com.RDS.skilltree.services.SkillService;
 import com.RDS.skilltree.services.external.RdsService;
 import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
@@ -46,45 +45,34 @@ import utils.WithCustomMockUser;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import({TestContainerManager.class})
 public class GetEndorsementsBySkillIdIntegrationTest {
-    @Autowired private MockMvc mockMvc;
-
     @Autowired private EndorsementRepository endorsementRepository;
-
-    @MockBean private RdsService rdsService;
-
     @Autowired private SkillRepository skillRepository;
 
-    @MockBean private JWTUtils jwtUtils;
-
+    @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
+
+    @MockBean private RdsService rdsService;
+    @MockBean private JWTUtils jwtUtils;
 
     private final String superUserId = "super-user-id";
     private final String userId1 = "user-id-1";
     private final String userId2 = "user-id-2";
 
-    @Autowired private SkillService skillService;
-
     @BeforeEach
     void setUp() {
-        // Clean up repositories
         skillRepository.deleteAll();
         endorsementRepository.deleteAll();
 
-        // Setup super-user detail
         RdsGetUserDetailsResDto superUserDetails = createUserDetails(superUserId, true);
 
-        // Setup normal-users detail
         RdsGetUserDetailsResDto user1Details = createUserDetails(userId1, false);
         RdsGetUserDetailsResDto user2Details = createUserDetails(userId2, false);
 
-        // Setup RDS service mock responses
         when(rdsService.getUserDetails(superUserId)).thenReturn(superUserDetails);
         when(rdsService.getUserDetails(userId1)).thenReturn(user1Details);
         when(rdsService.getUserDetails(userId2)).thenReturn(user2Details);
 
-        // Mock JWTUtils to bypass actual JWT verification
         Claims mockClaims = mock(Claims.class);
-        when(mockClaims.get("userId", String.class)).thenReturn(superUserId);
         when(jwtUtils.validateToken(anyString())).thenReturn(mockClaims);
     }
 
@@ -93,12 +81,13 @@ public class GetEndorsementsBySkillIdIntegrationTest {
     }
 
     private Skill createAndSaveSkill(String skillName) {
-        return skillRepository.save(createSkill(skillName, superUserId));
+        return skillRepository.save(TestDataHelper.createSkill(skillName, superUserId));
     }
 
     private Endorsement createAndSaveEndorsement(
             Skill skill, String endorseId, String endorserId, String message) {
-        Endorsement endorsement = createEndorsement(skill, endorseId, endorserId, message);
+        Endorsement endorsement =
+                TestDataHelper.createEndorsement(skill, endorseId, endorserId, message);
         return endorsementRepository.save(endorsement);
     }
 
@@ -125,10 +114,8 @@ public class GetEndorsementsBySkillIdIntegrationTest {
             authorities = {"SUPERUSER"})
     public void getEndorsements_forSkillWithMultipleEndorsements_shouldReturnAllEndorsements()
             throws Exception {
-        // set-up mock skill
         Skill skill = createAndSaveSkill("Java");
 
-        // set-up mock endorsements
         String endorseId = userId1;
         String endorserId1 = userId2;
         String endorserId2 = superUserId;
@@ -140,10 +127,8 @@ public class GetEndorsementsBySkillIdIntegrationTest {
         Endorsement endorsement2 =
                 createAndSaveEndorsement(skill, endorseId, endorserId2, endorsementMessage2);
 
-        // perform get request
         MvcResult result = performGetRequest(createUrl(skill.getId()));
 
-        // validate response
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
 
         List<EndorsementViewModel> actualEndorsements = extractEndorsementsFromResult(result);
@@ -162,10 +147,8 @@ public class GetEndorsementsBySkillIdIntegrationTest {
             authorities = {"SUPERUSER"})
     public void getEndorsements_forSkillWithSingleEndorsement_shouldReturnOneEndorsement()
             throws Exception {
-        // set-up mock skill
         Skill skill = createAndSaveSkill("Python");
 
-        // create mock endorsement
         String endorseId = userId2;
         String endorserId = superUserId;
         String endorsementMessage = "Good Python knowledge";
@@ -173,10 +156,8 @@ public class GetEndorsementsBySkillIdIntegrationTest {
         Endorsement endorsement =
                 createAndSaveEndorsement(skill, endorseId, endorserId, endorsementMessage);
 
-        // perform get request
         MvcResult result = performGetRequest(createUrl(skill.getId()));
 
-        // validate response
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
 
         List<EndorsementViewModel> actualEndorsements = extractEndorsementsFromResult(result);
@@ -194,13 +175,10 @@ public class GetEndorsementsBySkillIdIntegrationTest {
             username = superUserId,
             authorities = {"SUPERUSER"})
     public void getEndorsements_forSkillWithNoEndorsements_shouldReturnEmptyList() throws Exception {
-        // set-up mock skill
         Skill skill = createAndSaveSkill("JavaScript");
 
-        // perform get request without setting-up endorsement
         MvcResult result = performGetRequest(createUrl(skill.getId()));
 
-        // validate response
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
 
         List<EndorsementViewModel> actualEndorsements = extractEndorsementsFromResult(result);
@@ -213,7 +191,6 @@ public class GetEndorsementsBySkillIdIntegrationTest {
             username = superUserId,
             authorities = {"SUPERUSER"})
     public void getEndorsements_forNonExistentSkillId_shouldReturnEmptyList() throws Exception {
-        // Use a non-existent skill ID (assuming 999 does not exist)
         Integer nonExistentSkillId = 999;
 
         MvcResult result = performGetRequest(createUrl(nonExistentSkillId));
@@ -229,7 +206,6 @@ public class GetEndorsementsBySkillIdIntegrationTest {
             username = userId1,
             authorities = {"USER"})
     public void normalUser_canAccessEndorsements() throws Exception {
-        // Setup skill and endorsements
         Skill skill = createAndSaveSkill("Java");
         String endorseId = userId1;
         String endorserId = superUserId;
@@ -238,10 +214,8 @@ public class GetEndorsementsBySkillIdIntegrationTest {
         Endorsement endorsement =
                 createAndSaveEndorsement(skill, endorseId, endorserId, endorsementMessage);
 
-        // Verify normal user can access the endpoint
         MvcResult result = performGetRequest(createUrl(skill.getId()));
 
-        // validate response
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
 
         List<EndorsementViewModel> actualEndorsements = extractEndorsementsFromResult(result);
@@ -256,7 +230,6 @@ public class GetEndorsementsBySkillIdIntegrationTest {
     @Test
     @DisplayName("Unauthenticated request returns 401")
     public void unauthenticatedRequest_returnsUnauthorized() throws Exception {
-        // set-up mock skill
         Skill skill = createAndSaveSkill("Java");
 
         MvcResult result = performGetRequest(createUrl(skill.getId()));
