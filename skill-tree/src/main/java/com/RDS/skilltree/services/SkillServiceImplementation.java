@@ -169,19 +169,35 @@ public class SkillServiceImplementation implements SkillService {
                                     if (!devMode || isSuperUser) {
                                         endorsements =
                                                 endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+
+                                        // Add details of the endorsers
+                                        endorsements.forEach(
+                                                endorsement -> {
+                                                    String endorserId = endorsement.getEndorserId();
+                                                    if (!userViewModelMap.containsKey(endorserId)) {
+                                                        RdsGetUserDetailsResDto endorserRdsDetails =
+                                                                rdsService.getUserDetails(endorserId);
+                                                        UserViewModel endorserDetails =
+                                                                getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
+                                                        userViewModelMap.put(endorserId, endorserDetails);
+                                                    }
+                                                });
+
                                     } else {
                                         endorsements =
                                                 endorsementRepository.findByEndorseIdAndSkillIdAndEndorserId(
                                                         endorseId, skillId, currentUserId);
 
-                                        // Optimization: We already know the currentUserId will be in this list,
-                                        // so we can ensure it's in the map before the forEach loop
-                                        if (!userViewModelMap.containsKey(currentUserId)) {
-                                            RdsGetUserDetailsResDto currentUserDetails =
+                                        if (!endorsements.isEmpty() && !userViewModelMap.containsKey(currentUserId)) {
+                                            // endorsements will only contain endorsements by current user
+                                            // therefore, add details of the endorser without looping over the
+                                            // endorsements
+
+                                            RdsGetUserDetailsResDto endorseRdsDetails =
                                                     rdsService.getUserDetails(currentUserId);
-                                            UserViewModel currentUserViewModel =
-                                                    getUserModalFromRdsDetails(currentUserId, currentUserDetails);
-                                            userViewModelMap.put(currentUserId, currentUserViewModel);
+                                            UserViewModel endorserDetails =
+                                                    getUserModalFromRdsDetails(currentUserId, endorseRdsDetails);
+                                            userViewModelMap.put(currentUserId, endorserDetails);
                                         }
                                     }
 
@@ -192,18 +208,6 @@ public class SkillServiceImplementation implements SkillService {
                                                 getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
                                         userViewModelMap.put(endorseId, endorseDetails);
                                     }
-
-                                    endorsements.forEach(
-                                            endorsement -> {
-                                                String endorserId = endorsement.getEndorserId();
-                                                if (!userViewModelMap.containsKey(endorserId)) {
-                                                    RdsGetUserDetailsResDto endorserRdsDetails =
-                                                            rdsService.getUserDetails(endorserId);
-                                                    UserViewModel endorserDetails =
-                                                            getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
-                                                    userViewModelMap.put(endorserId, endorserDetails);
-                                                }
-                                            });
 
                                     return SkillRequestViewModel.toViewModel(skill, endorsements);
                                 })
