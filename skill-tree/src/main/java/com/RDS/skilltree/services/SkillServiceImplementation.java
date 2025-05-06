@@ -97,13 +97,9 @@ public class SkillServiceImplementation implements SkillService {
 
         List<UserSkills> skillRequests;
 
-        if (!devMode) {
-            skillRequests = userSkillRepository.findByStatus(status);
-        } else if (userRole.isSuper_user()) {
-            // New behavior for superuser
+        if (!devMode || userRole.isSuper_user()) {
             skillRequests = userSkillRepository.findByStatus(status);
         } else {
-            // New behavior for normal user
             skillRequests = userSkillRepository.findByStatusAndEndorserId(status, userId);
         }
 
@@ -170,10 +166,7 @@ public class SkillServiceImplementation implements SkillService {
 
                                     List<Endorsement> endorsements;
 
-                                    if (!devMode) {
-                                        endorsements =
-                                                endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
-                                    } else if (isSuperUser) {
+                                    if (!devMode || isSuperUser) {
                                         endorsements =
                                                 endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
                                     } else {
