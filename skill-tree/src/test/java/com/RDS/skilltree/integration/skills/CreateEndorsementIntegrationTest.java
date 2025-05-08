@@ -2,8 +2,6 @@ package com.RDS.skilltree.integration.skills;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static utils.TestDataHelper.createUserDetails;
 
@@ -23,7 +21,6 @@ import com.RDS.skilltree.services.external.RdsService;
 import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -78,9 +75,6 @@ public class CreateEndorsementIntegrationTest {
         when(rdsService.getUserDetails(superUserId)).thenReturn(superUserDetails);
         when(rdsService.getUserDetails(userId1)).thenReturn(user1Details);
         when(rdsService.getUserDetails(userId2)).thenReturn(user2Details);
-
-        Claims mockClaims = mock(Claims.class);
-        when(jwtUtils.validateToken(anyString())).thenReturn(mockClaims);
     }
 
     private String createUrl(Integer skillId) {
@@ -291,7 +285,7 @@ public class CreateEndorsementIntegrationTest {
     @DisplayName("Error case - if endorsement already exists, do not create a duplicate")
     @WithCustomMockUser(
             username = userId2,
-            authorities = {"SUPERUSER"})
+            authorities = {"USER"})
     public void createEndorsement_withExistingEndorsement_shouldNotCreateDuplicateEndorsement()
             throws Exception {
         Skill skill = createAndSaveSkill(SKILL_NAME);
@@ -314,5 +308,50 @@ public class CreateEndorsementIntegrationTest {
                 .isEqualTo(ENDORSEMENT_ALREADY_EXISTS_MESSAGE);
 
         assertThat(endorsementRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName(
+            "Edge case - if endorsement exists on a different skill, should create endorsement on new skill")
+    @WithCustomMockUser(
+            username = userId2,
+            authorities = {"USER"})
+    public void
+            createEndorsement_withExistingEndorsementOnDiffSkill_shouldCreateEndorsementOnNewSkill()
+                    throws Exception {
+        Skill skill1 = createAndSaveSkill(SKILL_NAME);
+        Skill skill2 = createAndSaveSkill("Python");
+
+        String endorseId = userId1;
+        String endorserId = userId2;
+        String message = ENDORSEMENT_MESSAGE;
+
+        String requestBody =
+                objectMapper.writeValueAsString(createEndorsementRequest(userId1, ENDORSEMENT_MESSAGE));
+
+        // create the endorsement for skill1
+        MvcResult result1 = performPostRequest(createUrl(skill1.getId()), requestBody);
+
+        EndorsementViewModel actualEndorsement1 = extractEndorsementFromResult(result1);
+        EndorsementViewModel expectedEndorsement1 =
+                createExpectedEndorsement(skill1, endorseId, endorserId, message);
+
+        assertIsEqual(actualEndorsement1, expectedEndorsement1);
+
+        assertThat(endorsementRepository.count()).isEqualTo(1);
+
+        // create the endorsement for skill2
+        MvcResult result2 = performPostRequest(createUrl(skill2.getId()), requestBody);
+
+        assertThat(result2.getResponse().getStatus()).isEqualTo(201);
+
+        EndorsementViewModel actualEndorsement2 = extractEndorsementFromResult(result2);
+        EndorsementViewModel expectedEndorsement2 =
+                createExpectedEndorsement(skill2, endorseId, endorserId, message);
+
+        assertIsEqual(actualEndorsement2, expectedEndorsement2);
+
+        // assert both endorsements were created
+        assertThat(endorsementRepository.count()).isEqualTo(2);
     }
 }
