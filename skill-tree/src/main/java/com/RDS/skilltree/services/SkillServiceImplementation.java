@@ -54,7 +54,7 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     @Override
-    public SkillRequestsDto getAllRequests(boolean devMode) {
+    public SkillRequestsDto getAllRequests(boolean isDev) {
         JwtUser jwtDetails =
                 (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -66,12 +66,10 @@ public class SkillServiceImplementation implements SkillService {
 
         if (userRole.isSuper_user()) {
             skillRequests = userSkillRepository.findAll();
+        } else if (isDev) {
+            skillRequests = userSkillRepository.findUserSkillsByEndorserId(userId);
         } else {
-            if (devMode) {
-                skillRequests = userSkillRepository.findUserSkillsByEndorserId(userId);
-            } else {
-                skillRequests = userSkillRepository.findUserSkillsByEndorserIdLegacy(userId);
-            }
+            skillRequests = userSkillRepository.findUserSkillsByEndorserIdLegacy(userId);
         }
 
         if (skillRequests == null) {
@@ -86,7 +84,7 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     @Override
-    public SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status, boolean devMode) {
+    public SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status, boolean isDev) {
         JwtUser jwtDetails =
                 (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -94,9 +92,9 @@ public class SkillServiceImplementation implements SkillService {
         RdsUserViewModel.Roles userRole = userDetails.getUser().getRoles();
         String userId = userDetails.getUser().getId();
 
-        List<UserSkills> skillRequests;
+        List<UserSkills> skillRequests = null;
 
-        if (!devMode || userRole.isSuper_user()) {
+        if (!isDev || userRole.isSuper_user()) {
             skillRequests = userSkillRepository.findByStatus(status);
         } else {
             skillRequests = userSkillRepository.findByStatusAndEndorserId(status, userId);

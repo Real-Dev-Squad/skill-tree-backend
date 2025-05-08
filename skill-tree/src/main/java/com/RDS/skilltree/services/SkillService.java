@@ -12,9 +12,9 @@ public interface SkillService {
 
     SkillViewModel create(CreateSkillViewModel skill);
 
-    SkillRequestsDto getAllRequests(boolean devMode);
+    SkillRequestsDto getAllRequests(boolean isDev);
 
-    SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status, boolean devMode);
+    SkillRequestsDto getRequestsByStatus(UserSkillStatusEnum status, boolean isDev);
 
     GenericResponse<String> approveRejectSkillRequest(
             Integer skillId, String endorseId, UserSkillStatusEnum action);
