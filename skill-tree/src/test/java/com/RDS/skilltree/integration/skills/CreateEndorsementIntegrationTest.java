@@ -130,7 +130,7 @@ public class CreateEndorsementIntegrationTest {
     @WithCustomMockUser(
             username = superUserId,
             authorities = {"SUPERUSER"})
-    public void getEndorsements_forSkillWithMultipleEndorsements_shouldReturnAllEndorsements()
+    public void createEndorsement_asSuperUser_shouldCreateEndorsementSuccessfully()
             throws Exception {
         Skill skill = createAndSaveSkill(SKILL_NAME);
         String endorseId = userId1;
