@@ -154,4 +154,11 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(EndorsementAlreadyExistsException.class)
+    public ResponseEntity<?> handleEndorsementAlreadyExistsException(
+            EndorsementAlreadyExistsException ex, WebRequest request) {
+        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.CONFLICT);
+    }
 }
