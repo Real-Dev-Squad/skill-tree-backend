@@ -162,10 +162,16 @@ public class SkillServiceImplementation implements SkillService {
                                     Integer skillId = skill.getSkill().getId();
                                     String endorseId = skill.getUserId();
 
-                                    List<Endorsement> endorsements;
-
-                                    endorsements =
+                                    List<Endorsement> endorsements =
                                             endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+
+                                    if (!userViewModelMap.containsKey(endorseId)) {
+                                        RdsGetUserDetailsResDto endorseRdsDetails =
+                                                rdsService.getUserDetails(endorseId);
+                                        UserViewModel endorseDetails =
+                                                getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
+                                        userViewModelMap.put(endorseId, endorseDetails);
+                                    }
 
                                     // Add details of the endorsers
                                     endorsements.forEach(
@@ -179,14 +185,6 @@ public class SkillServiceImplementation implements SkillService {
                                                     userViewModelMap.put(endorserId, endorserDetails);
                                                 }
                                             });
-
-                                    if (!userViewModelMap.containsKey(endorseId)) {
-                                        RdsGetUserDetailsResDto endorseRdsDetails =
-                                                rdsService.getUserDetails(endorseId);
-                                        UserViewModel endorseDetails =
-                                                getUserModalFromRdsDetails(endorseId, endorseRdsDetails);
-                                        userViewModelMap.put(endorseId, endorseDetails);
-                                    }
 
                                     return SkillRequestViewModel.toViewModel(skill, endorsements);
                                 })
