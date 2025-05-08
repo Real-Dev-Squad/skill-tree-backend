@@ -87,12 +87,6 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
         RdsGetUserDetailsResDto normalUser2Details = new RdsGetUserDetailsResDto();
         normalUser2Details.setUser(normalUser2);
 
-        RdsUserViewModel normalUser3 = new RdsUserViewModel();
-        normalUser3.setId("user-id-3");
-        normalUser3.setRoles(normalUserRoles);
-        RdsGetUserDetailsResDto normalUser3Details = new RdsGetUserDetailsResDto();
-        normalUser3Details.setUser(normalUser3);
-
         // Setup mock skills
         Skill skill1 = new Skill();
         skill1.setName("Java");
@@ -123,21 +117,9 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
         userSkills3.setUserId("user-id-2");
         userSkills3.setStatus(UserSkillStatusEnum.PENDING);
 
-        UserSkills userSkills4 = new UserSkills();
-        userSkills4.setSkill(skill1);
-        userSkills4.setUserId("user-id-3");
-        userSkills4.setStatus(UserSkillStatusEnum.PENDING);
-
-        UserSkills userSkills5 = new UserSkills();
-        userSkills5.setSkill(skill2);
-        userSkills5.setUserId("user-id-3");
-        userSkills5.setStatus(UserSkillStatusEnum.REJECTED);
-
         userSkillRepository.save(userSkills1);
         userSkillRepository.save(userSkills2);
         userSkillRepository.save(userSkills3);
-        userSkillRepository.save(userSkills4);
-        userSkillRepository.save(userSkills5);
 
         // Setup mock endorsements
         Endorsement endorsement1 = new Endorsement();
@@ -161,31 +143,14 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
         endorsement3.setSkill(skill2);
         endorsement3.setMessage("skill2 for user-id-2");
 
-        Endorsement endorsement4 = new Endorsement();
-        endorsement4.setId(5);
-        endorsement4.setEndorserId("user-id-2");
-        endorsement4.setEndorseId("user-id-3");
-        endorsement4.setSkill(skill1);
-        endorsement4.setMessage("pending skill for user-id-3");
-
-        Endorsement endorsement5 = new Endorsement();
-        endorsement5.setId(6);
-        endorsement5.setEndorserId("user-id-2");
-        endorsement5.setEndorseId("user-id-3");
-        endorsement5.setSkill(skill2);
-        endorsement5.setMessage("rejected skill for user-id-3");
-
         endorsementRepository.save(endorsement1);
         endorsementRepository.save(endorsement2);
         endorsementRepository.save(endorsement3);
-        endorsementRepository.save(endorsement4);
-        endorsementRepository.save(endorsement5);
 
         // Setup RDS service mock responses
         when(rdsService.getUserDetails("super-user-id")).thenReturn(superUserDetails);
         when(rdsService.getUserDetails("user-id-2")).thenReturn(normalUser2Details);
         when(rdsService.getUserDetails("user-id")).thenReturn(normalUserDetails);
-        when(rdsService.getUserDetails("user-id-3")).thenReturn(normalUser3Details);
 
         // Mock JWTUtils to bypass actual JWT verification
         Claims mockClaims = mock(Claims.class);
@@ -237,6 +202,28 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     }
 
     @Test
+    @DisplayName(
+            "Normal user with dev flag - should only see skills they've endorsed with all endorsements")
+    @WithCustomMockUser(
+            username = "user-id-2",
+            authorities = {"USER"})
+    public void getAllRequests_asNormalUserWithDevFlag_shouldOnlySeeSkillsTheyEndorsed()
+            throws Exception {
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get(route + "?dev=true").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
+                .andExpect(
+                        CustomResultMatchers.hasEndorsement(
+                                "Springboot", "user-id", "user-id-2", "skill2 for user-id"))
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id"))
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"))
+                .andExpect(CustomResultMatchers.hasUser("user-id", " "))
+                .andExpect(CustomResultMatchers.hasUser("user-id-2", " "));
+    }
+
+    @Test
     @DisplayName("Filter requests by status - should return filtered requests")
     @WithCustomMockUser(
             username = "super-user-id",
@@ -256,37 +243,13 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName("Normal user with dev flag - should only see requests where user is the endorser")
-    @WithCustomMockUser(
-            username = "user-id-2",
-            authorities = {"USER"})
-    public void getAllRequests_withDevFlag_shouldOnlyShowRequestsWhereUserIsEndorser()
-            throws Exception {
-        mockMvc
-                .perform(
-                        MockMvcRequestBuilders.get(route + "?dev=true").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(CustomResultMatchers.hasSkillRequest("Springboot", "user-id", "APPROVED"))
-                .andExpect(
-                        CustomResultMatchers.hasEndorsement(
-                                "Springboot", "user-id", "user-id-2", "skill2 for user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"))
-                .andExpect(CustomResultMatchers.doesNotHaveEndorsement("Java", "user-id", "super-user-id"))
-                .andExpect(
-                        CustomResultMatchers.doesNotHaveEndorsement(
-                                "Springboot", "user-id-2", "super-user-id"));
-    }
-
-    @Test
     @DisplayName(
-            "Normal user filtering by status with dev flag - should only see requests where user is the endorser with matching status")
+            "Normal user with dev flag filtering by status - should only see endorsed skills with matching status")
     @WithCustomMockUser(
             username = "user-id-2",
             authorities = {"USER"})
-    public void
-            getRequestsByStatus_withDevFlag_shouldOnlyShowRequestsWhereUserIsEndorserWithMatchingStatus()
-                    throws Exception {
+    public void getRequests_asNormalUserByStatusWithDevFlag_shouldOnlyShowEndorsedMatchingRequests()
+            throws Exception {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=APPROVED&dev=true")
@@ -296,34 +259,10 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
                 .andExpect(
                         CustomResultMatchers.hasEndorsement(
                                 "Springboot", "user-id", "user-id-2", "skill2 for user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id-3"))
-                .andExpect(CustomResultMatchers.doesNotHaveEndorsement("Java", "user-id-3", "user-id-2"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-3"))
-                .andExpect(
-                        CustomResultMatchers.doesNotHaveEndorsement("Springboot", "user-id-3", "user-id-2"))
                 .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Java", "user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"));
-    }
-
-    @Test
-    @DisplayName(
-            "Normal user filtering by PENDING status with dev flag - should only see PENDING requests where user is endorser")
-    @WithCustomMockUser(
-            username = "user-id-2",
-            authorities = {"USER"})
-    public void getRequestsByPendingStatus_withDevFlag_shouldOnlyShowRequestsWhereUserIsEndorser()
-            throws Exception {
-        mockMvc
-                .perform(
-                        MockMvcRequestBuilders.get(route + "?status=PENDING&dev=true")
-                                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(CustomResultMatchers.hasSkillRequest("Java", "user-id-3", "PENDING"))
-                .andExpect(
-                        CustomResultMatchers.hasEndorsement(
-                                "Java", "user-id-3", "user-id-2", "pending skill for user-id-3"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id"))
-                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-3"));
+                .andExpect(CustomResultMatchers.doesNotHaveSkillRequest("Springboot", "user-id-2"))
+                .andExpect(CustomResultMatchers.hasUser("user-id", " "))
+                .andExpect(CustomResultMatchers.hasUser("user-id-2", " "));
     }
 
     @Test
@@ -340,15 +279,14 @@ public class GetAllSkillRequestIntegrationTest extends TestContainerManager {
     }
 
     @Test
-    @DisplayName(
-            "Normal user with dev flag filtering by REJECTED status - should return empty lists when no endorsed requests match")
+    @DisplayName("If no matching skill requests by status then return empty lists")
     @WithCustomMockUser(
             username = "user-id",
             authorities = {"USER"})
     public void noMatchingRequestsByStatus_ShouldReturnEmptyLists() throws Exception {
         mockMvc
                 .perform(
-                        MockMvcRequestBuilders.get(route + "?status=REJECTED&dev=true")
+                        MockMvcRequestBuilders.get(route + "?status=REJECTED")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())

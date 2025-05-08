@@ -79,8 +79,7 @@ public class SkillServiceImplementation implements SkillService {
         }
 
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsWithUserDetailsViewModel(
-                        skillRequests, userId, userRole.isSuper_user(), devMode);
+                toSkillRequestsWithUserDetailsViewModel(skillRequests);
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
@@ -108,8 +107,7 @@ public class SkillServiceImplementation implements SkillService {
         }
 
         SkillRequestsWithUserDetailsViewModel skillRequestsWithUserDetails =
-                toSkillRequestsWithUserDetailsViewModel(
-                        skillRequests, userId, userRole.isSuper_user(), devMode);
+                toSkillRequestsWithUserDetailsViewModel(skillRequests);
 
         return SkillRequestsDto.toDto(
                 skillRequestsWithUserDetails.getSkillRequests(), skillRequestsWithUserDetails.getUsers());
@@ -152,7 +150,7 @@ public class SkillServiceImplementation implements SkillService {
     }
 
     private SkillRequestsWithUserDetailsViewModel toSkillRequestsWithUserDetailsViewModel(
-            List<UserSkills> skills, String currentUserId, boolean isSuperUser, boolean devMode) {
+            List<UserSkills> skills) {
 
         // store all users data that are a part of this request
         Map<String, UserViewModel> userViewModelMap = new HashMap<>();
@@ -166,40 +164,21 @@ public class SkillServiceImplementation implements SkillService {
 
                                     List<Endorsement> endorsements;
 
-                                    if (!devMode || isSuperUser) {
-                                        endorsements =
-                                                endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
+                                    endorsements =
+                                            endorsementRepository.findByEndorseIdAndSkillId(endorseId, skillId);
 
-                                        // Add details of the endorsers
-                                        endorsements.forEach(
-                                                endorsement -> {
-                                                    String endorserId = endorsement.getEndorserId();
-                                                    if (!userViewModelMap.containsKey(endorserId)) {
-                                                        RdsGetUserDetailsResDto endorserRdsDetails =
-                                                                rdsService.getUserDetails(endorserId);
-                                                        UserViewModel endorserDetails =
-                                                                getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
-                                                        userViewModelMap.put(endorserId, endorserDetails);
-                                                    }
-                                                });
-
-                                    } else {
-                                        endorsements =
-                                                endorsementRepository.findByEndorseIdAndSkillIdAndEndorserId(
-                                                        endorseId, skillId, currentUserId);
-
-                                        if (!endorsements.isEmpty() && !userViewModelMap.containsKey(currentUserId)) {
-                                            // endorsements will only contain endorsements by current user
-                                            // therefore, add details of the endorser without looping over the
-                                            // endorsements
-
-                                            RdsGetUserDetailsResDto endorseRdsDetails =
-                                                    rdsService.getUserDetails(currentUserId);
-                                            UserViewModel endorserDetails =
-                                                    getUserModalFromRdsDetails(currentUserId, endorseRdsDetails);
-                                            userViewModelMap.put(currentUserId, endorserDetails);
-                                        }
-                                    }
+                                    // Add details of the endorsers
+                                    endorsements.forEach(
+                                            endorsement -> {
+                                                String endorserId = endorsement.getEndorserId();
+                                                if (!userViewModelMap.containsKey(endorserId)) {
+                                                    RdsGetUserDetailsResDto endorserRdsDetails =
+                                                            rdsService.getUserDetails(endorserId);
+                                                    UserViewModel endorserDetails =
+                                                            getUserModalFromRdsDetails(endorserId, endorserRdsDetails);
+                                                    userViewModelMap.put(endorserId, endorserDetails);
+                                                }
+                                            });
 
                                     if (!userViewModelMap.containsKey(endorseId)) {
                                         RdsGetUserDetailsResDto endorseRdsDetails =

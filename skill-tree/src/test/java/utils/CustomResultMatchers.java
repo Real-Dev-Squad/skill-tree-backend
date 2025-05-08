@@ -87,41 +87,6 @@ public class CustomResultMatchers {
         };
     }
 
-    public static ResultMatcher doesNotHaveEndorsement(
-            String skillName, String endorseId, String endorserId) {
-        return result -> {
-            String json = result.getResponse().getContentAsString();
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode root = objectMapper.readTree(json);
-
-            JsonNode requests = root.get("requests");
-            if (requests == null || requests.isEmpty()) {
-                // If requests is null or empty, the test passes
-                return;
-            }
-
-            // Find the request for the given skillName and endorseId
-            JsonNode matchingSkillRequest = findBySkillAndEndorseId(requests, skillName, endorseId);
-            if (matchingSkillRequest == null) {
-                // If the request doesn't exist, the endorsement definitely doesn't exist
-                return;
-            }
-
-            // Check endorsements
-            JsonNode endorsements = matchingSkillRequest.get("endorsements");
-            if (endorsements == null || endorsements.isEmpty()) {
-                // If no endorsements, the test passes
-                return;
-            }
-
-            // Find matching endorsement by endorserId
-            JsonNode matchingEndorsement = findByField(endorsements, "endorserId", endorserId);
-
-            // Assert that the endorsement is null
-            assertThat(matchingEndorsement).isNull();
-        };
-    }
-
     private static JsonNode findByField(JsonNode array, String fieldName, String value) {
         for (JsonNode node : array) {
             if (node.has(fieldName) && node.get(fieldName).asText().equals(value)) {
