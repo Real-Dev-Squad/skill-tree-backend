@@ -8,7 +8,4 @@ public interface EndorsementRepository extends JpaRepository<Endorsement, Intege
     List<Endorsement> findBySkillId(Integer skillId);
 
     List<Endorsement> findByEndorseIdAndSkillId(String endorseId, Integer skillId);
-
-    List<Endorsement> findByEndorseIdAndSkillIdAndEndorserId(
-            String endorseId, Integer skillId, String endorserId);
 }
