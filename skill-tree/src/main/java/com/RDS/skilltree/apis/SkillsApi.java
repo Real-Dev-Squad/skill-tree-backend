@@ -36,12 +36,14 @@ public class SkillsApi {
 
     @GetMapping("/requests")
     public ResponseEntity<SkillRequestsDto> getAllRequests(
-            @RequestParam(value = "status", required = false) UserSkillStatusEnum status) {
+            @RequestParam(name = "status", required = false) UserSkillStatusEnum status,
+            @RequestParam(name = "dev", required = false, defaultValue = "false") boolean isDev) {
+
         if (status != null) {
-            return ResponseEntity.ok(skillService.getRequestsByStatus(status));
+            return ResponseEntity.ok(skillService.getRequestsByStatus(status, isDev));
         }
 
-        return ResponseEntity.ok(skillService.getAllRequests());
+        return ResponseEntity.ok(skillService.getAllRequests(isDev));
     }
 
     @PostMapping("/requests/{skillId}/action")

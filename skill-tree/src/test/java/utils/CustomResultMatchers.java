@@ -67,6 +67,26 @@ public class CustomResultMatchers {
         };
     }
 
+    public static ResultMatcher doesNotHaveSkillRequest(String skillName, String endorseId) {
+        return result -> {
+            String json = result.getResponse().getContentAsString();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(json);
+
+            JsonNode requests = root.get("requests");
+            if (requests == null || requests.isEmpty()) {
+                // If requests is null or empty, the test passes as the request definitely doesn't exist
+                return;
+            }
+
+            // Find the request for the given skillName and endorseId
+            JsonNode matchingRequest = findBySkillAndEndorseId(requests, skillName, endorseId);
+
+            // Assert that the request is null
+            assertThat(matchingRequest).isNull();
+        };
+    }
+
     private static JsonNode findByField(JsonNode array, String fieldName, String value) {
         for (JsonNode node : array) {
             if (node.has(fieldName) && node.get(fieldName).asText().equals(value)) {
