@@ -281,6 +281,20 @@ public class GetAllSkillRequestIntegrationTest {
     }
 
     @Test
+    @DisplayName("If no skill Requests endorsed by user with dev flag then return empty lists")
+    @WithCustomMockUser(
+            username = "user-id",
+            authorities = {"USER"})
+    public void noSkillRequestsEndorsedByUser_WithDevFlag_ShouldReturnEmptyLists() throws Exception {
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get(route + "?dev=true").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
+    }
+
+    @Test
     @DisplayName("If no matching skill requests by status then return empty lists")
     @WithCustomMockUser(
             username = "user-id",
@@ -289,6 +303,21 @@ public class GetAllSkillRequestIntegrationTest {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders.get(route + "?status=REJECTED")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.users").isEmpty());
+    }
+
+    @Test
+    @DisplayName("If no matching skill requests by status with dev flag then return empty lists")
+    @WithCustomMockUser(
+            username = "user-id",
+            authorities = {"USER"})
+    public void noMatchingRequestsByStatus_WithDevFlag_ShouldReturnEmptyLists() throws Exception {
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get(route + "?status=REJECTED&dev=true")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requests").isEmpty())
