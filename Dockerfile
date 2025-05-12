@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk as build
 WORKDIR /app
-COPY skill-tree .
+COPY . .
 RUN ./mvnw --version
 RUN ./mvnw clean install -DskipTests
 
