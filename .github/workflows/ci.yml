@@ -18,7 +18,7 @@ jobs:
           distribution: "temurin"
 
       - name: Build with Maven
-        run: mvn verify --file skill-tree/pom.xml -P git-build-profile -Dskip-tests=true
+        run: mvn verify -P git-build-profile -Dskip-tests=true
 
   unit-test:
     name: Unit Tests
@@ -33,7 +33,7 @@ jobs:
           distribution: "temurin"
 
       - name: Unit Test
-        run: mvn test --file skill-tree/pom.xml
+        run: mvn test
 
   integration-test:
     name: Integration Tests
@@ -48,4 +48,4 @@ jobs:
           distribution: "temurin"
 
       - name: Integration Test
-        run: mvn verify --file skill-tree/pom.xml -Dskip-ut=true
+        run: mvn verify -Dskip-ut=true
