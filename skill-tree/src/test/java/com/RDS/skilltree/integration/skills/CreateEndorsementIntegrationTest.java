@@ -354,4 +354,19 @@ public class CreateEndorsementIntegrationTest {
         // assert both endorsements were created
         assertThat(endorsementRepository.count()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("if unauthorized user, should return 401")
+    public void shouldReturn401_ifUnauthorizedUser() throws Exception {
+        Skill skill = createAndSaveSkill(SKILL_NAME);
+
+        String endorseId = userId1;
+        String message = ENDORSEMENT_MESSAGE;
+
+        String requestBody =
+                objectMapper.writeValueAsString(createEndorsementRequest(userId1, ENDORSEMENT_MESSAGE));
+
+        MvcResult result = performPostRequest(createUrl(skill.getId()), requestBody);
+        assertThat(result.getResponse().getStatus()).isEqualTo(401);
+    }
 }
