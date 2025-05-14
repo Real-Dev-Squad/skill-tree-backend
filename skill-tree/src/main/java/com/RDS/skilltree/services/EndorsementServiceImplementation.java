@@ -75,7 +75,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
         String endorserId = jwtDetails.getRdsUserId();
 
         if (Objects.equals(endorseId, endorserId)) {
-            log.info(
+            log.warn(
                     "Self endorsement not allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
             throw new SelfEndorsementNotAllowedException("Self endorsement not allowed");
         }

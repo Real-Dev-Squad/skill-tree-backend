@@ -78,7 +78,7 @@ public class CreateEndorsementIntegrationTest {
     }
 
     private String createUrl(Integer skillId) {
-        return "/v1/skills/" + skillId + "/endorsements";
+        return String.format("/v1/skills/%d/endorsements", skillId);
     }
 
     private MvcResult performPostRequest(String url, String requestBody) throws Exception {
@@ -356,8 +356,8 @@ public class CreateEndorsementIntegrationTest {
     }
 
     @Test
-    @DisplayName("if unauthorized user, should return 401")
-    public void shouldReturn401_ifUnauthorizedUser() throws Exception {
+    @DisplayName("if user not authenticated, should return 401")
+    public void shouldReturn401_ifUnauthenticatedUser() throws Exception {
         Skill skill = createAndSaveSkill(SKILL_NAME);
 
         String endorseId = userId1;
