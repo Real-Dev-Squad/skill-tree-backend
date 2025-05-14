@@ -18,6 +18,7 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
+import com.RDS.skilltree.utils.Constants;
 import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,9 +58,6 @@ public class CreateEndorsementIntegrationTest {
 
     private final String SKILL_NAME = "Spring Boot";
     private final String ENDORSEMENT_MESSAGE = "Proficient in Spring Boot";
-    private final String SKILL_NOT_FOUND_MESSAGE = "Skill does not exist";
-    private final String SELF_ENDORSEMENT_MESSAGE = "Self endorsement not allowed";
-    private final String ENDORSEMENT_ALREADY_EXISTS_MESSAGE = "Endorsement already exists";
 
     @BeforeEach
     void setUp() {
@@ -191,7 +189,7 @@ public class CreateEndorsementIntegrationTest {
         assertThat(result.getResolvedException())
                 .isInstanceOf(SelfEndorsementNotAllowedException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(SELF_ENDORSEMENT_MESSAGE);
+                .isEqualTo(Constants.SELF_ENDORSEMENT_NOT_ALLOWED);
 
         assertThat(endorsementRepository.count()).isZero();
     }
@@ -213,7 +211,7 @@ public class CreateEndorsementIntegrationTest {
 
         assertThat(result.getResolvedException()).isInstanceOf(SkillNotFoundException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(SKILL_NOT_FOUND_MESSAGE);
+                .isEqualTo(Constants.SKILL_NOT_FOUND);
 
         assertThat(endorsementRepository.count()).isZero();
     }
@@ -305,7 +303,7 @@ public class CreateEndorsementIntegrationTest {
         assertThat(result.getResponse().getStatus()).isEqualTo(409);
         assertThat(result.getResolvedException()).isInstanceOf(EndorsementAlreadyExistsException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(ENDORSEMENT_ALREADY_EXISTS_MESSAGE);
+                .isEqualTo(Constants.ENDORSEMENT_ALREADY_EXISTS);
 
         assertThat(endorsementRepository.count()).isEqualTo(1);
     }
