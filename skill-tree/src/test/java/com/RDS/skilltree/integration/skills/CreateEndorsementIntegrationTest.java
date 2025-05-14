@@ -18,7 +18,7 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
-import com.RDS.skilltree.utils.Constants;
+import com.RDS.skilltree.utils.Constants.ExceptionMessages;
 import com.RDS.skilltree.utils.JWTUtils;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -189,7 +189,7 @@ public class CreateEndorsementIntegrationTest {
         assertThat(result.getResolvedException())
                 .isInstanceOf(SelfEndorsementNotAllowedException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(Constants.ExceptionMessages.SELF_ENDORSEMENT_NOT_ALLOWED);
+                .isEqualTo(ExceptionMessages.SELF_ENDORSEMENT_NOT_ALLOWED);
 
         assertThat(endorsementRepository.count()).isZero();
     }
@@ -211,7 +211,7 @@ public class CreateEndorsementIntegrationTest {
 
         assertThat(result.getResolvedException()).isInstanceOf(SkillNotFoundException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(Constants.ExceptionMessages.SKILL_NOT_FOUND);
+                .isEqualTo(ExceptionMessages.SKILL_NOT_FOUND);
 
         assertThat(endorsementRepository.count()).isZero();
     }
@@ -303,7 +303,7 @@ public class CreateEndorsementIntegrationTest {
         assertThat(result.getResponse().getStatus()).isEqualTo(409);
         assertThat(result.getResolvedException()).isInstanceOf(EndorsementAlreadyExistsException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(Constants.ExceptionMessages.ENDORSEMENT_ALREADY_EXISTS);
+                .isEqualTo(ExceptionMessages.ENDORSEMENT_ALREADY_EXISTS);
 
         assertThat(endorsementRepository.count()).isEqualTo(1);
     }
