@@ -300,7 +300,7 @@ public class CreateEndorsementIntegrationTest {
         // try to create a duplicate endorsement
         MvcResult result = performPostRequest(createUrl(skill.getId()), requestBody);
 
-        assertThat(result.getResponse().getStatus()).isEqualTo(409);
+        assertThat(result.getResponse().getStatus()).isEqualTo(405);
         assertThat(result.getResolvedException()).isInstanceOf(EndorsementAlreadyExistsException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
                 .isEqualTo(ExceptionMessages.ENDORSEMENT_ALREADY_EXISTS);

@@ -159,6 +159,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleEndorsementAlreadyExistsException(
             EndorsementAlreadyExistsException ex, WebRequest request) {
         log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
 }
