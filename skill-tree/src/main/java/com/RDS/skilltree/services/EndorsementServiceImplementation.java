@@ -78,14 +78,15 @@ public class EndorsementServiceImplementation implements EndorsementService {
         if (Objects.equals(endorseId, endorserId)) {
             log.warn(
                     "Self endorsement not allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
-            throw new SelfEndorsementNotAllowedException(Constants.SELF_ENDORSEMENT_NOT_ALLOWED);
+            throw new SelfEndorsementNotAllowedException(
+                    Constants.ExceptionMessages.SELF_ENDORSEMENT_NOT_ALLOWED);
         }
 
         Optional<Skill> skillDetails = skillRepository.findById(skillId);
 
         if (skillDetails.isEmpty()) {
             log.info("Skill id: {} not found", skillId);
-            throw new SkillNotFoundException(Constants.SKILL_NOT_FOUND);
+            throw new SkillNotFoundException(Constants.ExceptionMessages.SKILL_NOT_FOUND);
         }
 
         if (endorsementRepository.existsByEndorseIdAndEndorserIdAndSkillId(
@@ -95,7 +96,8 @@ public class EndorsementServiceImplementation implements EndorsementService {
                     endorseId,
                     endorserId,
                     skillId);
-            throw new EndorsementAlreadyExistsException(Constants.ENDORSEMENT_ALREADY_EXISTS);
+            throw new EndorsementAlreadyExistsException(
+                    Constants.ExceptionMessages.ENDORSEMENT_ALREADY_EXISTS);
         }
 
         RdsGetUserDetailsResDto endorseDetails = rdsService.getUserDetails(endorseId);
@@ -135,7 +137,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
 
         if (exitingEndorsement.isEmpty()) {
             log.info(String.format("Endorsement with id: %s not found", endorsementId));
-            throw new EndorsementNotFoundException(Constants.ENDORSEMENT_NOT_FOUND);
+            throw new EndorsementNotFoundException(Constants.ExceptionMessages.ENDORSEMENT_NOT_FOUND);
         }
 
         Endorsement endorsement = exitingEndorsement.get();

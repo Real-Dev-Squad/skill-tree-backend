@@ -189,7 +189,7 @@ public class CreateEndorsementIntegrationTest {
         assertThat(result.getResolvedException())
                 .isInstanceOf(SelfEndorsementNotAllowedException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(Constants.SELF_ENDORSEMENT_NOT_ALLOWED);
+                .isEqualTo(Constants.ExceptionMessages.SELF_ENDORSEMENT_NOT_ALLOWED);
 
         assertThat(endorsementRepository.count()).isZero();
     }
@@ -211,7 +211,7 @@ public class CreateEndorsementIntegrationTest {
 
         assertThat(result.getResolvedException()).isInstanceOf(SkillNotFoundException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(Constants.SKILL_NOT_FOUND);
+                .isEqualTo(Constants.ExceptionMessages.SKILL_NOT_FOUND);
 
         assertThat(endorsementRepository.count()).isZero();
     }
@@ -303,7 +303,7 @@ public class CreateEndorsementIntegrationTest {
         assertThat(result.getResponse().getStatus()).isEqualTo(409);
         assertThat(result.getResolvedException()).isInstanceOf(EndorsementAlreadyExistsException.class);
         assertThat(requireNonNull(result.getResolvedException()).getMessage())
-                .isEqualTo(Constants.ENDORSEMENT_ALREADY_EXISTS);
+                .isEqualTo(Constants.ExceptionMessages.ENDORSEMENT_ALREADY_EXISTS);
 
         assertThat(endorsementRepository.count()).isEqualTo(1);
     }
