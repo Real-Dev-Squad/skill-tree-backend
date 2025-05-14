@@ -13,6 +13,7 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
+import com.RDS.skilltree.utils.Constants;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
@@ -77,14 +78,14 @@ public class EndorsementServiceImplementation implements EndorsementService {
         if (Objects.equals(endorseId, endorserId)) {
             log.warn(
                     "Self endorsement not allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
-            throw new SelfEndorsementNotAllowedException("Self endorsement not allowed");
+            throw new SelfEndorsementNotAllowedException(Constants.SELF_ENDORSEMENT_NOT_ALLOWED);
         }
 
         Optional<Skill> skillDetails = skillRepository.findById(skillId);
 
         if (skillDetails.isEmpty()) {
             log.info("Skill id: {} not found", skillId);
-            throw new SkillNotFoundException("Skill does not exist");
+            throw new SkillNotFoundException(Constants.SKILL_NOT_FOUND);
         }
 
         if (endorsementRepository.existsByEndorseIdAndEndorserIdAndSkillId(
@@ -94,7 +95,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
                     endorseId,
                     endorserId,
                     skillId);
-            throw new EndorsementAlreadyExistsException("Endorsement already exists");
+            throw new EndorsementAlreadyExistsException(Constants.ENDORSEMENT_ALREADY_EXISTS);
         }
 
         RdsGetUserDetailsResDto endorseDetails = rdsService.getUserDetails(endorseId);
@@ -134,7 +135,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
 
         if (exitingEndorsement.isEmpty()) {
             log.info(String.format("Endorsement with id: %s not found", endorsementId));
-            throw new EndorsementNotFoundException("Endorsement not found");
+            throw new EndorsementNotFoundException(Constants.ENDORSEMENT_NOT_FOUND);
         }
 
         Endorsement endorsement = exitingEndorsement.get();
