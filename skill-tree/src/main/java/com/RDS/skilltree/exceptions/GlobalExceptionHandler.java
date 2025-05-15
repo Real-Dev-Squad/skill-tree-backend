@@ -21,8 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({NoEntityException.class})
     public ResponseEntity<GenericResponse<Object>> handleNoEntityException(NoEntityException ex) {
         log.error("NoEntityException - Error : {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
@@ -37,25 +36,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<GenericResponse<Object>> handleAccessDeniedException(
             AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
     public ResponseEntity<GenericResponse<Object>> handleEntityAlreadyExistsException(
             EntityAlreadyExistsException ex) {
         log.error("EntityAlreadyExistsException - Error : {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<GenericResponse<Object>> handleRuntimeException(RuntimeException ex) {
         log.error("Runtime Exception - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(
-                        new GenericResponse<>(
-                                null, "Runtime Exception - Something went wrong, please try again."));
+                .body(new GenericResponse<>("Runtime Exception - Something went wrong, please try again."));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -70,40 +65,40 @@ public class GlobalExceptionHandler {
         }
         log.error("MethodArgumentNotValidException Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, errorString.toString().trim()));
+                .body(new GenericResponse<>(errorString.toString().trim()));
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<GenericResponse<Object>> handleException(Exception ex) {
         log.error("Exception - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new GenericResponse<>(null, "Something unexpected happened, please try again."));
+                .body(new GenericResponse<>("Something unexpected happened, please try again."));
     }
 
     @ExceptionHandler({InvalidParameterException.class})
     public ResponseEntity<GenericResponse<Object>> handleException(InvalidParameterException ex) {
         log.error("InvalidParameterException - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+                .body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<GenericResponse<Object>> handleException(ConstraintViolationException ex) {
         log.error("ConstraintViolationException - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+                .body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex) {
         log.error("UserNotFoundException - Error : {}", ex.getMessage());
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(SkillAlreadyExistsException.class)
     public ResponseEntity<?> handleSkillAlreadyExistsException(SkillAlreadyExistsException ex) {
         log.error("SkillAlreadyExistsException - Error : {}", ex.getMessage());
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SelfEndorsementNotAllowedException.class)
@@ -111,25 +106,25 @@ public class GlobalExceptionHandler {
             SelfEndorsementNotAllowedException ex) {
         log.error("SelfEndorsementNotAllowedException - Error : {}", ex.getMessage());
         return new ResponseEntity<>(
-                new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+                new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(SkillNotFoundException.class)
     public ResponseEntity<?> handleSkillNotFoundException(SkillNotFoundException ex) {
         log.error("SkillNotFoundException - Error : {}", ex.getMessage());
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EndorsementNotFoundException.class)
     public ResponseEntity<?> handleEndorsementNotFoundException(EndorsementNotFoundException ex) {
         log.error("EndorsementNotFoundException - Error : {}", ex.getMessage());
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<?> handleForbiddenException(ForbiddenException ex) {
         log.error("ForbiddenException - Error : {}", ex.getMessage());
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(InternalServerErrorException.class)
@@ -137,7 +132,7 @@ public class GlobalExceptionHandler {
         log.error("Internal Server Error", ex);
         String errorMessage = "An unexpected error occurred.";
         return new ResponseEntity<>(
-                new GenericResponse<>(null, errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+                new GenericResponse<>(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(EndorsementAlreadyExistsException.class)
@@ -145,6 +140,6 @@ public class GlobalExceptionHandler {
             EndorsementAlreadyExistsException ex) {
         log.error("EndorsementAlreadyExistsException - Error : {}", ex.getMessage());
         return new ResponseEntity<>(
-                new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+                new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
 }
