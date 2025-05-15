@@ -11,13 +11,10 @@ public interface EndorsementRepository extends JpaRepository<Endorsement, Intege
 
     List<Endorsement> findByEndorseIdAndSkillId(String endorseId, Integer skillId);
 
-    @Query("""
-            SELECT (COUNT(*) > 0) AS exists
-                FROM Endorsement e
-                WHERE e.endorserId = :endorserId
-                  AND e.endorseId = :endorseId
-                  AND e.skill.id = :skillId
-            """)
+    @Query(
+            "SELECT (COUNT(*) > 0) AS exists "
+                    + "FROM Endorsement e "
+                    + "WHERE e.endorserId = :endorserId AND e.endorseId = :endorseId AND e.skill.id = :skillId")
     boolean existsByEndorseIdAndEndorserIdAndSkillId(
             @Param("endorseId") String endorseId,
             @Param("endorserId") String endorserId,
