@@ -12,28 +12,22 @@ public interface UserSkillRepository extends JpaRepository<UserSkills, Integer> 
 
     List<UserSkills> findByUserIdAndSkillId(String userId, Integer skillId);
 
-    @Query("""
-        SELECT us FROM UserSkills us
-        JOIN Endorsement e ON us.userId = e.endorseId
-        WHERE e.endorserId = :endorserId
-        """)
+    @Query(
+            "SELECT us "
+                    + "FROM UserSkills us JOIN Endorsement e ON us.userId = e.endorseId "
+                    + "WHERE e.endorserId = :endorserId")
     List<UserSkills> findUserSkillsByEndorserIdLegacy(@Param("endorserId") String endorserId);
 
-    @Query("""
-        SELECT us FROM UserSkills us
-        JOIN Endorsement e ON us.userId = e.endorseId AND us.skill.id = e.skill.id
-        WHERE e.endorserId = :endorserId
-        """)
+    @Query(
+            "SELECT us "
+                    + "FROM UserSkills us JOIN Endorsement e ON us.userId = e.endorseId AND us.skill.id = e.skill.id "
+                    + "WHERE e.endorserId = :endorserId")
     List<UserSkills> findUserSkillsByEndorserId(@Param("endorserId") String endorserId);
 
-    @Query("""
-        SELECT us FROM UserSkills us
-        JOIN Endorsement e ON us.userId = e.endorseId AND us.skill.id = e.skill.id
-        WHERE e.endorserId = :endorserId AND us.status = :status
-        """)
+    @Query(
+            "SELECT us "
+                    + "FROM UserSkills us JOIN Endorsement e ON us.userId = e.endorseId AND us.skill.id = e.skill.id "
+                    + "WHERE e.endorserId = :endorserId AND us.status = :status")
     List<UserSkills> findByStatusAndEndorserId(
-        @Param("status") UserSkillStatusEnum status,
-        @Param("endorserId") String endorserId
-    );
-
+            @Param("status") UserSkillStatusEnum status, @Param("endorserId") String endorserId);
 }
