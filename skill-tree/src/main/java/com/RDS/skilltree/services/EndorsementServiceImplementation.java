@@ -1,6 +1,7 @@
 package com.RDS.skilltree.services;
 
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
+import com.RDS.skilltree.exceptions.EndorsementAlreadyExistsException;
 import com.RDS.skilltree.exceptions.EndorsementNotFoundException;
 import com.RDS.skilltree.exceptions.SelfEndorsementNotAllowedException;
 import com.RDS.skilltree.exceptions.SkillNotFoundException;
@@ -12,6 +13,7 @@ import com.RDS.skilltree.repositories.EndorsementRepository;
 import com.RDS.skilltree.repositories.SkillRepository;
 import com.RDS.skilltree.repositories.UserSkillRepository;
 import com.RDS.skilltree.services.external.RdsService;
+import com.RDS.skilltree.utils.Constants.ExceptionMessages;
 import com.RDS.skilltree.viewmodels.CreateEndorsementViewModel;
 import com.RDS.skilltree.viewmodels.EndorsementViewModel;
 import com.RDS.skilltree.viewmodels.UpdateEndorsementViewModel;
@@ -63,7 +65,6 @@ public class EndorsementServiceImplementation implements EndorsementService {
     }
 
     @Override
-    // TODO : add a check for when a endorsement is already created by a user for a particular skill.
     public EndorsementViewModel create(CreateEndorsementViewModel endorsementViewModel) {
         String message = endorsementViewModel.getMessage();
         Integer skillId = endorsementViewModel.getSkillId();
@@ -75,19 +76,28 @@ public class EndorsementServiceImplementation implements EndorsementService {
         String endorserId = jwtDetails.getRdsUserId();
 
         if (Objects.equals(endorseId, endorserId)) {
-            log.info(
+            log.warn(
                     "Self endorsement not allowed, endorseId: {}, endorserId: {}", endorseId, endorserId);
-            throw new SelfEndorsementNotAllowedException("Self endorsement not allowed");
+            throw new SelfEndorsementNotAllowedException(ExceptionMessages.SELF_ENDORSEMENT_NOT_ALLOWED);
         }
 
         Optional<Skill> skillDetails = skillRepository.findById(skillId);
 
         if (skillDetails.isEmpty()) {
-            log.info(String.format("Skill id: %s not found", skillId));
-            throw new SkillNotFoundException("Skill does not exist");
+            log.info("Skill id: {} not found", skillId);
+            throw new SkillNotFoundException(ExceptionMessages.SKILL_NOT_FOUND);
         }
 
-        // Get endorse(person being endorsed) & endorser(person endorsing) details from RDS
+        if (endorsementRepository.existsByEndorseIdAndEndorserIdAndSkillId(
+                endorseId, endorserId, skillId)) {
+            log.info(
+                    "Endorsement already exists for endorseId: {}, endorserId: {}, skillId: {}",
+                    endorseId,
+                    endorserId,
+                    skillId);
+            throw new EndorsementAlreadyExistsException(ExceptionMessages.ENDORSEMENT_ALREADY_EXISTS);
+        }
+
         RdsGetUserDetailsResDto endorseDetails = rdsService.getUserDetails(endorseId);
         RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(endorserId);
 
@@ -125,7 +135,7 @@ public class EndorsementServiceImplementation implements EndorsementService {
 
         if (exitingEndorsement.isEmpty()) {
             log.info(String.format("Endorsement with id: %s not found", endorsementId));
-            throw new EndorsementNotFoundException("Endorsement not found");
+            throw new EndorsementNotFoundException(ExceptionMessages.ENDORSEMENT_NOT_FOUND);
         }
 
         Endorsement endorsement = exitingEndorsement.get();

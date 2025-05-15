@@ -2,10 +2,7 @@ package com.RDS.skilltree.exceptions;
 
 import com.RDS.skilltree.utils.GenericResponse;
 import jakarta.validation.ConstraintViolationException;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
@@ -16,16 +13,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler({NoEntityException.class})
     public ResponseEntity<GenericResponse<Object>> handleNoEntityException(NoEntityException ex) {
-        log.error("NoEntityException - Error : {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+        log.error("NoEntityException - Error : {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
@@ -40,25 +36,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<GenericResponse<Object>> handleAccessDeniedException(
             AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({EntityAlreadyExistsException.class})
     public ResponseEntity<GenericResponse<Object>> handleEntityAlreadyExistsException(
             EntityAlreadyExistsException ex) {
-        log.error("EntityAlreadyExistsException - Error : {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+        log.error("EntityAlreadyExistsException - Error : {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<GenericResponse<Object>> handleRuntimeException(RuntimeException ex) {
-        log.error("Runtime Exception - Error : {}", ex.getMessage(), ex);
+        log.error("Runtime Exception - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(
-                        new GenericResponse<>(
-                                null, "Runtime Exception - Something went wrong, please try again."));
+                .body(new GenericResponse<>("Runtime Exception - Something went wrong, please try again."));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -73,85 +65,81 @@ public class GlobalExceptionHandler {
         }
         log.error("MethodArgumentNotValidException Exception - Error : {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, errorString.toString().trim()));
+                .body(new GenericResponse<>(errorString.toString().trim()));
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<GenericResponse<Object>> handleException(Exception ex) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        log.error("Exception - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new GenericResponse<>(null, "Something unexpected happened, please try again."));
+                .body(new GenericResponse<>("Something unexpected happened, please try again."));
     }
 
     @ExceptionHandler({InvalidParameterException.class})
     public ResponseEntity<GenericResponse<Object>> handleException(InvalidParameterException ex) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        log.error("InvalidParameterException - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+                .body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<GenericResponse<Object>> handleException(ConstraintViolationException ex) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
+        log.error("ConstraintViolationException - Error : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new GenericResponse<>(null, ex.getMessage()));
+                .body(new GenericResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(
-            UserNotFoundException ex, WebRequest request) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex) {
+        log.error("UserNotFoundException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(SkillAlreadyExistsException.class)
-    public ResponseEntity<?> handleSkillAlreadyExistsException(
-            SkillAlreadyExistsException ex, WebRequest request) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.CONFLICT);
+    public ResponseEntity<?> handleSkillAlreadyExistsException(SkillAlreadyExistsException ex) {
+        log.error("SkillAlreadyExistsException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(SelfEndorsementNotAllowedException.class)
     public ResponseEntity<?> handleSelfEndorsementNotAllowedException(
-            SelfEndorsementNotAllowedException ex, WebRequest request) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
+            SelfEndorsementNotAllowedException ex) {
+        log.error("SelfEndorsementNotAllowedException - Error : {}", ex.getMessage());
         return new ResponseEntity<>(
-                new GenericResponse<>(null, ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+                new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(SkillNotFoundException.class)
-    public ResponseEntity<?> handleSkillNotFoundException(
-            SkillNotFoundException ex, WebRequest request) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> handleSkillNotFoundException(SkillNotFoundException ex) {
+        log.error("SkillNotFoundException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EndorsementNotFoundException.class)
-    public ResponseEntity<?> handleEndorsementNotException(
-            EndorsementNotFoundException ex, WebRequest request) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> handleEndorsementNotFoundException(EndorsementNotFoundException ex) {
+        log.error("EndorsementNotFoundException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<?> handleForbiddenException(ForbiddenException ex, WebRequest request) {
-        log.error("Exception - Error : {}", ex.getMessage(), ex);
-        return new ResponseEntity<>(new GenericResponse<>(null, ex.getMessage()), HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> handleForbiddenException(ForbiddenException ex) {
+        log.error("ForbiddenException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(InternalServerErrorException.class)
-    public ResponseEntity<?> handleInternalServerErrorException(
-            InternalServerErrorException ex, WebRequest request) {
+    public ResponseEntity<?> handleInternalServerErrorException(InternalServerErrorException ex) {
         log.error("Internal Server Error", ex);
-        // Create a more specific error message based on the exception type or cause
         String errorMessage = "An unexpected error occurred.";
+        return new ResponseEntity<>(
+                new GenericResponse<>(errorMessage), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-        // Consider adding more details to the response for debugging
-        Map<String, Object> errorDetails = new HashMap<>();
-        errorDetails.put("timestamp", LocalDateTime.now());
-        errorDetails.put("message", errorMessage);
-        errorDetails.put("details", ex.getMessage()); // Include exception details for debugging
-
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(EndorsementAlreadyExistsException.class)
+    public ResponseEntity<?> handleEndorsementAlreadyExistsException(
+            EndorsementAlreadyExistsException ex) {
+        log.error("EndorsementAlreadyExistsException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(
+                new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
 }
