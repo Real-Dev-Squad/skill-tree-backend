@@ -14,4 +14,8 @@ import lombok.Setter;
 public class GenericResponse<T> {
     private T data;
     private String message;
+
+    public GenericResponse(String message) {
+        this.message = message;
+    }
 }

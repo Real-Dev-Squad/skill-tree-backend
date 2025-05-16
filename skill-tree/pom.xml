@@ -90,6 +90,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!--Start io.jsonwebtoken: todo: remove the below block when rolling back to new version -->
                 <dependency>
@@ -214,7 +219,7 @@
                     <skip>${skip-ut}</skip>
                     <skip>${skip-tests}</skip>
                     <includes>
-                        <include>**/unit/*.java</include>
+                        <include>**/unit/**/*.java</include>
                     </includes>
 
                 </configuration>
@@ -226,7 +231,7 @@
                 <configuration>
                     <skip>${skip-tests}</skip>
                     <includes>
-                        <include>**/integration/*.java</include>
+                        <include>**/integration/**/*.java</include>
                     </includes>
 
                 </configuration>
