@@ -115,6 +115,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new GenericResponse<>(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(TaskSkillAssociationAlreadyExistsException.class)
+    public ResponseEntity<GenericResponse<Object>> handleTaskSkillAssociationAlreadyExistsException(
+            TaskSkillAssociationAlreadyExistsException ex) {
+        log.error("Duplicate task-skill association: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new GenericResponse<>(null, ex.getMessage()));
+    }
+
     @ExceptionHandler(EndorsementNotFoundException.class)
     public ResponseEntity<?> handleEndorsementNotFoundException(EndorsementNotFoundException ex) {
         log.error("EndorsementNotFoundException - Error : {}", ex.getMessage());
