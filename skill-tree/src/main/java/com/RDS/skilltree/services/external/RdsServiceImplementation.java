@@ -2,6 +2,7 @@ package com.RDS.skilltree.services.external;
 
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.exceptions.UserNotFoundException;
+import com.RDS.skilltree.utils.Constants.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class RdsServiceImplementation implements RdsService {
             return restTemplate.getForObject(url, RdsGetUserDetailsResDto.class);
         } catch (RestClientException error) {
             log.error("Error calling url {}, error: {}", url, error.getMessage());
-            throw new UserNotFoundException("Error getting user details");
+            throw new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND);
         }
     }
 }
