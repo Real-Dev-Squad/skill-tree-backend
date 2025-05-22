@@ -194,7 +194,7 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Fails due to authorization bug tracked in #206 – re-enable once fixed")
     @DisplayName("when user is not the endorser, should not update endorsement")
     @WithCustomMockUser(
             username = userId1,
@@ -219,7 +219,7 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Fails due to validation bug tracked in #206 – re-enable once fixed")
     @DisplayName("Message is empty string, request is not valid")
     @WithCustomMockUser(
             username = userId1,
@@ -240,7 +240,7 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Fails due to bug tracked in #206 – re-enable once fixed")
     @DisplayName("RdsService fails to get 'endorser' details, should return 404")
     @WithCustomMockUser(
             username = "non-existent-endorser-id",
@@ -269,7 +269,7 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Fails due to bug tracked in #206 – re-enable once fixed")
     @DisplayName("RdsService fails to get 'endorse' details, should return 404")
     @WithCustomMockUser(
             username = userId1,
