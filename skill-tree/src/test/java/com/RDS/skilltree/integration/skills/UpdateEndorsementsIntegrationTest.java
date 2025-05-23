@@ -359,7 +359,7 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @DisplayName("User is unauthorized, should return 401")
+    @DisplayName("User is unauthenticated, should return 401")
     public void updateEndorsement_whenUserIsUnauthenticated_shouldReturn401() throws Exception {
         Skill skill = createAndSaveSkill(SKILL_NAME);
         Endorsement existingEndorsement =
