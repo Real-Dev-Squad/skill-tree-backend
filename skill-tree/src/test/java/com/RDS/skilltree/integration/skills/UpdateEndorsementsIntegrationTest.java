@@ -199,7 +199,7 @@ public class UpdateEndorsementsIntegrationTest {
     @WithCustomMockUser(
             username = userId1,
             authorities = {"USER"})
-    public void updateEndorsement_othersEndorsement_shouldUNotUpdateEndorsement() throws Exception {
+    public void updateEndorsement_othersEndorsement_shouldNotUpdateEndorsement() throws Exception {
         Skill skill = createAndSaveSkill(SKILL_NAME);
         Endorsement existingEndorsement =
                 createAndSaveEndorsement(skill, userId2, superUserId, INITIAL_MESSAGE);
