@@ -12,5 +12,8 @@ public class Constants {
         public static final String USER_NOT_FOUND = "Error getting user details";
         public static final String UNAUTHORIZED_ENDORSEMENT_UPDATE =
                 "Not authorized to update this endorsement";
+        public static final String INVALID_ACCESS_TOKEN =
+                "The access token provided is expired, revoked, malformed, or invalid for other reasons.";
+        public static final String ACCESS_DENIED = "Access Denied";
     }
 }
