@@ -32,7 +32,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import utils.RestAPIHelper;
 import utils.TestDataHelper;
 import utils.WithCustomMockUser;
@@ -105,7 +104,6 @@ public class UpdateEndorsementsIntegrationTest {
                         MockMvcRequestBuilders.patch(url)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
-                .andDo(MockMvcResultHandlers.print())
                 .andReturn();
     }
 
@@ -298,26 +296,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @DisplayName("Message is null, request is not valid")
-    @WithCustomMockUser(
-            username = userId1,
-            authorities = {"USER"})
-    public void updateEndorsement_whenRequestBodyMessageIsNull_shouldReturnBadRequest()
-            throws Exception {
-        Skill skill = createAndSaveSkill(SKILL_NAME);
-        Endorsement existingEndorsement =
-                createAndSaveEndorsement(skill, userId2, userId1, INITIAL_MESSAGE);
-
-        UpdateEndorsementViewModel requestModel = createRequestModel(null);
-        String updateBody = objectMapper.writeValueAsString(requestModel);
-
-        MvcResult result = performPatchRequest(createUrl(existingEndorsement.getId()), updateBody);
-        assertThat(result.getResponse().getStatus()).isEqualTo(400);
-        assertThat(result.getResponse().getContentAsString())
-                .contains(ExceptionMessages.ENDORSEMENT_MESSAGE_EMPTY);
-    }
-
-    @Test
     @DisplayName("Message field is missing, request is not valid")
     @WithCustomMockUser(
             username = userId1,
@@ -356,6 +334,7 @@ public class UpdateEndorsementsIntegrationTest {
                         .andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(403);
+        assertThat(result.getResponse().getContentAsString()).contains(ExceptionMessages.ACCESS_DENIED);
     }
 
     @Test
@@ -370,5 +349,7 @@ public class UpdateEndorsementsIntegrationTest {
 
         MvcResult result = performPatchRequest(createUrl(existingEndorsement.getId()), updateBody);
         assertThat(result.getResponse().getStatus()).isEqualTo(401);
+        assertThat(result.getResponse().getContentAsString())
+                .contains(ExceptionMessages.INVALID_ACCESS_TOKEN);
     }
 }
