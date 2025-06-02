@@ -59,6 +59,7 @@ public class UpdateEndorsementsIntegrationTest {
     private final String SKILL_NAME = "Java";
     private final String INITIAL_MESSAGE = "Initial message";
     private final String NEW_MESSAGE = "Updated message";
+    private final String isDev = "?dev=true";
 
     @BeforeEach
     void setUp() {
@@ -192,7 +193,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to authorization bug tracked in #206 – re-enable once fixed")
     @DisplayName("when user is not the endorser, should not update endorsement")
     @WithCustomMockUser(
             username = userId1,
@@ -205,7 +205,8 @@ public class UpdateEndorsementsIntegrationTest {
         UpdateEndorsementViewModel updateEndorsementViewModel = createRequestModel(NEW_MESSAGE);
         String updateBody = objectMapper.writeValueAsString(updateEndorsementViewModel);
 
-        MvcResult result = performPatchRequest(createUrl(existingEndorsement.getId()), updateBody);
+        MvcResult result =
+                performPatchRequest(createUrl(existingEndorsement.getId()) + isDev, updateBody);
 
         assertThat(result.getResponse().getStatus()).isEqualTo(403);
         assertThat(result.getResponse().getContentAsString())
@@ -237,7 +238,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to bug tracked in #206 – re-enable once fixed")
     @DisplayName("RdsService fails to get 'endorser' details, should return 404")
     @WithCustomMockUser(
             username = "non-existent-endorser-id",
@@ -255,7 +255,8 @@ public class UpdateEndorsementsIntegrationTest {
         when(rdsService.getUserDetails(endorserId))
                 .thenThrow(new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND));
 
-        MvcResult result = performPatchRequest(createUrl(existingEndorsement.getId()), updateBody);
+        MvcResult result =
+                performPatchRequest(createUrl(existingEndorsement.getId()) + isDev, updateBody);
         assertThat(result.getResponse().getStatus()).isEqualTo(404);
         assertThat(result.getResponse().getContentAsString())
                 .contains(ExceptionMessages.USER_NOT_FOUND);
@@ -266,7 +267,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to bug tracked in #206 – re-enable once fixed")
     @DisplayName("RdsService fails to get 'endorse' details, should return 404")
     @WithCustomMockUser(
             username = userId1,
@@ -284,7 +284,8 @@ public class UpdateEndorsementsIntegrationTest {
         when(rdsService.getUserDetails(endorseId))
                 .thenThrow(new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND));
 
-        MvcResult result = performPatchRequest(createUrl(existingEndorsement.getId()), updateBody);
+        MvcResult result =
+                performPatchRequest(createUrl(existingEndorsement.getId()) + isDev, updateBody);
         assertThat(result.getResponse().getStatus()).isEqualTo(404);
         assertThat(result.getResponse().getContentAsString())
                 .contains(ExceptionMessages.USER_NOT_FOUND);
