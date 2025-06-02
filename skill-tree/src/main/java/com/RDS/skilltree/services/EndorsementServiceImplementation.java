@@ -1,10 +1,7 @@
 package com.RDS.skilltree.services;
 
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
-import com.RDS.skilltree.exceptions.EndorsementAlreadyExistsException;
-import com.RDS.skilltree.exceptions.EndorsementNotFoundException;
-import com.RDS.skilltree.exceptions.SelfEndorsementNotAllowedException;
-import com.RDS.skilltree.exceptions.SkillNotFoundException;
+import com.RDS.skilltree.exceptions.*;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.JwtUser;
 import com.RDS.skilltree.models.Skill;
@@ -130,7 +127,40 @@ public class EndorsementServiceImplementation implements EndorsementService {
     }
 
     @Override
-    public EndorsementViewModel update(Integer endorsementId, UpdateEndorsementViewModel body) {
+    public EndorsementViewModel update(
+            Integer endorsementId, UpdateEndorsementViewModel body, boolean isDev) {
+        if (isDev) {
+            Optional<Endorsement> existingEndorsement = endorsementRepository.findById(endorsementId);
+
+            if (existingEndorsement.isEmpty()) {
+                log.info("Endorsement with id: {} not found", endorsementId);
+                throw new EndorsementNotFoundException(ExceptionMessages.ENDORSEMENT_NOT_FOUND);
+            }
+
+            Endorsement endorsement = existingEndorsement.get();
+
+            JwtUser jwtDetails =
+                    (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userId = jwtDetails.getRdsUserId();
+
+            if (!endorsement.getEndorserId().equals(userId)) {
+                log.warn("User: {} is not authorized to update endorsement: {}", userId, endorsementId);
+                throw new ForbiddenException(ExceptionMessages.UNAUTHORIZED_ENDORSEMENT_UPDATE);
+            }
+
+            RdsGetUserDetailsResDto endorseDetails =
+                    rdsService.getUserDetails(endorsement.getEndorseId());
+            RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(userId);
+
+            endorsement.setMessage(body.getMessage());
+            Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
+
+            return EndorsementViewModel.toViewModel(
+                    savedEndorsementDetails,
+                    UserViewModel.toViewModel(endorseDetails.getUser()),
+                    UserViewModel.toViewModel(endorserDetails.getUser()));
+        }
+
         Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
 
         if (exitingEndorsement.isEmpty()) {
