@@ -217,7 +217,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to validation bug tracked in #206 – re-enable once fixed")
     @DisplayName("Message is empty string, request is not valid")
     @WithCustomMockUser(
             username = userId1,
