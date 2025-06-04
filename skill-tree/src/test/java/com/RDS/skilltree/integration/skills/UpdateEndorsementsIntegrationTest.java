@@ -355,7 +355,7 @@ public class UpdateEndorsementsIntegrationTest {
     @WithCustomMockUser(
             username = userId1,
             authorities = {"USER"})
-    public void updateEndorsement_nonDevMode_shouldReturn403() throws Exception {
+    public void updateEndorsement_nonDevMode_shouldReturn405() throws Exception {
         Skill skill = createAndSaveSkill(SKILL_NAME);
         Endorsement existingEndorsement =
                 createAndSaveEndorsement(skill, userId2, userId1, INITIAL_MESSAGE);
