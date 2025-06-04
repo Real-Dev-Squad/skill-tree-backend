@@ -15,5 +15,7 @@ public class Constants {
         public static final String INVALID_ACCESS_TOKEN =
                 "The access token provided is expired, revoked, malformed, or invalid for other reasons.";
         public static final String ACCESS_DENIED = "Access Denied";
+        public static final String UPDATE_DISABLED_IN_NON_DEV_MODE =
+                "Update is not allowed outside of development mode";
     }
 }

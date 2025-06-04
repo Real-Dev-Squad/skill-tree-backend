@@ -160,30 +160,6 @@ public class EndorsementServiceImplementation implements EndorsementService {
                     UserViewModel.toViewModel(endorseDetails.getUser()),
                     UserViewModel.toViewModel(endorserDetails.getUser()));
         }
-
-        Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
-
-        if (exitingEndorsement.isEmpty()) {
-            log.info(String.format("Endorsement with id: %s not found", endorsementId));
-            throw new EndorsementNotFoundException(ExceptionMessages.ENDORSEMENT_NOT_FOUND);
-        }
-
-        Endorsement endorsement = exitingEndorsement.get();
-        String updatedMessage = body.getMessage();
-
-        if (updatedMessage != null) {
-            endorsement.setMessage(updatedMessage);
-        }
-
-        Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
-        RdsGetUserDetailsResDto endorseDetails =
-                rdsService.getUserDetails(savedEndorsementDetails.getEndorseId());
-        RdsGetUserDetailsResDto endorserDetails =
-                rdsService.getUserDetails(savedEndorsementDetails.getEndorserId());
-
-        return EndorsementViewModel.toViewModel(
-                savedEndorsementDetails,
-                UserViewModel.toViewModel(endorseDetails.getUser()),
-                UserViewModel.toViewModel(endorserDetails.getUser()));
+        throw new IllegalStateException(ExceptionMessages.UPDATE_DISABLED_IN_NON_DEV_MODE);
     }
 }
