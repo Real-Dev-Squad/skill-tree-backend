@@ -1,7 +1,11 @@
 package com.RDS.skilltree.services;
 
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
-import com.RDS.skilltree.exceptions.*;
+import com.RDS.skilltree.exceptions.EndorsementAlreadyExistsException;
+import com.RDS.skilltree.exceptions.EndorsementNotFoundException;
+import com.RDS.skilltree.exceptions.ForbiddenException;
+import com.RDS.skilltree.exceptions.SelfEndorsementNotAllowedException;
+import com.RDS.skilltree.exceptions.SkillNotFoundException;
 import com.RDS.skilltree.models.Endorsement;
 import com.RDS.skilltree.models.JwtUser;
 import com.RDS.skilltree.models.Skill;
