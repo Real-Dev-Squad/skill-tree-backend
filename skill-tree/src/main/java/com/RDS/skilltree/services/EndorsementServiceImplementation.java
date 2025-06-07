@@ -147,22 +147,22 @@ public class EndorsementServiceImplementation implements EndorsementService {
                     (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userId = jwtDetails.getRdsUserId();
 
-            if (!endorsement.getEndorserId().equals(userId)) {
+            if (endorsement.getEndorserId().equals(userId)) {
+                RdsGetUserDetailsResDto endorseDetails =
+                        rdsService.getUserDetails(endorsement.getEndorseId());
+                RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(userId);
+
+                endorsement.setMessage(body.getMessage());
+                Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
+
+                return EndorsementViewModel.toViewModel(
+                        savedEndorsementDetails,
+                        UserViewModel.toViewModel(endorseDetails.getUser()),
+                        UserViewModel.toViewModel(endorserDetails.getUser()));
+            } else {
                 log.warn("User: {} is not authorized to update endorsement: {}", userId, endorsementId);
                 throw new ForbiddenException(ExceptionMessages.UNAUTHORIZED_ENDORSEMENT_UPDATE);
             }
-
-            RdsGetUserDetailsResDto endorseDetails =
-                    rdsService.getUserDetails(endorsement.getEndorseId());
-            RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(userId);
-
-            endorsement.setMessage(body.getMessage());
-            Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
-
-            return EndorsementViewModel.toViewModel(
-                    savedEndorsementDetails,
-                    UserViewModel.toViewModel(endorseDetails.getUser()),
-                    UserViewModel.toViewModel(endorserDetails.getUser()));
         }
         throw new IllegalStateException(ExceptionMessages.UPDATE_DISABLED_IN_NON_DEV_MODE);
     }
