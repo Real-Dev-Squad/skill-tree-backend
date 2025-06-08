@@ -140,4 +140,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException ex) {
+        log.error("IllegalStateException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(
+                new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+    }
 }

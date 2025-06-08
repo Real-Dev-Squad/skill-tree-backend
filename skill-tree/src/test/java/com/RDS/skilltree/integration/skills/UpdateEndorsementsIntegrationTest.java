@@ -108,7 +108,8 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     private String createUrl(Integer endorsementId) {
-        return String.format("/v1/endorsements/%d", endorsementId);
+        String isDev = "?dev=true";
+        return String.format("/v1/endorsements/%d" + isDev, endorsementId);
     }
 
     private UpdateEndorsementViewModel createRequestModel(String newMessage) {
@@ -192,7 +193,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to authorization bug tracked in #206 – re-enable once fixed")
     @DisplayName("when user is not the endorser, should not update endorsement")
     @WithCustomMockUser(
             username = userId1,
@@ -217,7 +217,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to validation bug tracked in #206 – re-enable once fixed")
     @DisplayName("Message is empty string, request is not valid")
     @WithCustomMockUser(
             username = userId1,
@@ -238,7 +237,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to bug tracked in #206 – re-enable once fixed")
     @DisplayName("RdsService fails to get 'endorser' details, should return 404")
     @WithCustomMockUser(
             username = "non-existent-endorser-id",
@@ -267,7 +265,6 @@ public class UpdateEndorsementsIntegrationTest {
     }
 
     @Test
-    @Disabled("Fails due to bug tracked in #206 – re-enable once fixed")
     @DisplayName("RdsService fails to get 'endorse' details, should return 404")
     @WithCustomMockUser(
             username = userId1,
@@ -351,5 +348,26 @@ public class UpdateEndorsementsIntegrationTest {
         assertThat(result.getResponse().getStatus()).isEqualTo(401);
         assertThat(result.getResponse().getContentAsString())
                 .contains(ExceptionMessages.INVALID_ACCESS_TOKEN);
+    }
+
+    @Test
+    @DisplayName("Endorsement update not allowed in non-dev mode, should return 405")
+    @WithCustomMockUser(
+            username = userId1,
+            authorities = {"USER"})
+    public void updateEndorsement_nonDevMode_shouldReturn405() throws Exception {
+        Skill skill = createAndSaveSkill(SKILL_NAME);
+        Endorsement existingEndorsement =
+                createAndSaveEndorsement(skill, userId2, userId1, INITIAL_MESSAGE);
+
+        UpdateEndorsementViewModel updateEndorsementViewModel = createRequestModel(NEW_MESSAGE);
+        String updateBody = objectMapper.writeValueAsString(updateEndorsementViewModel);
+
+        String url = String.format("/v1/endorsements/%d", existingEndorsement.getId());
+        MvcResult result = performPatchRequest(url, updateBody);
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(405);
+        assertThat(result.getResponse().getContentAsString())
+                .contains(ExceptionMessages.UPDATE_DISABLED_IN_NON_DEV_MODE);
     }
 }

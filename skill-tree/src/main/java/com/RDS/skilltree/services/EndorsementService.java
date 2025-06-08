@@ -10,5 +10,6 @@ public interface EndorsementService {
 
     EndorsementViewModel create(CreateEndorsementViewModel endorsement);
 
-    EndorsementViewModel update(Integer endorsementId, UpdateEndorsementViewModel endorsement);
+    EndorsementViewModel update(
+            Integer endorsementId, UpdateEndorsementViewModel endorsement, boolean isDev);
 }

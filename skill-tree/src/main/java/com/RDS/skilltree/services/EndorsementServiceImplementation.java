@@ -3,6 +3,7 @@ package com.RDS.skilltree.services;
 import com.RDS.skilltree.dtos.RdsGetUserDetailsResDto;
 import com.RDS.skilltree.exceptions.EndorsementAlreadyExistsException;
 import com.RDS.skilltree.exceptions.EndorsementNotFoundException;
+import com.RDS.skilltree.exceptions.ForbiddenException;
 import com.RDS.skilltree.exceptions.SelfEndorsementNotAllowedException;
 import com.RDS.skilltree.exceptions.SkillNotFoundException;
 import com.RDS.skilltree.models.Endorsement;
@@ -130,30 +131,39 @@ public class EndorsementServiceImplementation implements EndorsementService {
     }
 
     @Override
-    public EndorsementViewModel update(Integer endorsementId, UpdateEndorsementViewModel body) {
-        Optional<Endorsement> exitingEndorsement = endorsementRepository.findById(endorsementId);
+    public EndorsementViewModel update(
+            Integer endorsementId, UpdateEndorsementViewModel body, boolean isDev) {
+        if (isDev) {
+            Optional<Endorsement> existingEndorsement = endorsementRepository.findById(endorsementId);
 
-        if (exitingEndorsement.isEmpty()) {
-            log.info(String.format("Endorsement with id: %s not found", endorsementId));
-            throw new EndorsementNotFoundException(ExceptionMessages.ENDORSEMENT_NOT_FOUND);
+            if (existingEndorsement.isEmpty()) {
+                log.info("Endorsement with id: {} not found", endorsementId);
+                throw new EndorsementNotFoundException(ExceptionMessages.ENDORSEMENT_NOT_FOUND);
+            }
+
+            Endorsement endorsement = existingEndorsement.get();
+
+            JwtUser jwtDetails =
+                    (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userId = jwtDetails.getRdsUserId();
+
+            if (endorsement.getEndorserId().equals(userId)) {
+                RdsGetUserDetailsResDto endorseDetails =
+                        rdsService.getUserDetails(endorsement.getEndorseId());
+                RdsGetUserDetailsResDto endorserDetails = rdsService.getUserDetails(userId);
+
+                endorsement.setMessage(body.getMessage());
+                Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
+
+                return EndorsementViewModel.toViewModel(
+                        savedEndorsementDetails,
+                        UserViewModel.toViewModel(endorseDetails.getUser()),
+                        UserViewModel.toViewModel(endorserDetails.getUser()));
+            } else {
+                log.warn("User: {} is not authorized to update endorsement: {}", userId, endorsementId);
+                throw new ForbiddenException(ExceptionMessages.UNAUTHORIZED_ENDORSEMENT_UPDATE);
+            }
         }
-
-        Endorsement endorsement = exitingEndorsement.get();
-        String updatedMessage = body.getMessage();
-
-        if (updatedMessage != null) {
-            endorsement.setMessage(updatedMessage);
-        }
-
-        Endorsement savedEndorsementDetails = endorsementRepository.save(endorsement);
-        RdsGetUserDetailsResDto endorseDetails =
-                rdsService.getUserDetails(savedEndorsementDetails.getEndorseId());
-        RdsGetUserDetailsResDto endorserDetails =
-                rdsService.getUserDetails(savedEndorsementDetails.getEndorserId());
-
-        return EndorsementViewModel.toViewModel(
-                savedEndorsementDetails,
-                UserViewModel.toViewModel(endorseDetails.getUser()),
-                UserViewModel.toViewModel(endorserDetails.getUser()));
+        throw new IllegalStateException(ExceptionMessages.UPDATE_DISABLED_IN_NON_DEV_MODE);
     }
 }
