@@ -22,7 +22,9 @@ public class EndorsementsApi {
 
     @PatchMapping("/{id}")
     public ResponseEntity<EndorsementViewModel> update(
-            @PathVariable Integer id, @Valid @RequestBody UpdateEndorsementViewModel body) {
-        return new ResponseEntity<>(endorsementService.update(id, body), HttpStatus.OK);
+            @PathVariable Integer id,
+            @Valid @RequestBody UpdateEndorsementViewModel body,
+            @RequestParam(name = "dev", required = false, defaultValue = "false") boolean isDev) {
+        return new ResponseEntity<>(endorsementService.update(id, body, isDev), HttpStatus.OK);
     }
 }

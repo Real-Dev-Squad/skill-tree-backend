@@ -1,5 +1,6 @@
 package com.RDS.skilltree.exceptions;
 
+import com.RDS.skilltree.utils.Constants.ExceptionMessages;
 import com.RDS.skilltree.utils.GenericResponse;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
@@ -27,10 +28,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({AuthenticationException.class, InsufficientAuthenticationException.class})
     public ResponseEntity<GenericResponse<Object>> handleInvalidBearerTokenException(Exception ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(
-                        new GenericResponse<>(
-                                null,
-                                "The access token provided is expired, revoked, malformed, or invalid for other reasons."));
+                .body(new GenericResponse<>(ExceptionMessages.INVALID_ACCESS_TOKEN));
     }
 
     @ExceptionHandler({AccessDeniedException.class})
@@ -139,6 +137,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleEndorsementAlreadyExistsException(
             EndorsementAlreadyExistsException ex) {
         log.error("EndorsementAlreadyExistsException - Error : {}", ex.getMessage());
+        return new ResponseEntity<>(
+                new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException ex) {
+        log.error("IllegalStateException - Error : {}", ex.getMessage());
         return new ResponseEntity<>(
                 new GenericResponse<>(ex.getMessage()), HttpStatus.METHOD_NOT_ALLOWED);
     }

@@ -1,12 +1,13 @@
 package com.RDS.skilltree.viewmodels;
 
-import jakarta.validation.constraints.NotNull;
+import com.RDS.skilltree.utils.Constants.ExceptionMessages;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class UpdateEndorsementViewModel {
-    @NotNull(message = "Message cannot be empty")
+    @NotBlank(message = ExceptionMessages.ENDORSEMENT_MESSAGE_EMPTY)
     private String message;
 }
