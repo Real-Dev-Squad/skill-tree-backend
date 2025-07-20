@@ -93,3 +93,12 @@ Please build using `mvn compile` in local or run `mvn spotless:apply` before pus
 To check if the codebase is formatted, you can explicitly use `mvn spotless:check`
 
 The Continuous Integration build for pushed commits may fail when a Pull Request is created if your code doesn't follow project's formatting guideline.
+
+## 👥 Contributors
+
+Thanks to all the contributors who made this project awesome 🙌
+
+<a href="https://github.com/Real-Dev-Squad/skill-tree-backend/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Real-Dev-Squad/skill-tree-backend" />
+</a>
+
